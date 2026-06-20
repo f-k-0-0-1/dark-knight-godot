@@ -1,0 +1,40 @@
+[gd_scene load_steps=8 format=3 uid="uid://cng0mhbi5p63n"]
+
+[ext_resource type="PackedScene" uid="uid://dgeh1b8tmokue" path="res://Scenes/tile_map.tscn" id="1_2ynj1"]
+[ext_resource type="Script" path="res://Scripts/level_1.gd" id="1_64e2p"]
+[ext_resource type="PackedScene" uid="uid://m1r7afhf8aax" path="res://Scenes/character_body_2d.tscn" id="2_vnpwm"]
+[ext_resource type="PackedScene" uid="uid://cbff503014sno" path="res://Scenes/plants.tscn" id="4_diisf"]
+[ext_resource type="PackedScene" uid="uid://bospax0kwjtgf" path="res://Scenes/slime.tscn" id="5_1jukv"]
+[ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="6_61niw"]
+[ext_resource type="Script" path="res://Scripts/scene_manager.gd" id="6_q2r7y"]
+
+[node name="Level 1" type="Node2D"]
+script = ExtResource("1_64e2p")
+
+[node name="TileMap" parent="." instance=ExtResource("1_2ynj1")]
+
+[node name="Player" parent="." groups=["player"] instance=ExtResource("2_vnpwm")]
+position = Vector2(-2073, -159)
+
+[node name="Plants" parent="." instance=ExtResource("4_diisf")]
+position = Vector2(-1037, -6)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="slime" parent="Enemies" groups=["enemies"] instance=ExtResource("5_1jukv")]
+position = Vector2(11920, -79)
+
+[node name="flying demon" parent="Enemies" groups=["enemies"] instance=ExtResource("6_61niw")]
+position = Vector2(167, -232)
+
+[node name="flying demon2" parent="Enemies" groups=["enemies"] instance=ExtResource("6_61niw")]
+position = Vector2(2941, -243)
+
+[node name="flying demon3" parent="Enemies" groups=["enemies"] instance=ExtResource("6_61niw")]
+position = Vector2(2702, -160)
+
+[node name="flying demon4" parent="Enemies" groups=["enemies"] instance=ExtResource("6_61niw")]
+position = Vector2(2764, -335)
+
+[node name="SceneManager" type="Node" parent="."]
+script = ExtResource("6_q2r7y")

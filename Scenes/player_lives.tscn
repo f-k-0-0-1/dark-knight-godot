@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://onxq0iu455xi"]
+
+[ext_resource type="Script" path="res://Scripts/player_lives.gd" id="1_7lfdo"]
+[ext_resource type="Texture2D" uid="uid://be07lona1qxxx" path="res://Assets/sprite.png" id="2_tst0e"]
+
+[node name="player_lives" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_7lfdo")
+
+[node name="HeartsContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 967.0
+offset_top = 21.0
+offset_right = 1383.0
+offset_bottom = 113.0
+scale = Vector2(0.376291, 0.352048)
+
+[node name="Heart1" type="TextureRect" parent="HeartsContainer"]
+layout_mode = 2
+texture = ExtResource("2_tst0e")
+
+[node name="Heart2" type="TextureRect" parent="HeartsContainer"]
+layout_mode = 2
+texture = ExtResource("2_tst0e")
+
+[node name="Heart3" type="TextureRect" parent="HeartsContainer"]
+layout_mode = 2
+texture = ExtResource("2_tst0e")
+
+[node name="Heart4" type="TextureRect" parent="HeartsContainer"]
+layout_mode = 2
+texture = ExtResource("2_tst0e")

@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://b6xnffxost1a8"]
+
+[ext_resource type="Script" uid="uid://bbk80pl2euheh" path="res://Scripts/main_menu.gd" id="1_0v6oq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6ptdq"]
+font_size = 30
+
+[node name="MainMenu" type="Control" unique_id=1618176307]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_0v6oq")
+
+[node name="Panel" type="Panel" parent="." unique_id=237871639]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Credits" type="Button" parent="Panel" unique_id=771654082]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.513
+anchor_top = 8.464
+anchor_right = 0.513
+anchor_bottom = 8.464
+offset_left = 448.0
+offset_top = 320.0
+offset_right = 704.0
+offset_bottom = 384.0
+text = "CREDITS"
+
+[node name="Quit" type="Button" parent="Panel" unique_id=480589055]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.345
+anchor_top = 11.048
+anchor_right = 0.345
+anchor_bottom = 11.048
+offset_left = 448.0
+offset_top = 425.0
+offset_right = 704.0
+offset_bottom = 489.0
+text = "QUIT"
+
+[node name="Play" type="Button" parent="Panel" unique_id=1595970924]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 448.0
+offset_top = 216.0
+offset_right = 704.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "PLAY"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1912360755]
+layout_mode = 0
+offset_right = 139.0
+offset_bottom = 42.0
+alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel" unique_id=66951515]
+layout_mode = 1
+anchors_preset = -1
+offset_top = 441.0
+offset_right = 208.0
+offset_bottom = 648.0
+size_flags_vertical = 6
+size_flags_stretch_ratio = 0.29
+text = "    CONTROLS:
+    LEFT: A
+    RIGHT: D
+    JUMP: W, SPACEBAR
+    ABILITY; F, ENTER
+    GOD MODE: G
+    SPRINT: SHIFT
+    MENU: ESC
+ "
+fit_content = true
+
+[node name="My Game" type="Label" parent="Panel" unique_id=164108840]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 8.0
+offset_right = 704.0
+offset_bottom = 50.0
+size_flags_vertical = 2
+text = "DARK KNIGHT"
+label_settings = SubResource("LabelSettings_6ptdq")
+horizontal_alignment = 1

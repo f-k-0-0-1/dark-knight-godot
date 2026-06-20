@@ -1,0 +1,73 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbkkkhscmydh7"]
+
+[ext_resource type="Script" path="res://Scripts/credits.gd" id="1_ccxjc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_6ptdq"]
+font_size = 30
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ccxjc")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+offset_right = 1152.0
+offset_bottom = 648.0
+alignment = 1
+
+[node name="My Game" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 2
+text = "CREDITS:"
+label_settings = SubResource("LabelSettings_6ptdq")
+horizontal_alignment = 1
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+size_flags_stretch_ratio = 0.29
+text = "    CONTROLS:
+    LEFT: A
+    RIGHT: D
+    JUMP: W, SPACEBAR
+    ABILITY; F, ENTER
+    GOD MODE: G
+    SPRINT: SHIFT
+    MENU: ESC
+ "
+fit_content = true
+
+[node name="back" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 496.0
+offset_top = 536.0
+offset_right = 656.0
+offset_bottom = 576.0
+text = "BACK"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 2
+offset_left = 392.0
+offset_top = 136.0
+offset_right = 662.0
+offset_bottom = 312.0
+scale = Vector2(1.37683, 1.29289)
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.29
+text = "Roll the tape, folks, it's credit time!
+             The Mastermind:
+FAIQ HASAN KHAN (Everything!)
+                Big Thanks To:
+     Caffeine & Moral Support!
+         And YOU, the Player!
+Game Over? Nah, just Level Up!"
+fit_content = true

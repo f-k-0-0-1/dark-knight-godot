@@ -1,0 +1,253 @@
+extends CharacterBody2D
+
+signal health_changed(new_health: int, max_health: int)
+
+@export var speed: float = 650.0
+@export var sprint_multiplier: float = 5.0
+@export var jump_velocity: float = -1150.0
+@export var gravity: float = 2250.0
+
+@export var fireball_cooldown: float = 0.5
+@export var shoot_anim_duration: float = 0.2
+@export var lightning_ball_scene: PackedScene
+@export var lightning_ability_duration: float = 3.0
+@export var lightning_ability_cooldown: float = 5.0
+@export var max_health: int = 100
+
+var is_dead: bool = false # Explicitly declared with type 'bool'
+var fireball_scene: PackedScene
+var lightning_ball_instance: Area2D
+
+var current_health: int = max_health:
+	set(value):
+		var old_health = current_health
+		current_health = clampi(value, 0, max_health)
+		if current_health != old_health:
+			health_changed.emit(current_health, max_health)
+
+const MAX_JUMPS := 2
+var jump_count := 0
+var was_on_floor := false
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var fire_point: Marker2D = $FirePoint
+@onready var heart_ui = $"."
+
+var facing_right := true
+var can_shoot := true
+var is_shooting := false
+var jump_anim_played := false
+var is_sprinting := false
+var god_mode := false
+var can_use_lightning := true
+var is_lightning_active := false
+
+func _ready():
+	fireball_scene = SceneManager.scenes.get("fireball_scene")
+	health_changed.emit(current_health, max_health)
+
+	if heart_ui and heart_ui.has_method("update_hearts"):
+		health_changed.connect(heart_ui.update_hearts)
+
+	if lightning_ball_scene:
+		lightning_ball_instance = lightning_ball_scene.instantiate()
+		lightning_ball_instance.visible = false
+		lightning_ball_instance.scale = Vector2(2, 2)
+		add_child(lightning_ball_instance)
+
+func _input(event):
+	if is_dead:
+		return
+
+	if event.is_action_pressed("god_mode_toggle"):
+		god_mode = !god_mode
+		velocity = Vector2.ZERO
+		print("God Mode:", god_mode)
+
+	if event.is_action_pressed("fireball"):
+		shoot_fireball()
+
+	if event.is_action_pressed("lightning_ability"):
+		activate_lightning_ball()
+
+func _physics_process(delta):
+	handle_movement_input()
+	if not god_mode:
+		apply_gravity(delta)
+
+	move_and_slide()
+	handle_landing_reset()
+	handle_animation()
+	update_lightning_ball_position()
+
+func handle_movement_input():
+	var move_speed := speed
+	is_sprinting = Input.is_action_pressed("ui_shift")
+	if is_sprinting:
+		move_speed *= sprint_multiplier
+
+	if god_mode:
+		velocity = Vector2.ZERO
+		if Input.is_action_pressed("move_right"):
+			velocity.x += move_speed
+		if Input.is_action_pressed("move_left"):
+			velocity.x -= move_speed
+		if Input.is_action_pressed("move_up"):
+			velocity.y -= move_speed
+		if Input.is_action_pressed("move_down"):
+			velocity.y += move_speed
+	else:
+		var input_direction := 0.0
+		if Input.is_action_pressed("move_left"):
+			input_direction -= 1
+		if Input.is_action_pressed("move_right"):
+			input_direction += 1
+
+		velocity.x = input_direction * move_speed
+
+		if Input.is_action_just_pressed("jump") and jump_count < MAX_JUMPS:
+			velocity.y = jump_velocity
+			jump_count += 1
+			jump_anim_played = false
+
+	if velocity.x != 0:
+		facing_right = velocity.x > 0
+		sprite.flip_h = not facing_right
+
+func apply_gravity(delta):
+	if not is_on_floor():
+		velocity.y += gravity * delta
+
+func handle_landing_reset():
+	if is_on_floor() and not was_on_floor:
+		jump_count = 0
+		jump_anim_played = false
+	was_on_floor = is_on_floor()
+
+func shoot_fireball():
+	if not can_shoot or fireball_scene == null or is_shooting:
+		return
+	if is_sprinting:
+		return
+
+	var fireball = fireball_scene.instantiate()
+	fireball.direction = Vector2.RIGHT if facing_right else Vector2.LEFT
+	fireball.global_position = fire_point.global_position
+	get_tree().current_scene.add_child(fireball)
+
+	sprite.play("dash", false)
+	is_shooting = true
+	can_shoot = false
+
+	start_timer(shoot_anim_duration, _on_shoot_anim_end)
+	start_timer(fireball_cooldown, _on_fireball_cooldown_timeout)
+
+func activate_lightning_ball():
+	if not can_use_lightning or lightning_ball_scene == null:
+		return
+
+	can_use_lightning = false
+	is_lightning_active = true
+
+	var ball = lightning_ball_scene.instantiate() as Area2D
+	ball.scale = Vector2(1.5, 1.5)
+	ball.global_position = global_position + Vector2(50 if facing_right else -50, 0)
+	
+	# Optional: Flip or direction
+	if ball.has_method("set_direction"):
+		ball.set_direction(Vector2(1, 0) if facing_right else Vector2(-1, 0))
+
+	if ball.has_method("activate"):
+		ball.activate()
+
+	get_tree().current_scene.add_child(ball)
+
+	# Start cleanup timer
+	var cleanup_timer = Timer.new()
+	cleanup_timer.wait_time = lightning_ability_duration
+	cleanup_timer.one_shot = true
+	cleanup_timer.timeout.connect(func():
+		if is_instance_valid(ball):
+			if ball.has_method("deactivate"):
+				ball.deactivate()
+			ball.queue_free()
+		is_lightning_active = false
+	)
+	add_child(cleanup_timer)
+	cleanup_timer.start()
+
+	start_timer(lightning_ability_cooldown, _on_lightning_cooldown_timeout)
+
+	start_timer(lightning_ability_duration, _on_lightning_ability_end)
+
+func _on_lightning_ability_end():
+	is_lightning_active = false
+	if is_instance_valid(lightning_ball_instance):
+		lightning_ball_instance.visible = false
+		if lightning_ball_instance.has_method("deactivate"):
+			lightning_ball_instance.deactivate()
+	start_timer(lightning_ability_cooldown, _on_lightning_cooldown_timeout)
+
+func _on_lightning_cooldown_timeout():
+	can_use_lightning = true
+
+func update_lightning_ball_position():
+	if is_instance_valid(lightning_ball_instance) and lightning_ball_instance.visible:
+		var offset = Vector2(50, 0) if facing_right else Vector2(-50, 0)
+		lightning_ball_instance.global_position = global_position + offset
+		lightning_ball_instance.scale.x = abs(lightning_ball_instance.scale.x) if facing_right else -abs(lightning_ball_instance.scale.x)
+		if lightning_ball_instance.has_method("set_direction"):
+			lightning_ball_instance.set_direction(Vector2(1,0) if facing_right else Vector2(-1,0))
+
+func handle_animation():
+	if is_shooting:
+		return
+
+	if god_mode and velocity.length() > 0:
+		sprite.play("idle")
+	elif not is_on_floor():
+		if not jump_anim_played:
+			sprite.play("jump", false)
+			jump_anim_played = true
+	elif abs(velocity.x) > 0:
+		sprite.play("run" if is_sprinting else "walk")
+	else:
+		sprite.play("idle")
+
+func start_timer(duration: float, callback: Callable):
+	var timer := Timer.new()
+	timer.wait_time = duration
+	timer.one_shot = true
+	timer.timeout.connect(callback)
+	add_child(timer)
+	timer.start()
+
+func _on_shoot_anim_end():
+	is_shooting = false
+
+func _on_fireball_cooldown_timeout():
+	can_shoot = true
+
+func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
+	if god_mode:
+		return
+
+	current_health -= amount
+	var knockback := (global_position - source_position).normalized() * 500.0
+	velocity = knockback
+
+	if current_health <= 0:
+		die()
+
+func heal(amount: int) -> void:
+	current_health += amount
+
+func die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	set_process(false)
+	set_process_input(false)
+
+	await get_tree().create_timer(0.5).timeout
+	get_tree().change_scene_to_packed(SceneManager.scenes["retry_menu"])

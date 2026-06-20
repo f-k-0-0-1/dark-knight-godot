@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://bc78hkoqfxfy8"]
+
+[ext_resource type="Script" path="res://Scripts/tutorial_popup.gd" id="1_k0fgo"]
+
+[node name="TutorialPopupLayer" type="CanvasLayer"]
+visible = false
+script = ExtResource("1_k0fgo")
+
+[node name="PopupPanel" type="Panel" parent="."]
+custom_minimum_size = Vector2(400, 250)
+offset_left = 44.0
+offset_top = 241.0
+offset_right = 444.0
+offset_bottom = 491.0
+
+[node name="TutorialText" type="Label" parent="PopupPanel"]
+layout_mode = 0
+offset_left = -2.0
+offset_top = 7.0
+offset_right = 322.0
+offset_bottom = 30.0
+scale = Vector2(1.24176, 1.3684)
+text = "Tutorials:
+Press A, D for Left & Right
+Press W / SpaceBar for jump
+Press F / ENTER for FIREBALL ability
+Press G to enable GOD Mode
+"
+horizontal_alignment = 1
+autowrap_mode = 1
+
+[node name="CloseButton" type="Button" parent="PopupPanel"]
+layout_mode = 0
+offset_left = 164.0
+offset_top = 207.0
+offset_right = 242.0
+offset_bottom = 238.0
+text = "Close"
+
+[node name="AutoCloseTimer" type="Timer" parent="PopupPanel"]
+wait_time = 5.0
+one_shot = true
