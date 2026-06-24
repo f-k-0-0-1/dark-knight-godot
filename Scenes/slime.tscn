@@ -1,6 +1,6 @@
-[gd_scene load_steps=35 format=3 uid="uid://bospax0kwjtgf"]
+[gd_scene format=3 uid="uid://bospax0kwjtgf"]
 
-[ext_resource type="Script" path="res://Scripts/slime.gd" id="1_apb0b"]
+[ext_resource type="Script" uid="uid://dpp1cy3rc452j" path="res://Scripts/slime.gd" id="1_apb0b"]
 [ext_resource type="Texture2D" uid="uid://3wgauw2l15lw" path="res://Assets/Slimes/SlimeOrange/SlimeOrange_00000.png" id="1_kugvs"]
 [ext_resource type="Texture2D" uid="uid://2wkvwwkygo1i" path="res://Assets/Slimes/SlimeOrange/SlimeOrange_00001.png" id="2_i53ks"]
 [ext_resource type="Texture2D" uid="uid://byo4w1jg0u0m" path="res://Assets/Slimes/SlimeOrange/SlimeOrange_00002.png" id="3_ujon8"]
@@ -31,6 +31,7 @@
 [ext_resource type="Texture2D" uid="uid://owwa0v7p65qj" path="res://Assets/Slimes/SlimeOrange/SlimeOrange_00027.png" id="28_l6aiq"]
 [ext_resource type="Texture2D" uid="uid://cutisawpe6kou" path="res://Assets/Slimes/SlimeOrange/SlimeOrange_00028.png" id="29_jo17n"]
 [ext_resource type="Texture2D" uid="uid://bptklboipwy8i" path="res://Assets/Slimes/SlimeOrange/SlimeOrange_00029.png" id="30_rwsdt"]
+[ext_resource type="AudioStream" uid="uid://cbi6u5vjcftix" path="res://Audio/sfx/enemy_death.mp3" id="32_j33nm"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ocqds"]
 animations = [{
@@ -233,32 +234,35 @@ height = 270.0
 radius = 95.0
 height = 290.0
 
-[node name="Enemy" type="CharacterBody2D"]
+[node name="Enemy" type="CharacterBody2D" unique_id=882602578]
 script = ExtResource("1_apb0b")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1347365339]
 sprite_frames = SubResource("SpriteFrames_ocqds")
 animation = &"sprint"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1681422924]
 position = Vector2(7, 38)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_xo6e3")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1845028626]
 
-[node name="HealthBar" type="ProgressBar" parent="."]
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=63749430]
 offset_left = -93.0
 offset_top = -190.0
 offset_right = 92.0
 offset_bottom = -162.0
 show_percentage = false
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=428255981]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=379477345]
 position = Vector2(7, 37)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_3dsj6")
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="." unique_id=1462206624]
+stream = ExtResource("32_j33nm")
 
 [connection signal="area_exited" from="Hitbox" to="." method="_on_hitbox_area_exited"]

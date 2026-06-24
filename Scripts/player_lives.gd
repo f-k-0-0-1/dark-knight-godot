@@ -19,14 +19,18 @@ func _ready() -> void:
 		push_error("Player node or 'health_changed' signal not found!")
 
 func _on_player_health_changed(new_health: int, max_health: int) -> void:
-	# Calculate how many full hearts should be displayed
+	var total_hearts: int = ceil(float(max_health) / HEALTH_PER_HEART)
 	var full_hearts_count: int = ceil(float(new_health) / HEALTH_PER_HEART)
 
-	# Iterate through each heart TextureRect in the container
+	# Add or remove heart nodes to match the current max health
+	while hearts_container.get_child_count() < total_hearts:
+		var new_heart := TextureRect.new()
+		hearts_container.add_child(new_heart)
+	while hearts_container.get_child_count() > total_hearts:
+		var extra := hearts_container.get_child(hearts_container.get_child_count() - 1)
+		hearts_container.remove_child(extra)
+		extra.queue_free()
+
 	for i in hearts_container.get_child_count():
 		var heart_texture_rect: TextureRect = hearts_container.get_child(i)
-		if heart_texture_rect:
-			if i < full_hearts_count:
-				heart_texture_rect.texture = heart_textures[0] # Set to pink heart
-			else:
-				heart_texture_rect.texture = heart_textures[1] # Set to grey heart
+		heart_texture_rect.texture = heart_textures[0] if i < full_hearts_count else heart_textures[1]

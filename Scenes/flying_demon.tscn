@@ -1,11 +1,12 @@
-[gd_scene load_steps=36 format=3 uid="uid://ca3psb6v06l34"]
+[gd_scene format=3 uid="uid://ca3psb6v06l34"]
 
 [ext_resource type="Texture2D" uid="uid://cevayj8degpqt" path="res://Assets/flying demon/Sprites/with_outline/ATTACK.png" id="1_cjiid"]
-[ext_resource type="Script" path="res://Scripts/flying_demon.gd" id="1_dnv03"]
+[ext_resource type="Script" uid="uid://c10e1om4wg116" path="res://Scripts/flying_demon.gd" id="1_dnv03"]
 [ext_resource type="Texture2D" uid="uid://c1wpyepo1bvlb" path="res://Assets/flying demon/Sprites/with_outline/DEATH.png" id="2_ump4x"]
 [ext_resource type="Texture2D" uid="uid://ba4jfbedqdo1r" path="res://Assets/flying demon/Sprites/with_outline/FLYING.png" id="3_dw4g2"]
 [ext_resource type="Texture2D" uid="uid://j4sr0fe3hwtm" path="res://Assets/flying demon/Sprites/with_outline/HURT.png" id="4_8po3c"]
 [ext_resource type="Texture2D" uid="uid://c7sx4gugx73vo" path="res://Assets/flying demon/Sprites/with_outline/IDLE.png" id="5_yisdd"]
+[ext_resource type="AudioStream" uid="uid://cbi6u5vjcftix" path="res://Audio/sfx/enemy_death.mp3" id="7_dvxml"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_csr34"]
 atlas = ExtResource("1_cjiid")
@@ -223,31 +224,34 @@ radius = 12.0416
 [sub_resource type="CircleShape2D" id="CircleShape2D_3e5hs"]
 radius = 14.0357
 
-[node name="flying demon" type="CharacterBody2D"]
+[node name="flying demon" type="CharacterBody2D" unique_id=766972636]
 scale = Vector2(3, 3)
 script = ExtResource("1_dnv03")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=827229981]
 sprite_frames = SubResource("SpriteFrames_eycmg")
 animation = &"death"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1926983156]
 position = Vector2(-8, 4)
 shape = SubResource("CircleShape2D_cw24v")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=940075170]
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1040646008]
 offset_left = -34.0
 offset_top = -40.0
 offset_right = 18.0
 offset_bottom = -34.0
 show_percentage = false
 
-[node name="HitBox" type="Area2D" parent="."]
+[node name="HitBox" type="Area2D" parent="." unique_id=627846129]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox" unique_id=2110677239]
 position = Vector2(-8, 4)
 shape = SubResource("CircleShape2D_3e5hs")
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="." unique_id=874819257]
+stream = ExtResource("7_dvxml")
 
 [connection signal="area_exited" from="HitBox" to="." method="_on_hit_box_area_exited"]

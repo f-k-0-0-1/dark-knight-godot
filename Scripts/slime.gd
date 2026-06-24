@@ -61,7 +61,10 @@ func apply_gravity(delta: float) -> void:
 
 func patrol() -> void:
 	var distance_from_start := global_position.x - starting_position.x
-	if abs(distance_from_start) >= move_distance / 2.0:
+
+	if facing_right and distance_from_start >= move_distance / 2.0:
+		flip_direction()
+	elif not facing_right and distance_from_start <= -move_distance / 2.0:
 		flip_direction()
 
 	velocity.x = (1 if facing_right else -1) * move_speed
@@ -100,13 +103,13 @@ func _on_hitbox_body_entered(body: Node) -> void:
 
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		can_hit = false
-		var knockback_direction = (body.global_position - global_position).normalized()
-		body.take_damage(25, -knockback_direction)
+		body.take_damage(25, global_position)
 		start_hit_cooldown()
 
 func start_hit_cooldown() -> void:
 	await get_tree().create_timer(hit_cooldown).timeout
-	can_hit = true
+	if is_instance_valid(self):
+		can_hit = true
 
 func take_damage(amount: int, knockback_dir := Vector2.ZERO) -> void:
 	if is_dead:
@@ -128,8 +131,12 @@ func take_damage(amount: int, knockback_dir := Vector2.ZERO) -> void:
 func update_health_bar() -> void:
 	health_bar.value = float(health) / float(max_health) * 100.0
 
+@onready var death_sound: AudioStreamPlayer = $DeathSound
+
 func die() -> void:
 	is_dead = true
 	health_bar.visible = false
 	collision_shape.call_deferred("set_disabled", true)
+	death_sound.play()
+	await death_sound.finished
 	queue_free()

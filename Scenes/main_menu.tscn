@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b6xnffxost1a8"]
 
 [ext_resource type="Script" uid="uid://bbk80pl2euheh" path="res://Scripts/main_menu.gd" id="1_0v6oq"]
+[ext_resource type="AudioStream" uid="uid://82bgii5e6i3k" path="res://Audio/sfx/button_click.mp3" id="3_1ehe0"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6ptdq"]
 font_size = 30
@@ -93,3 +94,6 @@ size_flags_vertical = 2
 text = "DARK KNIGHT"
 label_settings = SubResource("LabelSettings_6ptdq")
 horizontal_alignment = 1
+
+[node name="clicksound" type="AudioStreamPlayer" parent="." unique_id=49672240]
+stream = ExtResource("3_1ehe0")

@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 # === CONFIG ===
-@export var max_health := 5
+@export var max_health := 1
 @export var move_speed := 200.0
 @export var sprint_multiplier := 3.0
 @export var knockback_strength := 400.0
@@ -102,10 +102,13 @@ func update_health_bar() -> void:
 	health_bar.value = float(health) / float(max_health) * 100.0
 
 # === DEATH ===
+@onready var death_sound: AudioStreamPlayer = $DeathSound
+
 func die() -> void:
 	is_dead = true
 	velocity = Vector2.ZERO
 	sprite.play("death")
+	death_sound.play()
 	collision_shape.call_deferred("set_disabled", true)
 	await sprite.animation_finished
 	queue_free()
@@ -119,12 +122,12 @@ func _on_HitBox_body_entered(body: Node) -> void:
 		sprite.play("attack")
 		body.take_damage(25, global_position)
 
-		# Recoil effect after hitting player
 		var recoil_direction = (global_position - body.global_position).normalized()
 		velocity = recoil_direction * knockback_strength
 		is_recoiling = true
 		await get_tree().create_timer(0.3).timeout
-		is_recoiling = false
+		if is_instance_valid(self) and not is_dead:
+			is_recoiling = false
 
 # === GET PLAYER ===
 func get_closest_player() -> Node2D:

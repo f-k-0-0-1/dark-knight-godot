@@ -1,11 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://cce7e2q77yamr"]
+[gd_scene format=3 uid="uid://cce7e2q77yamr"]
 
-[ext_resource type="Script" path="res://Scripts/fireball.gd" id="1_64dg7"]
+[ext_resource type="Script" uid="uid://b43euetuy46kt" path="res://Scripts/fireball.gd" id="1_64dg7"]
 [ext_resource type="Texture2D" uid="uid://ecdcvdhctyvn" path="res://Assets/FB00_nyknck/FB001.png" id="2_wmxv2"]
 [ext_resource type="Texture2D" uid="uid://cpvfrkmrsch55" path="res://Assets/FB00_nyknck/FB002.png" id="3_kb5gr"]
 [ext_resource type="Texture2D" uid="uid://ctqes7kbrvjot" path="res://Assets/FB00_nyknck/FB003.png" id="4_m31eb"]
 [ext_resource type="Texture2D" uid="uid://u2bn203ohbcg" path="res://Assets/FB00_nyknck/FB004.png" id="5_6ciiy"]
 [ext_resource type="Texture2D" uid="uid://tnf65ij751gk" path="res://Assets/FB00_nyknck/FB005.png" id="6_tpllj"]
+[ext_resource type="AudioStream" uid="uid://yqhoh6xtmic5" path="res://Audio/sfx/fireball.ogg" id="7_jsbbf"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ax5s0"]
 radius = 24.0
@@ -34,24 +35,27 @@ animations = [{
 "speed": 12.0
 }]
 
-[node name="Fireball" type="Area2D"]
+[node name="Fireball" type="Area2D" unique_id=134836261]
 z_index = 1
 script = ExtResource("1_64dg7")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1929503027]
 position = Vector2(149, -7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_ax5s0")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=667225939]
 position = Vector2(116, -1)
 scale = Vector2(4.85938, 4.6875)
 sprite_frames = SubResource("SpriteFrames_k03ot")
 animation = &"fly"
 frame_progress = 0.281057
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=66304424]
 one_shot = true
+
+[node name="ShootSound" type="AudioStreamPlayer" parent="." unique_id=2019248740]
+stream = ExtResource("7_jsbbf")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

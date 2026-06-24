@@ -22,6 +22,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 [autoload]
 
 SceneManager="*res://Scripts/scene_manager.gd"
+MusicManager="*uid://j65uaas5bbak"
 
 [global_group]
 

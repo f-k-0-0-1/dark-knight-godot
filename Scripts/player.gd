@@ -46,9 +46,6 @@ func _ready():
 	fireball_scene = SceneManager.scenes.get("fireball_scene")
 	health_changed.emit(current_health, max_health)
 
-	if heart_ui and heart_ui.has_method("update_hearts"):
-		health_changed.connect(heart_ui.update_hearts)
-
 	if lightning_ball_scene:
 		lightning_ball_instance = lightning_ball_scene.instantiate()
 		lightning_ball_instance.visible = false
@@ -80,6 +77,10 @@ func _physics_process(delta):
 	handle_animation()
 	update_lightning_ball_position()
 
+@onready var jump_sound: AudioStreamPlayer = $JumpSound
+@onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound
+@onready var player_hurt: AudioStreamPlayer = $PlayerHurt
+
 func handle_movement_input():
 	var move_speed := speed
 	is_sprinting = Input.is_action_pressed("ui_shift")
@@ -109,6 +110,10 @@ func handle_movement_input():
 			velocity.y = jump_velocity
 			jump_count += 1
 			jump_anim_played = false
+			if jump_count == 1:
+				jump_sound.play()
+			else:
+				double_jump_sound.play()
 
 	if velocity.x != 0:
 		facing_right = velocity.x > 0
@@ -186,7 +191,6 @@ func _on_lightning_ability_end():
 		lightning_ball_instance.visible = false
 		if lightning_ball_instance.has_method("deactivate"):
 			lightning_ball_instance.deactivate()
-	start_timer(lightning_ability_cooldown, _on_lightning_cooldown_timeout)
 
 func _on_lightning_cooldown_timeout():
 	can_use_lightning = true
@@ -231,7 +235,7 @@ func _on_fireball_cooldown_timeout():
 func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	if god_mode:
 		return
-
+	player_hurt.play()
 	current_health -= amount
 	var knockback := (global_position - source_position).normalized() * 500.0
 	velocity = knockback
@@ -246,6 +250,8 @@ func die() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	MusicManager.play_game_over()
+
 	set_process(false)
 	set_process_input(false)
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=30 format=3 uid="uid://c6pn6cdgrkp33"]
+[gd_scene format=3 uid="uid://c6pn6cdgrkp33"]
 
 [ext_resource type="Texture2D" uid="uid://ct22r1fdsuev7" path="res://Assets/pngegg.png" id="1_4i10l"]
-[ext_resource type="Script" path="res://Scripts/lightning_ball.gd" id="1_jpx7n"]
+[ext_resource type="Script" uid="uid://dr2o5v6slrot3" path="res://Scripts/lightning_ball.gd" id="1_jpx7n"]
+[ext_resource type="AudioStream" uid="uid://c6n7pcxxsp13v" path="res://Audio/sfx/lightning_ability.mp3" id="3_cyd58"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i2l6w"]
 atlas = ExtResource("1_4i10l")
@@ -189,15 +190,18 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_steq6"]
 radius = 272.222
 
-[node name="LightningBall" type="Area2D"]
+[node name="LightningBall" type="Area2D" unique_id=2001318396]
 z_index = -1
 script = ExtResource("1_jpx7n")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=692683435]
 scale = Vector2(3.5, 3.5)
 sprite_frames = SubResource("SpriteFrames_ie7ns")
 animation = &"charge"
 speed_scale = 0.7
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=309791117]
 shape = SubResource("CircleShape2D_steq6")
+
+[node name="ShootSound" type="AudioStreamPlayer" parent="." unique_id=359946854]
+stream = ExtResource("3_cyd58")

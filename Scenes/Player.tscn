@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://m1r7afhf8aax"]
+[gd_scene format=3 uid="uid://m1r7afhf8aax"]
 
 [ext_resource type="Texture2D" uid="uid://b5pgosn7hwav5" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00000.png" id="17_lrj6g"]
 [ext_resource type="Texture2D" uid="uid://cqjso8te4fshr" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00001.png" id="18_ytcev"]
@@ -33,7 +33,7 @@
 [ext_resource type="Texture2D" uid="uid://cfuw1weyuvh3g" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00014.png" id="63_v0eag"]
 [ext_resource type="Texture2D" uid="uid://b1ckemm1h7v8h" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00015.png" id="64_ra05l"]
 [ext_resource type="Texture2D" uid="uid://bt572aocsibw3" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00016.png" id="65_j4gsl"]
-[ext_resource type="Script" path="res://Scripts/menu_button.gd" id="66_7q0l3"]
+[ext_resource type="Script" uid="uid://djg6n644vf3gm" path="res://Scripts/menu_button.gd" id="66_7q0l3"]
 [ext_resource type="Texture2D" uid="uid://cltd58gw3mxso" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00017.png" id="66_ufdgw"]
 [ext_resource type="PackedScene" uid="uid://onxq0iu455xi" path="res://Scenes/player_lives.tscn" id="67_jytj4"]
 [ext_resource type="Texture2D" uid="uid://wav5y1k0uqpw" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00018.png" id="67_qvi77"]
@@ -41,7 +41,9 @@
 [ext_resource type="PackedScene" uid="uid://bc78hkoqfxfy8" path="res://Scenes/tutorial_popup_layer.tscn" id="68_au5ve"]
 [ext_resource type="Texture2D" uid="uid://c7qsglvvmdudi" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00000.png" id="69_jxgrh"]
 [ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="69_yr3al"]
+[ext_resource type="AudioStream" uid="uid://cjak0f75dvjdi" path="res://Audio/sfx/jump.mp3" id="70_ed4yo"]
 [ext_resource type="Texture2D" uid="uid://drfq31wgkhb5s" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00001.png" id="70_g4mod"]
+[ext_resource type="AudioStream" uid="uid://7famd7b5cj2q" path="res://Audio/sfx/player_hurt.mp3" id="71_fsa4a"]
 [ext_resource type="Texture2D" uid="uid://b7x18o17a5bsm" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00002.png" id="71_tih4q"]
 [ext_resource type="Texture2D" uid="uid://boeyl63vds0ll" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00003.png" id="72_2yy7l"]
 [ext_resource type="Texture2D" uid="uid://big3k20ahhovl" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00004.png" id="73_8gwyq"]
@@ -68,7 +70,7 @@
 [ext_resource type="Texture2D" uid="uid://bvvsj31lsm8kh" path="res://Assets/BlueWizard/2BlueWizardWalk/Chara_BlueWalk00017.png" id="94_j4uej"]
 [ext_resource type="Texture2D" uid="uid://da2q3ksr67ep4" path="res://Assets/BlueWizard/2BlueWizardWalk/Chara_BlueWalk00018.png" id="95_rlm6n"]
 [ext_resource type="Texture2D" uid="uid://btt53yvptslat" path="res://Assets/BlueWizard/2BlueWizardWalk/Chara_BlueWalk00019.png" id="96_r82h1"]
-[ext_resource type="Script" path="res://Scripts/player.gd" id="97_7jnis"]
+[ext_resource type="Script" uid="uid://bcpi7jhd7dwh3" path="res://Scripts/player.gd" id="97_7jnis"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_xq6lo"]
 animations = [{
@@ -354,7 +356,7 @@ animations = [{
 radius = 76.0
 height = 428.0
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=268462001]
 z_index = 2
 script = ExtResource("97_7jnis")
 shoot_anim_duration = 0.5
@@ -362,26 +364,26 @@ lightning_ball_scene = ExtResource("69_yr3al")
 lightning_ability_duration = 2.0
 lightning_ability_cooldown = 3.0
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2121547936]
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_xq6lo")
 animation = &"walk"
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1664795997]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=776816597]
 position = Vector2(0, 25)
 shape = SubResource("CapsuleShape2D_ll8vc")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
 position = Vector2(0, -66)
 zoom = Vector2(0.45, 0.45)
 limit_smoothed = true
 
-[node name="FirePoint" type="Marker2D" parent="."]
+[node name="FirePoint" type="Marker2D" parent="." unique_id=1372658391]
 position = Vector2(-93, 61)
 
-[node name="MenuButton" type="MenuButton" parent="."]
+[node name="MenuButton" type="MenuButton" parent="." unique_id=990444789]
 offset_left = -1265.0
 offset_top = -769.0
 offset_right = -1202.0
@@ -391,6 +393,7 @@ text = "MENU"
 expand_icon = true
 item_count = 5
 popup/item_0/text = "PAUSE"
+popup/item_0/id = 0
 popup/item_1/text = "RESUME"
 popup/item_1/id = 4
 popup/item_2/text = "RETRY"
@@ -401,7 +404,7 @@ popup/item_4/text = "QUIT"
 popup/item_4/id = 2
 script = ExtResource("66_7q0l3")
 
-[node name="player_lives" parent="." instance=ExtResource("67_jytj4")]
+[node name="player_lives" parent="." unique_id=830781883 instance=ExtResource("67_jytj4")]
 offset_left = -120.0
 offset_top = -754.0
 offset_right = -120.0
@@ -409,4 +412,13 @@ offset_bottom = -754.0
 scale = Vector2(2.08654, 2.05848)
 pivot_offset = Vector2(922.162, 35.6159)
 
-[node name="TutorialPopupLayer" parent="." instance=ExtResource("68_au5ve")]
+[node name="TutorialPopupLayer" parent="." unique_id=2077236878 instance=ExtResource("68_au5ve")]
+
+[node name="JumpSound" type="AudioStreamPlayer" parent="." unique_id=2086277931]
+stream = ExtResource("70_ed4yo")
+
+[node name="DoubleJumpSound" type="AudioStreamPlayer" parent="." unique_id=731945357]
+stream = ExtResource("70_ed4yo")
+
+[node name="PlayerHurt" type="AudioStreamPlayer" parent="." unique_id=1108856263]
+stream = ExtResource("71_fsa4a")

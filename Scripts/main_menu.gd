@@ -3,7 +3,7 @@ extends Control
 @onready var play_button: Button = $Panel/Play
 @onready var credits_button: Button = $Panel/Credits
 @onready var quit_button: Button = $Panel/Quit
-
+@onready var click_sound: AudioStreamPlayer = $clicksound
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
@@ -16,6 +16,8 @@ func _ready():
 	quit_button.pressed.connect(_on_quit_pressed)
 
 func _on_play_pressed():
+	click_sound.play()
+	await click_sound.finished
 	get_tree().paused = false
 	
 	if SceneManager.scenes.has("level_1"):
@@ -24,8 +26,12 @@ func _on_play_pressed():
 		push_error("Scene 'level_1' not found in SceneManager!")
 		
 func _on_credits_pressed():
+	click_sound.play()
+	await click_sound.finished
 	get_tree().change_scene_to_packed(SceneManager.scenes["credits"])
 
 func _on_quit_pressed():
+	click_sound.play()
+	await click_sound.finished
 	get_tree().paused = false
 	get_tree().quit()

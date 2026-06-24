@@ -7,10 +7,12 @@ extends Area2D
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var shape: CollisionShape2D = $CollisionShape2D
 
+@onready var shoot_sound: AudioStreamPlayer = $ShootSound
+
 func _ready():
 	# Play the animation once
 	sprite.play("charge")
-
+	shoot_sound.play()
 	# Start with scale 0 and tween to full scale
 	shape.scale = Vector2.ZERO
 	var tween := get_tree().create_tween()
