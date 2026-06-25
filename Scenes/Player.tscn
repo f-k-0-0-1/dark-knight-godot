@@ -375,19 +375,13 @@ animation = &"walk"
 position = Vector2(0, 25)
 shape = SubResource("CapsuleShape2D_ll8vc")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
-position = Vector2(0, -66)
-zoom = Vector2(0.45, 0.45)
-limit_smoothed = true
+[node name="HOD" type="CanvasLayer" parent="." unique_id=2123092284]
 
-[node name="FirePoint" type="Marker2D" parent="." unique_id=1372658391]
-position = Vector2(-93, 61)
-
-[node name="MenuButton" type="MenuButton" parent="." unique_id=990444789]
-offset_left = -1265.0
-offset_top = -769.0
-offset_right = -1202.0
-offset_bottom = -730.0
+[node name="MenuButton" type="MenuButton" parent="HOD" unique_id=990444789]
+offset_left = 8.0
+offset_top = 10.0
+offset_right = 65.0
+offset_bottom = 41.0
 scale = Vector2(2.54141, 2.29357)
 text = "MENU"
 expand_icon = true
@@ -404,13 +398,25 @@ popup/item_4/text = "QUIT"
 popup/item_4/id = 2
 script = ExtResource("66_7q0l3")
 
-[node name="player_lives" parent="." unique_id=830781883 instance=ExtResource("67_jytj4")]
-offset_left = -120.0
-offset_top = -754.0
-offset_right = -120.0
-offset_bottom = -754.0
+[node name="player_lives" parent="HOD" unique_id=830781883 instance=ExtResource("67_jytj4")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 704.99976
+offset_top = 48.999996
+offset_right = 836.3013
+offset_bottom = 82.37352
+grow_horizontal = 0
 scale = Vector2(2.08654, 2.05848)
 pivot_offset = Vector2(922.162, 35.6159)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
+position = Vector2(0, -66)
+zoom = Vector2(0.45, 0.45)
+limit_smoothed = true
+
+[node name="FirePoint" type="Marker2D" parent="." unique_id=1372658391]
+position = Vector2(-93, 61)
 
 [node name="TutorialPopupLayer" parent="." unique_id=2077236878 instance=ExtResource("68_au5ve")]
 
