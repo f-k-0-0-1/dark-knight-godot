@@ -8,8 +8,10 @@ func _ready():
 	main_menu_button.pressed.connect(go_to_main_menu)
 
 func retry_level():
+	MusicManager.play_button_click()
 	get_tree().change_scene_to_packed(SceneManager.scenes["level_1"])
 
 func go_to_main_menu():
+	MusicManager.play_button_click()
 	get_tree().change_scene_to_packed(SceneManager.scenes["main_menu"])
 	
