@@ -1,0 +1,140 @@
+[gd_scene format=3 uid="uid://dwsyfa53jfo8o"]
+
+[ext_resource type="Script" uid="uid://vrqa7hqb21jt" path="res://level_select_.gd" id="1_aayjs"]
+[ext_resource type="Texture2D" uid="uid://bnyw6dkjs8iyh" path="res://Assets/level select/level selection screen.png" id="1_s4rr5"]
+[ext_resource type="Texture2D" uid="uid://cfecy3r6bqhx" path="res://Assets/level select/level block/level_block (1).png" id="2_slfj2"]
+[ext_resource type="Texture2D" uid="uid://bq52fvc01iflp" path="res://Assets/level select/level block/level_block__glow (1).png" id="3_aayjs"]
+[ext_resource type="Texture2D" uid="uid://c0b161kutkib8" path="res://Assets/level select/level block/level_block_disabled (1).png" id="4_8vr8x"]
+
+[node name="LevelSelect" type="Control" unique_id=1070005249]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1536.0
+offset_bottom = 1016.0
+script = ExtResource("1_aayjs")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1411258832]
+layout_mode = 0
+offset_right = 1918.3333
+offset_bottom = 1256.6666
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_s4rr5")
+
+[node name="BackButton" type="Button" parent="." unique_id=1472698818]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 26.0
+offset_top = 24.0
+offset_right = 159.0
+offset_bottom = 70.0
+
+[node name="GridContainer" type="GridContainer" parent="." unique_id=773965464]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 222.0
+offset_right = 1899.0
+offset_bottom = 1092.0
+scale = Vector2(0.5, 0.5)
+theme_override_constants/h_separation = 80
+theme_override_constants/v_separation = 40
+columns = 5
+
+[node name="level1" type="TextureButton" parent="GridContainer" unique_id=1702459463]
+layout_mode = 2
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="Label" type="Label" parent="GridContainer/level1" unique_id=1593315820]
+layout_mode = 0
+offset_left = 86.0
+offset_top = 106.0
+offset_right = 107.6
+offset_bottom = 136.79999
+scale = Vector2(5, 5)
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="level2" type="TextureButton" parent="GridContainer" unique_id=1024863111]
+layout_mode = 2
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="Label2" type="Label" parent="GridContainer/level2" unique_id=1671934090]
+layout_mode = 0
+offset_left = 93.99994
+offset_top = 106.0
+offset_right = 115.599945
+offset_bottom = 136.79999
+scale = Vector2(5, 5)
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="level3" type="TextureButton" parent="GridContainer" unique_id=2080377568]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="level4" type="TextureButton" parent="GridContainer" unique_id=735473104]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="level5" type="TextureButton" parent="GridContainer" unique_id=1263412999]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="level6" type="TextureButton" parent="GridContainer" unique_id=539784834]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="level7" type="TextureButton" parent="GridContainer" unique_id=1607586305]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="level8" type="TextureButton" parent="GridContainer" unique_id=69652680]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="level9" type="TextureButton" parent="GridContainer" unique_id=86681714]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")
+
+[node name="level10" type="TextureButton" parent="GridContainer" unique_id=76813865]
+layout_mode = 2
+disabled = true
+texture_normal = ExtResource("2_slfj2")
+texture_pressed = ExtResource("3_aayjs")
+texture_hover = ExtResource("3_aayjs")
+texture_disabled = ExtResource("4_8vr8x")

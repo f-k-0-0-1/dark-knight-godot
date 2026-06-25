@@ -20,10 +20,10 @@ func _on_play_pressed():
 	await click_sound.finished
 	get_tree().paused = false
 	
-	if SceneManager.scenes.has("level_1"):
-		get_tree().change_scene_to_packed(SceneManager.scenes["level_1"])
+	if SceneManager.scenes.has("level_select"):
+		get_tree().change_scene_to_packed(SceneManager.scenes["level_select"])
 	else:
-		push_error("Scene 'level_1' not found in SceneManager!")
+		push_error("Scene 'LevelSelect' not found in SceneManager!")
 		
 func _on_credits_pressed():
 	click_sound.play()

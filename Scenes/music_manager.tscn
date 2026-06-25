@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://hqqtcgotdtkg" path="res://Scripts/music_manager.gd" id="1_hsxb6"]
 [ext_resource type="AudioStream" uid="uid://b03qm7dhxnrw6" path="res://Audio/background_music.ogg" id="2_sdmu8"]
+[ext_resource type="AudioStream" uid="uid://82bgii5e6i3k" path="res://Audio/sfx/button_click.mp3" id="3_sdmu8"]
 
 [node name="MusicManager" type="Node2D" unique_id=1451343193]
 script = ExtResource("1_hsxb6")
@@ -13,3 +14,6 @@ autoplay = true
 parameters/looping = true
 
 [node name="GameOver" type="AudioStreamPlayer" parent="." unique_id=634415768]
+
+[node name="buttonclick" type="AudioStreamPlayer" parent="." unique_id=1286217437]
+stream = ExtResource("3_sdmu8")
