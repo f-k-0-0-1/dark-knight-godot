@@ -406,7 +406,7 @@ offset_top = 23.0
 offset_right = -37.0
 offset_bottom = 38.721478
 grow_horizontal = 0
-scale = Vector2(1, 0.986)
+scale = Vector2(1.3, 1.282)
 pivot_offset = Vector2(922.162, 35.6159)
 
 [node name="AbilityCooldownBar" type="ProgressBar" parent="HUD" unique_id=689634462]
