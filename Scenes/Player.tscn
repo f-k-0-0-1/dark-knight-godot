@@ -362,7 +362,6 @@ script = ExtResource("97_7jnis")
 shoot_anim_duration = 0.5
 lightning_ball_scene = ExtResource("69_yr3al")
 lightning_ability_duration = 2.0
-lightning_ability_cooldown = 3.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2121547936]
 scale = Vector2(1.5, 1.5)
@@ -422,3 +421,24 @@ stream = ExtResource("70_ed4yo")
 
 [node name="PlayerHurt" type="AudioStreamPlayer" parent="." unique_id=1108856263]
 stream = ExtResource("71_fsa4a")
+
+[node name="AbilityCooldownBar" type="ProgressBar" parent="." unique_id=689634462]
+offset_left = 184.0
+offset_top = -744.45
+offset_right = 232.69
+offset_bottom = -382.45
+rotation = 1.5707964
+max_value = 10.0
+fill_mode = 3
+show_percentage = false
+
+[node name="Label" type="Label" parent="AbilityCooldownBar" unique_id=876883637]
+texture_filter = 1
+layout_mode = 0
+offset_left = 0.45002362
+offset_top = 261.0
+offset_right = 84.45002
+offset_bottom = 284.0
+rotation = -1.5707964
+scale = Vector2(1.9, 1.9)
+text = "A B I L I T Y"

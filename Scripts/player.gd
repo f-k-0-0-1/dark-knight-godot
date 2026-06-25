@@ -6,13 +6,14 @@ signal health_changed(new_health: int, max_health: int)
 @export var sprint_multiplier: float = 5.0
 @export var jump_velocity: float = -1150.0
 @export var gravity: float = 2250.0
-
+var cooldown_remaining: float = 0.0
 @export var fireball_cooldown: float = 0.5
 @export var shoot_anim_duration: float = 0.2
 @export var lightning_ball_scene: PackedScene
 @export var lightning_ability_duration: float = 3.0
-@export var lightning_ability_cooldown: float = 5.0
+@export var lightning_ability_cooldown: float = 10.0
 @export var max_health: int = 100
+@onready var ability_cooldown_bar: ProgressBar = $AbilityCooldownBar
 
 var is_dead: bool = false # Explicitly declared with type 'bool'
 var fireball_scene: PackedScene
@@ -70,6 +71,14 @@ func _physics_process(delta):
 	handle_landing_reset()
 	handle_animation()
 	update_lightning_ball_position()
+	
+	if cooldown_remaining > 0:
+		cooldown_remaining -= delta
+		ability_cooldown_bar.value = lightning_ability_cooldown - cooldown_remaining
+
+	if cooldown_remaining <= 0:
+		cooldown_remaining = 0
+		ability_cooldown_bar.value = lightning_ability_cooldown
 
 @onready var jump_sound: AudioStreamPlayer = $JumpSound
 @onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound
@@ -147,7 +156,11 @@ func activate_lightning_ball():
 
 	can_use_lightning = false
 	is_lightning_active = true
-
+	
+	cooldown_remaining = lightning_ability_cooldown
+	ability_cooldown_bar.max_value = lightning_ability_cooldown
+	ability_cooldown_bar.value = 0
+	
 	var ball = lightning_ball_scene.instantiate() as Area2D
 	ball.scale = Vector2(1.5, 1.5)
 	ball.global_position = global_position + Vector2(50 if facing_right else -50, 0)
