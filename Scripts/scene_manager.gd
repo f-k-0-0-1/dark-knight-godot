@@ -3,7 +3,7 @@ extends Node
 # Dic of scenes
 var scene_paths: Dictionary = {
 	"main_menu": "res://Scenes/main_menu.tscn",
-	"level_select": "res://Scenes/LevelSelect .tscn",
+	"level_select": "res://Scenes/LevelSelect.tscn",
 	"level_1": "res://Scenes/level_1.tscn",
 	"level_2": "res://Scenes/level_2.tscn",
 	"retry_menu": "res://Scenes/retry.tscn",
