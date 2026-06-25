@@ -13,7 +13,7 @@ var cooldown_remaining: float = 0.0
 @export var lightning_ability_duration: float = 3.0
 @export var lightning_ability_cooldown: float = 10.0
 @export var max_health: int = 100
-@onready var ability_cooldown_bar: ProgressBar = $HOD/AbilityCooldownBar
+@onready var ability_cooldown_bar: ProgressBar = $HUD/AbilityCooldownBar
 
 var is_dead: bool = false # Explicitly declared with type 'bool'
 var fireball_scene: PackedScene

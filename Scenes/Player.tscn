@@ -374,9 +374,9 @@ animation = &"walk"
 position = Vector2(0, 25)
 shape = SubResource("CapsuleShape2D_ll8vc")
 
-[node name="HOD" type="CanvasLayer" parent="." unique_id=2123092284]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=2123092284]
 
-[node name="MenuButton" type="MenuButton" parent="HOD" unique_id=990444789]
+[node name="MenuButton" type="MenuButton" parent="HUD" unique_id=990444789]
 offset_left = 8.0
 offset_top = 10.0
 offset_right = 65.0
@@ -397,19 +397,19 @@ popup/item_4/text = "QUIT"
 popup/item_4/id = 2
 script = ExtResource("66_7q0l3")
 
-[node name="player_lives" parent="HOD" unique_id=830781883 instance=ExtResource("67_jytj4")]
+[node name="player_lives" parent="HUD" unique_id=830781883 instance=ExtResource("67_jytj4")]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -104.0
-offset_top = 16.0
+offset_top = 23.0
 offset_right = -37.0
-offset_bottom = 31.721478
+offset_bottom = 38.721478
 grow_horizontal = 0
 scale = Vector2(1, 0.986)
 pivot_offset = Vector2(922.162, 35.6159)
 
-[node name="AbilityCooldownBar" type="ProgressBar" parent="HOD" unique_id=689634462]
+[node name="AbilityCooldownBar" type="ProgressBar" parent="HUD" unique_id=689634462]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -424,7 +424,7 @@ max_value = 10.0
 fill_mode = 3
 show_percentage = false
 
-[node name="Label" type="Label" parent="HOD/AbilityCooldownBar" unique_id=876883637]
+[node name="Label" type="Label" parent="HUD/AbilityCooldownBar" unique_id=876883637]
 texture_filter = 1
 layout_mode = 0
 offset_left = 0.45002362
