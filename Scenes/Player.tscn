@@ -409,6 +409,31 @@ grow_horizontal = 0
 scale = Vector2(2.08654, 2.05848)
 pivot_offset = Vector2(922.162, 35.6159)
 
+[node name="AbilityCooldownBar" type="ProgressBar" parent="HOD" unique_id=689634462]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 150.0
+offset_top = 15.0
+offset_right = 198.68994
+offset_bottom = 377.0
+grow_horizontal = 2
+rotation = 1.5707964
+max_value = 10.0
+fill_mode = 3
+show_percentage = false
+
+[node name="Label" type="Label" parent="HOD/AbilityCooldownBar" unique_id=876883637]
+texture_filter = 1
+layout_mode = 0
+offset_left = 0.45002362
+offset_top = 261.0
+offset_right = 84.45002
+offset_bottom = 284.0
+rotation = -1.5707964
+scale = Vector2(1.9, 1.9)
+text = "A B I L I T Y"
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
 position = Vector2(0, -66)
 zoom = Vector2(0.45, 0.45)
@@ -427,24 +452,3 @@ stream = ExtResource("70_ed4yo")
 
 [node name="PlayerHurt" type="AudioStreamPlayer" parent="." unique_id=1108856263]
 stream = ExtResource("71_fsa4a")
-
-[node name="AbilityCooldownBar" type="ProgressBar" parent="." unique_id=689634462]
-offset_left = 184.0
-offset_top = -744.45
-offset_right = 232.69
-offset_bottom = -382.45
-rotation = 1.5707964
-max_value = 10.0
-fill_mode = 3
-show_percentage = false
-
-[node name="Label" type="Label" parent="AbilityCooldownBar" unique_id=876883637]
-texture_filter = 1
-layout_mode = 0
-offset_left = 0.45002362
-offset_top = 261.0
-offset_right = 84.45002
-offset_bottom = 284.0
-rotation = -1.5707964
-scale = Vector2(1.9, 1.9)
-text = "A B I L I T Y"
