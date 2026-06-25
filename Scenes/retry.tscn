@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://m7xwtgq2p14x"]
 
 [ext_resource type="Script" uid="uid://cpp5t8hmkw6nn" path="res://Scripts/retry.gd" id="1_u7e5p"]
+[ext_resource type="Texture2D" uid="uid://dnx8porh4g1jo" path="res://Assets/Backgrounds/ menu1.png" id="2_7n2l4"]
 
 [node name="Control" type="Control" unique_id=1420087218]
 layout_mode = 3
@@ -11,19 +12,26 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_u7e5p")
 
-[node name="Panel" type="Panel" parent="." unique_id=1010565131]
+[node name="Panel" type="TextureRect" parent="." unique_id=305236003]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.9999981
+offset_right = 566.41785
+offset_bottom = 319.16412
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(0.67, 0.67)
+texture = ExtResource("2_7n2l4")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=540516021]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -2.985077
+offset_right = -2.9851074
 grow_horizontal = 2
 grow_vertical = 2
 

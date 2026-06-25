@@ -195,6 +195,7 @@
 [ext_resource type="Script" uid="uid://cleioeykopog6" path="res://Scripts/plant_6.gd" id="193_y3l8r"]
 [ext_resource type="PackedScene" uid="uid://bospax0kwjtgf" path="res://Scenes/slime.tscn" id="194_fv16h"]
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="195_0il0l"]
+[ext_resource type="PackedScene" uid="uid://dwt2f5jdn61p3" path="res://Scenes/portal.tscn" id="196_0il0l"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("2_cggpd")
@@ -1253,3 +1254,33 @@ position = Vector2(26655, -450)
 
 [node name="flying demon4" parent="Enemies" unique_id=2089111490 groups=["enemies"] instance=ExtResource("195_0il0l")]
 position = Vector2(34942, -335)
+
+[node name="PortalA1" parent="." unique_id=1985962026 instance=ExtResource("196_0il0l")]
+position = Vector2(10411, -172)
+scale = Vector2(14, 14)
+target_portal = NodePath("../PortalA2")
+
+[node name="PortalA2" parent="." unique_id=173771279 instance=ExtResource("196_0il0l")]
+position = Vector2(12676.001, -172)
+scale = Vector2(14, 14)
+target_portal = NodePath("../PortalA1")
+
+[node name="PortalB1" parent="." unique_id=649818017 instance=ExtResource("196_0il0l")]
+position = Vector2(16583, -172)
+scale = Vector2(14, 14)
+target_portal = NodePath("../PortalB2")
+
+[node name="PortalB2" parent="." unique_id=1983110745 instance=ExtResource("196_0il0l")]
+position = Vector2(18720, -172)
+scale = Vector2(14, 14)
+target_portal = NodePath("../PortalB1")
+
+[node name="PortalC1" parent="." unique_id=547441923 instance=ExtResource("196_0il0l")]
+position = Vector2(22758.002, -172)
+scale = Vector2(14, 14)
+target_portal = NodePath("../PortalC2")
+
+[node name="PortalC2" parent="." unique_id=632237017 instance=ExtResource("196_0il0l")]
+position = Vector2(24829, -172)
+scale = Vector2(14, 14)
+target_portal = NodePath("../PortalC1")
