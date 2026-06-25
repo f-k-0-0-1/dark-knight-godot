@@ -70,8 +70,11 @@ This mode can be useful for testing gameplay mechanics and exploring the game wo
 
 ### Main Menu
 
-<img width="1154" height="646" alt="image" src="https://github.com/user-attachments/assets/a9c7f2e8-e6b4-4485-9546-71e041277d2c" />
+<img width="594" height="333" alt="image" src="https://github.com/user-attachments/assets/33feb9c2-8981-4d4e-ad55-cd0961911d3e" />
 
+### Level Selector
+
+<img width="539" height="305" alt="image" src="https://github.com/user-attachments/assets/89a38dac-2daa-4ec1-a37c-2eb99a992e02" />
 
 ### Gameplay
 
