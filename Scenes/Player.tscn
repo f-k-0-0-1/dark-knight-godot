@@ -366,7 +366,7 @@ lightning_ability_duration = 2.0
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2121547936]
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_xq6lo")
-animation = &"walk"
+animation = &"dash"
 
 [node name="Timer" type="Timer" parent="." unique_id=1664795997]
 
