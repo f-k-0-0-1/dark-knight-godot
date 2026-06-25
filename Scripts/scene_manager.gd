@@ -1,33 +1,55 @@
 extends Node
 
-# Dictionary of loaded scenes
+# Dic of scenes
+var scene_paths: Dictionary = {
+	"main_menu": "res://Scenes/main_menu.tscn",
+	"level_select": "res://Scenes/LevelSelect .tscn",
+	"level_1": "res://Scenes/level_1.tscn",
+	"level_2": "res://Scenes/level_2.tscn",
+	"retry_menu": "res://Scenes/retry.tscn",
+	"fireball_scene": "res://Scenes/fireball.tscn",
+	"credits": "res://Scenes/credits.tscn"
+}
+# Loaded Scenes Dic
 var scenes: Dictionary = {}
 
-func _ready():
-	# Use load() instead of preload() for safety
-	_add_scene("main_menu", "res://Scenes/main_menu.tscn")
-	_add_scene("level_select", "res://Scenes/LevelSelect .tscn")
-	_add_scene("level_1", "res://Scenes/level_1.tscn")
-	_add_scene("level_2", "res://Scenes/level_2.tscn")
-	_add_scene("retry_menu", "res://Scenes/retry.tscn")
-	_add_scene("fireball_scene", "res://Scenes/fireball.tscn")
-	_add_scene("credits", "res://Scenes/credits.tscn")
+# Signal to PBar
+signal preload_progress_updated(per: float)
+signal all_scenes_ready()
 
-# Helper to add scenes safely
-func _add_scene(name: String, path: String) -> void:
-	if ResourceLoader.exists(path):
-		scenes[name] = load(path)
-	else:
-		push_error("Scene not found: %s" % path)
+func _ready() -> void:
+	pass
 
-# Accessor
+func start_global_preload() -> void:
+	var total_scenes: float = scene_paths.size()
+	var current_index: float = 0.0
+	
+	for scene_key in scene_paths:
+		var path = scene_paths[scene_key]
+		
+		if ResourceLoader.exists(path):
+			scenes[scene_key] = load(path)
+		else:
+			push_error("Scene not found: %s" % path)
+			
+		current_index += 1.0
+		
+		# Calculate progress
+		var total_per = (current_index / total_scenes) * 100.0
+		preload_progress_updated.emit(total_per)
+		
+		# UPdate frame 
+		await get_tree().process_frame
+
+	# Everything is loaded
+	all_scenes_ready.emit()
+
 func get_scene(name: String) -> PackedScene:
 	if scenes.has(name):
 		return scenes[name]
 	push_error("Scene '%s' not registered in SceneManager!" % name)
 	return null
 
-# Quick scene change
 func change_scene(name: String) -> void:
 	var scene = get_scene(name)
 	if scene:

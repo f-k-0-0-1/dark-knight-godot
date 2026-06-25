@@ -16,8 +16,10 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="New Game Project"
 config/tags=PackedStringArray("dark_knight")
-run/main_scene="res://Scenes/main_menu.tscn"
+run/main_scene="uid://bdngpya03qeng"
 config/features=PackedStringArray("4.6", "Forward Plus")
+boot_splash/show_image=false
+boot_splash/use_filter=false
 
 [autoload]
 

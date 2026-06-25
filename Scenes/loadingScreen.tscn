@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://bdngpya03qeng"]
+
+[ext_resource type="Script" uid="uid://b4d2jrbyppsed" path="res://Scripts/loadingScreen.gd" id="1_34yr4"]
+[ext_resource type="Texture2D" uid="uid://bsmol7lc8h5lj" path="res://Assets/Backgrounds/PBar/under.png" id="1_p6xbs"]
+[ext_resource type="Texture2D" uid="uid://dnx8porh4g1jo" path="res://Assets/Backgrounds/ menu1.png" id="1_pwymc"]
+[ext_resource type="Texture2D" uid="uid://x5f51itdjli5" path="res://Assets/Backgrounds/PBar/cover.png" id="2_pwymc"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_34yr4"]
+texture = ExtResource("1_pwymc")
+
+[node name="LoadingScreen" type="Control" unique_id=618144690]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_34yr4")
+
+[node name="Bg" type="Panel" parent="." unique_id=1862426269]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_34yr4")
+
+[node name="PBar" type="TextureProgressBar" parent="." unique_id=70667725]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.177
+anchor_top = 0.77800006
+anchor_right = 0.781
+anchor_bottom = 0.94600004
+offset_left = 0.09599304
+offset_top = -0.14404297
+offset_right = 17.287964
+offset_bottom = -0.0079956055
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 60.0
+value = 10.0
+texture_under = ExtResource("1_p6xbs")
+texture_progress = ExtResource("2_pwymc")
