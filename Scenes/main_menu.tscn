@@ -3,9 +3,39 @@
 [ext_resource type="Script" uid="uid://bbk80pl2euheh" path="res://Scripts/main_menu.gd" id="1_0v6oq"]
 [ext_resource type="Texture2D" uid="uid://dnx8porh4g1jo" path="res://Assets/Backgrounds/ menu1.png" id="2_1ehe0"]
 [ext_resource type="AudioStream" uid="uid://82bgii5e6i3k" path="res://Audio/sfx/button_click.mp3" id="3_1ehe0"]
+[ext_resource type="Texture2D" uid="uid://bimda18cxwk18" path="res://Assets/Backgrounds/Buttons/sound_Button2.png" id="3_n45e2"]
+[ext_resource type="Texture2D" uid="uid://da2qhcdm4ww6p" path="res://Assets/Backgrounds/Buttons/sound_Button1.png" id="4_opfnp"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ce3w2"]
 texture = ExtResource("2_1ehe0")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n45e2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_opfnp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cp0ys"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yhxw7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_trj04"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_16hvj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vr1f0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t1dhk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5egv6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vtepg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8dnnj"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yhxw7"]
+texture = ExtResource("3_n45e2")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_trj04"]
+texture = ExtResource("4_opfnp")
 
 [node name="MainMenu" type="Control" unique_id=1618176307]
 layout_mode = 3
@@ -101,5 +131,60 @@ text = "    CONTROLS:
 fit_content = true
 vertical_alignment = 2
 
+[node name="Sound" type="Button" parent="Panel" unique_id=2037059205]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -170.0
+offset_top = 15.0
+offset_right = -48.236816
+offset_bottom = 135.0
+grow_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_n45e2")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_opfnp")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_cp0ys")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_yhxw7")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_trj04")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_16hvj")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_vr1f0")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_t1dhk")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_5egv6")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_vtepg")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8dnnj")
+action_mode = 0
+metadata/_edit_group_ = true
+
+[node name="Off" type="Panel" parent="Panel/Sound" unique_id=1184176815]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = -7.0
+offset_right = 5.2368164
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_yhxw7")
+
+[node name="On" type="Panel" parent="Panel/Sound" unique_id=731941676]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -2.0
+offset_right = -7.7631836
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_trj04")
+
 [node name="clicksound" type="AudioStreamPlayer" parent="." unique_id=49672240]
 stream = ExtResource("3_1ehe0")
+
+[connection signal="pressed" from="Panel/Sound" to="." method="_on_sound_pressed"]
