@@ -401,12 +401,12 @@ script = ExtResource("66_7q0l3")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -104.0
-offset_top = 16.0
-offset_right = -37.0
-offset_bottom = 31.721478
+offset_left = 159.0
+offset_top = 21.0
+offset_right = 226.0
+offset_bottom = 36.721478
 grow_horizontal = 0
-scale = Vector2(1, 0.986)
+scale = Vector2(1.3, 1.282)
 pivot_offset = Vector2(922.162, 35.6159)
 
 [node name="AbilityCooldownBar" type="ProgressBar" parent="HOD" unique_id=689634462]
