@@ -15,21 +15,33 @@ offset_bottom = 88.05621
 scale = Vector2(0.376291, 0.352048)
 
 [node name="Heart1" type="TextureRect" parent="HeartsContainer" unique_id=603006264]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 texture = ExtResource("2_tst0e")
-expand_mode = 2
+expand_mode = 1
 
 [node name="Heart2" type="TextureRect" parent="HeartsContainer" unique_id=1737478397]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 texture = ExtResource("2_tst0e")
-expand_mode = 2
+expand_mode = 1
 
 [node name="Heart3" type="TextureRect" parent="HeartsContainer" unique_id=2016017007]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 texture = ExtResource("2_tst0e")
-expand_mode = 2
+expand_mode = 1
 
 [node name="Heart4" type="TextureRect" parent="HeartsContainer" unique_id=1982979313]
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 texture = ExtResource("2_tst0e")
-expand_mode = 2
+expand_mode = 1

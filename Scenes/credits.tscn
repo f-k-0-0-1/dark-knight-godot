@@ -1,38 +1,55 @@
-[gd_scene load_steps=3 format=3 uid="uid://bbkkkhscmydh7"]
+[gd_scene format=3 uid="uid://bbkkkhscmydh7"]
 
-[ext_resource type="Script" path="res://Scripts/credits.gd" id="1_ccxjc"]
+[ext_resource type="Script" uid="uid://b3mhmd8p2x0up" path="res://Scripts/credits.gd" id="1_ccxjc"]
+[ext_resource type="Texture2D" uid="uid://ou02f8dc0nfg" path="res://Assets/Backgrounds/credits.png" id="2_gryuy"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_6ptdq"]
-font_size = 30
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ccovl"]
+texture = ExtResource("2_gryuy")
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=865419032]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_ccxjc")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=2139047748]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ccovl")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="back" type="Button" parent="Panel" unique_id=1175881537]
 layout_mode = 1
-offset_right = 1152.0
-offset_bottom = 648.0
-alignment = 1
+anchors_preset = -1
+anchor_left = 0.43
+anchor_top = 0.822
+anchor_right = 0.568
+anchor_bottom = 1.0
+offset_left = 8.639984
+offset_top = -4.656006
+offset_right = 6.6640015
+offset_bottom = -71.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "BACK"
 
-[node name="My Game" type="Label" parent="Panel/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 2
-text = "CREDITS:"
-label_settings = SubResource("LabelSettings_6ptdq")
-horizontal_alignment = 1
-
-[node name="RichTextLabel2" type="RichTextLabel" parent="Panel/VBoxContainer"]
-layout_mode = 2
+[node name="bottomLeftText" type="RichTextLabel" parent="Panel" unique_id=565433621]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.42800003
+anchor_bottom = 1.0
+offset_top = -3.0
+offset_right = -0.056030273
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 6
 size_flags_stretch_ratio = 0.29
 text = "    CONTROLS:
@@ -45,29 +62,31 @@ text = "    CONTROLS:
     MENU: ESC
  "
 fit_content = true
+vertical_alignment = 2
 
-[node name="back" type="Button" parent="Panel"]
-layout_mode = 0
-offset_left = 496.0
-offset_top = 536.0
-offset_right = 656.0
-offset_bottom = 576.0
-text = "BACK"
-
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
-layout_mode = 2
-offset_left = 392.0
-offset_top = 136.0
-offset_right = 662.0
-offset_bottom = 312.0
-scale = Vector2(1.37683, 1.29289)
+[node name="centerText" type="RichTextLabel" parent="Panel" unique_id=67175413]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.26700002
+anchor_right = 1.0
+anchor_bottom = 0.749
+offset_top = -9.016006
+offset_bottom = 15.64798
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.29
-text = "Roll the tape, folks, it's credit time!
-             The Mastermind:
-FAIQ HASAN KHAN (Everything!)
-                Big Thanks To:
-     Caffeine & Moral Support!
-         And YOU, the Player!
-Game Over? Nah, just Level Up!"
+text = "🎬 Roll the tape, folks, it's credit time!
+THE MASTERMIND
+Faiq Hasan Khan – (Everything!)
+
+BIG THANKS TO
+☕ Caffeine
+
+🤝 Moral Support
+🎮 And YOU, the Player!
+Game Over? Nah, just Level Up! 🚀"
 fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
