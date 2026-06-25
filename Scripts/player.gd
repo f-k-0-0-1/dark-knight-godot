@@ -46,12 +46,6 @@ func _ready():
 	fireball_scene = SceneManager.scenes.get("fireball_scene")
 	health_changed.emit(current_health, max_health)
 
-	if lightning_ball_scene:
-		lightning_ball_instance = lightning_ball_scene.instantiate()
-		lightning_ball_instance.visible = false
-		lightning_ball_instance.scale = Vector2(2, 2)
-		add_child(lightning_ball_instance)
-
 func _input(event):
 	if is_dead:
 		return
