@@ -68,6 +68,8 @@ offset_right = 0.49591064
 offset_bottom = -9.472015
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0.7411765, 0.28235295, 1)
+theme_override_font_sizes/font_size = 22
 text = "CREDITS"
 
 [node name="Quit" type="Button" parent="Panel" unique_id=480589055]
@@ -83,6 +85,8 @@ offset_right = -0.35198975
 offset_bottom = -28.152039
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0.7411765, 0.28235295, 1)
+theme_override_font_sizes/font_size = 22
 text = "QUIT"
 
 [node name="Play" type="Button" parent="Panel" unique_id=1595970924]
@@ -98,6 +102,8 @@ offset_right = 0.49591064
 offset_bottom = 1.0239868
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0.7411765, 0.28235295, 1)
+theme_override_font_sizes/font_size = 22
 text = "PLAY"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1912360755]

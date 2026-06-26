@@ -12,7 +12,7 @@ var scene_paths: Dictionary = {
 }
 # Loaded Scenes Dic
 var scenes: Dictionary = {}
-
+var current_level: String = ""
 # Signal to PBar
 signal preload_progress_updated(per: float)
 signal all_scenes_ready()
@@ -52,5 +52,9 @@ func get_scene(name: String) -> PackedScene:
 
 func change_scene(name: String) -> void:
 	var scene = get_scene(name)
+
 	if scene:
+		if name.begins_with("level_") and name != "level_select":
+			current_level = name
+
 		get_tree().change_scene_to_packed(scene)

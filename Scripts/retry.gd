@@ -9,7 +9,7 @@ func _ready():
 
 func retry_level():
 	MusicManager.play_button_click()
-	get_tree().change_scene_to_packed(SceneManager.scenes["level_1"])
+	SceneManager.change_scene(SceneManager.current_level)
 
 func go_to_main_menu():
 	MusicManager.play_button_click()

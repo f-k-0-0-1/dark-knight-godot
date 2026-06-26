@@ -18,21 +18,30 @@ func _ready():
 
 func _on_menu_option_selected(id: int) -> void:
 	match id:
-		0: get_tree().paused = true
-		1: get_tree().paused = false
-		2:
+		0:
+			MusicManager.play_button_click()
+			await get_tree().create_timer(0.35, true).timeout
+			get_tree().paused = true
+		
+		1: 
+			MusicManager.play_button_click()
 			get_tree().paused = false
-			if SceneManager.scenes.has("level_1"):
-				get_tree().change_scene_to_packed(SceneManager.scenes["level_1"])
-			else:
-				push_error("Scene 'level_1' not found in SceneManager!")
+		
+		2:
+			MusicManager.play_button_click()
+			get_tree().paused = false
+			get_tree().reload_current_scene()
+			
 		3:
+			MusicManager.play_button_click()
 			get_tree().paused = false
 			if SceneManager.scenes.has("main_menu"):
 				get_tree().change_scene_to_packed(SceneManager.scenes["main_menu"])
 			else:
 				push_error("Scene 'main_menu' not found in SceneManager!")
+				
 		4:
+			MusicManager.play_button_click()
 			get_tree().paused = false
 			get_tree().quit()
 

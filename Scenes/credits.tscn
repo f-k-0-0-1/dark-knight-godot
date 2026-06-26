@@ -38,6 +38,8 @@ offset_right = 6.6640015
 offset_bottom = -71.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0.7411765, 0.28235295, 1)
+theme_override_font_sizes/font_size = 19
 text = "BACK"
 
 [node name="bottomLeftText" type="RichTextLabel" parent="Panel" unique_id=565433621]

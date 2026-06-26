@@ -7,7 +7,7 @@ visible = false
 script = ExtResource("1_k0fgo")
 
 [node name="PopupPanel" type="Panel" parent="." unique_id=1470988630]
-custom_minimum_size = Vector2(400, 250)
+custom_minimum_size = Vector2(350, 300)
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -33,11 +33,17 @@ horizontal_alignment = 1
 autowrap_mode = 1
 
 [node name="CloseButton" type="Button" parent="PopupPanel" unique_id=285529382]
-layout_mode = 0
-offset_left = 164.0
-offset_top = 207.0
-offset_right = 242.0
-offset_bottom = 238.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -39.0
+offset_top = -31.0
+offset_right = 39.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "Close"
 
 [node name="AutoCloseTimer" type="Timer" parent="PopupPanel" unique_id=1672071632]

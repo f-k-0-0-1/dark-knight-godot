@@ -24,5 +24,7 @@ func show_tutorial(text: String):
 	auto_close_timer.start()
 
 func _on_close_pressed():
+	MusicManager.play_button_click()
+	await get_tree().create_timer(0.35, true).timeout
 	get_tree().paused = false
 	visible = false
