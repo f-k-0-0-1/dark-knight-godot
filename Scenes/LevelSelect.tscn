@@ -9,8 +9,8 @@
 [node name="LevelSelect" type="Control" unique_id=1070005249]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1536.0
-offset_bottom = 1016.0
+offset_right = 1153.0
+offset_bottom = 649.0
 script = ExtResource("1_aayjs")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1411258832]
