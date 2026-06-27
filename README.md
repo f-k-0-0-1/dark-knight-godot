@@ -68,27 +68,16 @@ This mode can be useful for testing gameplay mechanics and exploring the game wo
 
 ## 📸 Screenshots
 
-### Main Menu
-
-<img width="594" height="333" alt="image" src="https://github.com/user-attachments/assets/33feb9c2-8981-4d4e-ad55-cd0961911d3e" />
-
-### Level Selector
-
-<img width="539" height="305" alt="image" src="https://github.com/user-attachments/assets/89a38dac-2daa-4ec1-a37c-2eb99a992e02" />
-
-### Gameplay
-
-<img width="1151" height="648" alt="image" src="https://github.com/user-attachments/assets/03b7f790-ae68-46f8-8206-653df599594c" />
+<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/1cc45f5c-2886-40f5-9806-977b5342e411" />
 
 
-### Flying Demon
-
-<img width="314" height="215" alt="image" src="https://github.com/user-attachments/assets/32bfbf6d-3210-4e44-9068-7a8d9adb3084" />
+<img width="1670" height="942" alt="image" src="https://github.com/user-attachments/assets/6d2b5e69-a521-4c50-a556-a32d64585a61" />
 
 
-### Slime Enemy
+<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/fc8f4ab4-3897-4161-822b-5c51fe56b29c" />
 
-<img width="358" height="199" alt="image" src="https://github.com/user-attachments/assets/889f3cf2-ea11-4092-8081-2153feb4d4a7" />
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/1f338594-43d9-443a-afa0-4246a231fce1" />
 
 
 
