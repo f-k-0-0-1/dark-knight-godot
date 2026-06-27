@@ -196,6 +196,7 @@
 [ext_resource type="PackedScene" uid="uid://bospax0kwjtgf" path="res://Scenes/slime.tscn" id="194_fv16h"]
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="195_0il0l"]
 [ext_resource type="PackedScene" uid="uid://dwt2f5jdn61p3" path="res://Scenes/portal.tscn" id="196_0il0l"]
+[ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="196_flyn8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("2_cggpd")
@@ -1247,13 +1248,17 @@ position = Vector2(3699, -2624)
 position = Vector2(14434, -28)
 
 [node name="flying demon3" parent="Enemies" unique_id=1445861778 groups=["enemies"] instance=ExtResource("195_0il0l")]
-position = Vector2(20806, -631)
+position = Vector2(29917, -1457)
 
 [node name="flying demon5" parent="Enemies" unique_id=1365417279 groups=["enemies"] instance=ExtResource("195_0il0l")]
-position = Vector2(26655, -450)
+position = Vector2(28617, -409)
 
 [node name="flying demon4" parent="Enemies" unique_id=2089111490 groups=["enemies"] instance=ExtResource("195_0il0l")]
 position = Vector2(34942, -335)
+
+[node name="shardsoul" parent="Enemies" unique_id=1610885443 groups=["enemies"] instance=ExtResource("196_flyn8")]
+position = Vector2(20661.002, -440.00006)
+scale = Vector2(10, 10)
 
 [node name="PortalA1" parent="." unique_id=1985962026 instance=ExtResource("196_0il0l")]
 position = Vector2(10411, -172)
