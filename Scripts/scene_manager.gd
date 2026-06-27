@@ -1,11 +1,15 @@
 extends Node
 
+# ALWAYS SET THE LAST LEVEL PLS !!! IMPORTANT
+var last_level : int = 3
+
 # Dic of scenes
 var scene_paths: Dictionary = {
 	"main_menu": "res://Scenes/main_menu.tscn",
 	"level_select": "res://Scenes/LevelSelect.tscn",
 	"level_1": "res://Scenes/level_1.tscn",
 	"level_2": "res://Scenes/level_2.tscn",
+	"level_3" : "res://Scenes/level_3.tscn",
 	"retry_menu": "res://Scenes/retry.tscn",
 	"fireball_scene": "res://Scenes/fireball.tscn",
 	"credits": "res://Scenes/credits.tscn"
@@ -13,6 +17,7 @@ var scene_paths: Dictionary = {
 # Loaded Scenes Dic
 var scenes: Dictionary = {}
 var current_level: String = ""
+
 # Signal to PBar
 signal preload_progress_updated(per: float)
 signal all_scenes_ready()

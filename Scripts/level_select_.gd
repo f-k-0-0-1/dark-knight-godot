@@ -21,9 +21,9 @@ func _ready():
 	# Playable levels
 	level1.pressed.connect(_on_level1_pressed)
 	level2.pressed.connect(_on_level2_pressed)
+	level3.pressed.connect(_on_level3_pressed)
 
 	# Locked levels
-	level3.disabled = true
 	level4.disabled = true
 	level5.disabled = true
 	level6.disabled = true
@@ -49,3 +49,9 @@ func _on_level2_pressed():
 	MusicManager.play_button_click()
 	await get_tree().create_timer(0.1).timeout
 	SceneManager.change_scene("level_2")
+
+func _on_level3_pressed():
+	MusicManager.play_button_click()
+	await get_tree().create_timer(0.1).timeout
+	SceneManager.change_scene("level_3")
+	

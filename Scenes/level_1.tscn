@@ -7,6 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://bospax0kwjtgf" path="res://Scenes/slime.tscn" id="5_1jukv"]
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="6_61niw"]
 [ext_resource type="Script" uid="uid://cvrv3ki1slnap" path="res://Scripts/scene_manager.gd" id="6_q2r7y"]
+[ext_resource type="Script" uid="uid://cy3dxcnha8ots" path="res://Scripts/flag.gd" id="8_wrinw"]
+[ext_resource type="Texture2D" uid="uid://cw7jyn5fqcayr" path="res://Assets/Objects/flag.png" id="8_xrdnt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wrinw"]
+size = Vector2(224.9414, 244.23077)
 
 [node name="Level 1" type="Node2D" unique_id=1953832643]
 script = ExtResource("1_64e2p")
@@ -14,7 +19,7 @@ script = ExtResource("1_64e2p")
 [node name="TileMap" parent="." unique_id=1304473903 instance=ExtResource("1_2ynj1")]
 
 [node name="Player" parent="." unique_id=2050493685 groups=["player"] instance=ExtResource("2_vnpwm")]
-position = Vector2(-2073, -159)
+position = Vector2(-2142, -179)
 
 [node name="Plants" parent="." unique_id=1871043436 instance=ExtResource("4_diisf")]
 position = Vector2(-1057, -1)
@@ -38,3 +43,21 @@ position = Vector2(2764, -335)
 
 [node name="SceneManager" type="Node" parent="." unique_id=665663732]
 script = ExtResource("6_q2r7y")
+
+[node name="Flag" type="Area2D" parent="." unique_id=1933586455]
+position = Vector2(31948, -165)
+scale = Vector2(1.56, 1.56)
+script = ExtResource("8_wrinw")
+
+[node name="Shape" type="CollisionShape2D" parent="Flag" unique_id=1750221823]
+z_index = 1
+position = Vector2(26.63086, 27.243584)
+shape = SubResource("RectangleShape2D_wrinw")
+
+[node name="Flag2" type="Sprite2D" parent="Flag" unique_id=632433128]
+modulate = Color(0.8441274, 1.2112623, 1.2112623, 1)
+position = Vector2(-1, 1.0000153)
+scale = Vector2(0.88294315, 0.8932854)
+texture = ExtResource("8_xrdnt")
+
+[connection signal="body_entered" from="Flag" to="Flag" method="_on_body_entered"]
