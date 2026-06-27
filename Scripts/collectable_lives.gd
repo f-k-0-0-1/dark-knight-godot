@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var heal_amount := 1
+@export var heal_amount := 25
 
 # Float settings
 @export var float_height := 4.0
