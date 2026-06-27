@@ -123,7 +123,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"death",
-"speed": 6.0
+"speed": 9.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -171,7 +171,7 @@ texture_filter = 1
 position = Vector2(-9.536743e-07, 9.536743e-07)
 scale = Vector2(1.5312499, 1.484375)
 sprite_frames = SubResource("SpriteFrames_btnsb")
-animation = &"walk"
+animation = &"death"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1208786678]
 position = Vector2(0, 23)
