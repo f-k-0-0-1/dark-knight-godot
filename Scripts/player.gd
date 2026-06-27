@@ -13,6 +13,7 @@ var cooldown_remaining: float = 0.0
 @export var lightning_ability_duration: float = 3.0
 @export var lightning_ability_cooldown: float = 10.0
 @export var max_health: int = 100
+var bonus_heart_unlocked := false
 @onready var ability_cooldown_bar: ProgressBar = $HUD/AbilityCooldownBar
 
 var is_dead: bool = false # Explicitly declared with type 'bool'
@@ -250,8 +251,25 @@ func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	if current_health <= 0:
 		die()
 
-func heal(amount: int) -> void:
+func heal(amount:int):
+
 	current_health += amount
+	current_health = clamp(current_health,0,max_health)
+	health_changed.emit(current_health,max_health)
+
+func add_bonus_heart() -> bool:
+
+	if bonus_heart_unlocked:
+		return false
+
+	bonus_heart_unlocked = true
+
+	max_health += 25
+	current_health += 25
+
+	health_changed.emit(current_health, max_health)
+
+	return true
 
 func die() -> void:
 	if is_dead:

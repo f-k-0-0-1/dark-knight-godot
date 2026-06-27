@@ -199,6 +199,7 @@
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="196_flyn8"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="198_46x4x"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="199_dyagb"]
+[ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="200_7lfvh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("2_cggpd")
@@ -1259,7 +1260,7 @@ position = Vector2(28617, -409)
 position = Vector2(34942, -335)
 
 [node name="shardsoul" parent="Enemies" unique_id=1610885443 groups=["enemies"] instance=ExtResource("196_flyn8")]
-position = Vector2(20661.002, -440.00006)
+position = Vector2(21934, -445)
 scale = Vector2(10, 10)
 
 [node name="PortalA1" parent="." unique_id=1985962026 instance=ExtResource("196_0il0l")]
@@ -1296,3 +1297,9 @@ target_portal = NodePath("../PortalC1")
 position = Vector2(36768, -139)
 
 [node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("199_dyagb")]
+
+[node name="CollectableLives" parent="." unique_id=12706358 instance=ExtResource("200_7lfvh")]
+position = Vector2(6720, -1831)
+
+[node name="CollectableLives2" parent="." unique_id=704986145 instance=ExtResource("200_7lfvh")]
+position = Vector2(19795, -758)

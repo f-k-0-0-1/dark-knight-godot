@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dusvgagrcf107"]
+
+[ext_resource type="Script" uid="uid://4k435s4i6q2a" path="res://floating_text.gd" id="1_hnnmh"]
+
+[node name="FloatingText" type="Label" unique_id=170235256]
+offset_right = 40.0
+offset_bottom = 23.0
+scale = Vector2(3, 3)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5294118)
+text = "Bonus Life"
+script = ExtResource("1_hnnmh")

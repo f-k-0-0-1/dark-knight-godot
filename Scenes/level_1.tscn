@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://cvrv3ki1slnap" path="res://Scripts/scene_manager.gd" id="6_q2r7y"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="8_xrdnt"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="9_wrinw"]
+[ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="10_chwpn"]
 
 [node name="Level 1" type="Node2D" unique_id=1953832643]
 script = ExtResource("1_64e2p")
@@ -26,6 +27,9 @@ position = Vector2(-1057, -1)
 [node name="slime" parent="Enemies" unique_id=1814890284 groups=["enemies"] instance=ExtResource("5_1jukv")]
 position = Vector2(11920, -79)
 
+[node name="slime2" parent="Enemies" unique_id=882602578 groups=["enemies"] instance=ExtResource("5_1jukv")]
+position = Vector2(20217, -137)
+
 [node name="flying demon" parent="Enemies" unique_id=808919298 groups=["enemies"] instance=ExtResource("6_61niw")]
 position = Vector2(167, -232)
 
@@ -38,6 +42,22 @@ position = Vector2(2702, -160)
 [node name="flying demon4" parent="Enemies" unique_id=1932146347 groups=["enemies"] instance=ExtResource("6_61niw")]
 position = Vector2(2764, -335)
 
+[node name="flying demon5" parent="Enemies" unique_id=766972636 groups=["enemies"] instance=ExtResource("6_61niw")]
+z_index = 3
+position = Vector2(20586, -410)
+
+[node name="flying demon6" parent="Enemies" unique_id=2040414545 groups=["enemies"] instance=ExtResource("6_61niw")]
+z_index = 3
+position = Vector2(20231, -595)
+
+[node name="flying demon7" parent="Enemies" unique_id=868358277 groups=["enemies"] instance=ExtResource("6_61niw")]
+z_index = 3
+position = Vector2(25653, -263)
+
+[node name="flying demon8" parent="Enemies" unique_id=1579381701 groups=["enemies"] instance=ExtResource("6_61niw")]
+z_index = 3
+position = Vector2(27773, -335)
+
 [node name="SceneManager" type="Node" parent="." unique_id=665663732]
 script = ExtResource("6_q2r7y")
 
@@ -45,3 +65,11 @@ script = ExtResource("6_q2r7y")
 position = Vector2(32025, -174)
 
 [node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("9_wrinw")]
+
+[node name="CollectableLives" parent="." unique_id=1363170396 instance=ExtResource("10_chwpn")]
+z_index = 5
+position = Vector2(4175, -345)
+
+[node name="CollectableLives2" parent="." unique_id=12706358 instance=ExtResource("10_chwpn")]
+z_index = 5
+position = Vector2(14367, -311)

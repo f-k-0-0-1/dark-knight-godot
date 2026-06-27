@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bw15cpl3uasko"
+path="res://.godot/imported/pickup sound effect.mp3-2519eae3ed398d7f5ec2ae06669e7ed6.mp3str"
+
+[deps]
+
+source_file="res://Audio/sfx/pickup sound effect.mp3"
+dest_files=["res://.godot/imported/pickup sound effect.mp3-2519eae3ed398d7f5ec2ae06669e7ed6.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

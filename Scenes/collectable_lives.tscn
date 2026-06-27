@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dbcbj47qgh1ry"]
+
+[ext_resource type="Script" uid="uid://cwlpbobt2oxv3" path="res://Scripts/collectable_lives.gd" id="1_wojv2"]
+[ext_resource type="Texture2D" uid="uid://be07lona1qxxx" path="res://Assets/sprite.png" id="2_wn32m"]
+[ext_resource type="AudioStream" uid="uid://bw15cpl3uasko" path="res://Audio/sfx/pickup sound effect.mp3" id="3_ku0dm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ku0dm"]
+radius = 40.311287
+
+[node name="CollectableLives" type="Area2D" unique_id=12706358]
+script = ExtResource("1_wojv2")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1347306371]
+texture = ExtResource("2_wn32m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=903793707]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_ku0dm")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=2142797038]
+stream = ExtResource("3_ku0dm")

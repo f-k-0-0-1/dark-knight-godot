@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="10_n4vm5"]
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="11_n4vm5"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="14_fxnjf"]
+[ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="15_xjeco"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("1_qf6rc")
@@ -544,3 +545,12 @@ texture = ExtResource("9_l4wr6")
 position = Vector2(22676, -1164)
 
 [node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("14_fxnjf")]
+
+[node name="CollectableLives" parent="." unique_id=12706358 instance=ExtResource("15_xjeco")]
+position = Vector2(4664, -213)
+
+[node name="CollectableLives2" parent="." unique_id=1242263616 instance=ExtResource("15_xjeco")]
+position = Vector2(11776, -109)
+
+[node name="CollectableLives3" parent="." unique_id=1337806481 instance=ExtResource("15_xjeco")]
+position = Vector2(18718, -487)
