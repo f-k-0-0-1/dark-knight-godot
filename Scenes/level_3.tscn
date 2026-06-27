@@ -8,9 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://bjbkjaul7s1np" path="res://Assets/Mossy Tileset/Mossy - Decorations&Hazards.png" id="4_5e78q"]
 [ext_resource type="Texture2D" uid="uid://deuq4uqdqtlkj" path="res://Assets/Mossy Tileset/Mossy - Hanging Plants.png" id="5_l4wr6"]
 [ext_resource type="PackedScene" uid="uid://m1r7afhf8aax" path="res://Scenes/Player.tscn" id="6_qf6rc"]
+[ext_resource type="PackedScene" uid="uid://bospax0kwjtgf" path="res://Scenes/slime.tscn" id="9_c81s1"]
 [ext_resource type="Texture2D" uid="uid://d2ey6h3pmr5ee" path="res://Assets/Objects/barel.png" id="9_l4wr6"]
-[ext_resource type="Script" uid="uid://cy3dxcnha8ots" path="res://Scripts/flag.gd" id="10_jtv8s"]
-[ext_resource type="Texture2D" uid="uid://cw7jyn5fqcayr" path="res://Assets/Objects/flag.png" id="11_c81s1"]
+[ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="10_5rvg2"]
+[ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="10_n4vm5"]
+[ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="11_n4vm5"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("1_qf6rc")
@@ -448,9 +450,6 @@ sources/1 = SubResource("TileSetAtlasSource_wxrln")
 radius = 143.0
 height = 410.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_n4vm5"]
-size = Vector2(224.9414, 244.23077)
-
 [node name="Level3" type="Node2D" unique_id=407411734]
 
 [node name="Player" parent="." unique_id=268462001 groups=["player"] instance=ExtResource("6_qf6rc")]
@@ -466,19 +465,43 @@ tile_set = SubResource("TileSet_oqble")
 [node name="top" type="TileMapLayer" parent="TileMap" unique_id=1362623454]
 z_index = 1
 position = Vector2(-27, 544)
+tile_map_data = PackedByteArray("AAD6//z/AQAAAAAAAAD6//3/AQAAAAEAAAD7//z/AQABAAAAAAD7//3/AQABAAEAAAD8//z/AQACAAAAAAD8//3/AQACAAEAAAD9//z/AQADAAAAAAD9//3/AQADAAEAAAD+//z/AQAEAAAAAAD+//3/AQAEAAEAAAD///z/AQAFAAAAAAD///3/AQAFAAEAAAAAAPz/AQAGAAAAAAAAAP3/AQAGAAEAAAABAPz/AQAHAAAAAAABAP3/AQAHAAEAAAACAPz/AQAAAAAAAAACAP3/AQAAAAEAAAADAPz/AQABAAAAAAADAP3/AQABAAEAAAAEAPz/AQACAAAAAAAEAP3/AQACAAEAAAAFAPz/AQADAAAAAAAFAP3/AQADAAEAAAAGAPz/AQAEAAAAAAAGAP3/AQAEAAEAAAAHAPz/AQAFAAAAAAAHAP3/AQAFAAEAAAAIAPz/AQAGAAAAAAAIAP3/AQAGAAEAAAAJAPz/AQAHAAAAAAAJAP3/AQAHAAEAAAAKAPz/AQAAAAAAAAAKAP3/AQAAAAEAAAALAPz/AQABAAAAAAALAP3/AQABAAEAAAAMAPz/AQACAAAAAAAMAP3/AQACAAEAAAANAPz/AQADAAAAAAANAP3/AQADAAEAAAAOAPz/AQAEAAAAAAAOAP3/AQAEAAEAAAAPAPz/AQAFAAAAAAAPAP3/AQAFAAEAAAAQAPz/AQAGAAAAAAAQAP3/AQAGAAEAAAARAPz/AQAHAAAAAAARAP3/AQAHAAEAAAASAPz/AQAAAAAAAAASAP3/AQAAAAEAAAATAPz/AQABAAAAAAATAP3/AQABAAEAAAAUAPz/AQACAAAAAAAUAP3/AQACAAEAAAAVAPz/AQADAAAAAAAVAP3/AQADAAEAAAAWAPz/AQAEAAAAAAAWAP3/AQAEAAEAAAAXAPz/AQAFAAAAAAAXAP3/AQAFAAEAAAAYAPz/AQAGAAAAAAAYAP3/AQAGAAEAAAAZAPz/AQAHAAAAAAAZAP3/AQAHAAEAAAAaAPz/AQAAAAAAAAAaAP3/AQAAAAEAAAAbAPz/AQABAAAAAAAbAP3/AQABAAEAAAAcAPz/AQACAAAAAAAcAP3/AQACAAEAAAAdAPz/AQADAAAAAAAdAP3/AQADAAEAAAAeAPz/AQAEAAAAAAAeAP3/AQAEAAEAAAAfAPz/AQAFAAAAAAAfAP3/AQAFAAEAAAAgAPz/AQAGAAAAAAAgAP3/AQAGAAEAAAAhAPz/AQAHAAAAAAAhAP3/AQAHAAEAAAAiAPv/AQAAAAAAAAAiAPz/AQAAAAEAAAAjAPv/AQABAAAAAAAjAPz/AQABAAEAAAAkAPv/AQACAAAAAAAkAPz/AQACAAEAAAAlAPv/AQADAAAAAAAlAPz/AQADAAEAAAAmAPv/AQAEAAAAAAAmAPz/AQAEAAEAAAAnAPv/AQAFAAAAAAAnAPz/AQAFAAEAAAAoAPv/AQAGAAAAAAAoAPz/AQAGAAEAAAApAPv/AQAHAAAAAAApAPz/AQAHAAEAAAAqAPr/AQAAAAAAAAAqAPv/AQAAAAEAAAArAPr/AQABAAAAAAArAPv/AQABAAEAAAAsAPr/AQACAAAAAAAsAPv/AQACAAEAAAAtAPr/AQADAAAAAAAtAPv/AQADAAEAAAAxAPr/AQAHAAAAAAAuAPv/AQAEAAEAAAAuAPr/AQAEAAAAAAAvAPr/AQAFAAAAAAAwAPr/AQAGAAAAAAAwAPv/AQAGAAEAAAAvAPv/AQAFAAEAAAAxAPv/AQAHAAEAAAA=")
 tile_set = SubResource("TileSet_pbobv")
 
 [node name="BG Tiles" type="TileMapLayer" parent="TileMap" unique_id=245954403]
 modulate = Color(1, 1, 1, 0.184314)
+tile_map_data = PackedByteArray("AAD8//7/AAAAAAQAAAD8////AAAAAAUAAAD9//7/AAABAAQAAAD9////AAABAAUAAAABAP7/AAAAAAUAAAABAP//AAAAAAYAAAACAP7/AAABAAUAAAACAP//AAABAAYAAAAJAP7/AAAAAAQAAAAJAP//AAAAAAUAAAAKAP7/AAABAAQAAAAKAP//AAABAAUAAAARAP7/AAAAAAQAAAARAP//AAAAAAUAAAARAAAAAAAAAAYAAAASAP7/AAABAAQAAAASAP//AAABAAUAAAASAAAAAAABAAYAAAAZAP7/AAAAAAQAAAAZAP//AAAAAAUAAAAZAAAAAAAAAAYAAAAaAP7/AAABAAQAAAAaAP//AAABAAUAAAAaAAAAAAABAAYAAAAhAP7/AAAAAAQAAAAhAP//AAAAAAUAAAAhAAAAAAAAAAYAAAAiAP7/AAABAAQAAAAiAP//AAABAAUAAAAiAAAAAAABAAYAAAApAP3/AAAAAAUAAAApAP7/AAAAAAYAAAApAP//AAAAAAcAAAAqAPz/AAABAAQAAAAqAP3/AAABAAUAAAAqAP7/AAABAAYAAAAqAP//AAABAAcAAAAKAAAAAAABAAYAAAAJAAAAAAAAAAYAAAA=")
 tile_set = SubResource("TileSet_k1cp0")
 
 [node name="Plants" type="TileMapLayer" parent="TileMap" unique_id=1468416936]
+tile_map_data = PackedByteArray("AAD6////AAAGAAAAAAD6/wAAAAAGAAEAAAD7////AAAHAAAAAAD7/wAAAAAHAAEAAAAjAP//AAAAAAAAAAAjAAAAAAAAAAEAAAAkAP//AAABAAAAAAAkAAAAAAABAAEAAAAlAP//AAACAAAAAAAlAAAAAAACAAEAAAD9//7/AAAEAAYAAAD9////AAAEAAcAAAADAP7/AAAEAAYAAAADAP//AAAEAAcAAAAMAP7/AAAEAAYAAAAMAP//AAAEAAcAAAAVAP7/AAAEAAYAAAAVAP//AAAEAAcAAAAdAP7/AAAEAAYAAAAdAP//AAAEAAcAAAAlAP3/AAAEAAYAAAAlAP7/AAAEAAcAAAAAAP7/AQAAAAMAAAAAAP//AQAAAAQAAAAHAP7/AQAAAAMAAAAHAP//AQAAAAQAAAAOAP7/AQAAAAMAAAAOAP//AQAAAAQAAAAUAP7/AQAAAAMAAAAUAP//AQAAAAQAAAAYAP7/AQAAAAMAAAAYAP//AQAAAAQAAAAcAP7/AQAAAAMAAAAcAP//AQAAAAQAAAAiAPz/AQAAAAIAAAAiAP3/AQAAAAMAAAAiAP7/AQAAAAQAAAAqAPz/AQAAAAMAAAAqAP3/AQAAAAQAAAAtAPz/AQAAAAIAAAAtAP3/AQAAAAMAAAAtAP7/AQAAAAQAAAAuAPz/AQAAAAAAAAAuAP3/AQAAAAEAAAAsAPz/AQAAAAAAAAAsAP3/AQAAAAEAAAAnAP3/AQAAAAAAAAAnAP7/AQAAAAEAAAAfAP7/AQAAAAAAAAAfAP//AQAAAAEAAAAXAP7/AQAAAAAAAAAXAP//AQAAAAEAAAAQAP7/AQAAAAAAAAAQAP//AQAAAAEAAAAFAP7/AQAAAAAAAAAFAP//AQAAAAEAAAD+//7/AQAAAAAAAAD+////AQAAAAEAAAA=")
 tile_set = SubResource("TileSet_0o3h3")
+
+[node name="Enemies" type="Node2D" parent="." unique_id=851304883]
+
+[node name="slime" parent="Enemies" unique_id=882602578 groups=["enemies"] instance=ExtResource("9_c81s1")]
+position = Vector2(8746, -177)
+
+[node name="flying demon" parent="Enemies" unique_id=766972636 groups=["enemies"] instance=ExtResource("10_n4vm5")]
+position = Vector2(1079, -148)
+
+[node name="flying demon2" parent="Enemies" unique_id=1578147510 groups=["enemies"] instance=ExtResource("10_n4vm5")]
+position = Vector2(3572.0002, -177)
+
+[node name="flying demon3" parent="Enemies" unique_id=431490742 groups=["enemies"] instance=ExtResource("10_n4vm5")]
+position = Vector2(6102, -160)
+
+[node name="flying demon4" parent="Enemies" unique_id=11447505 groups=["enemies"] instance=ExtResource("10_n4vm5")]
+position = Vector2(14028, -228)
+
+[node name="shardsoul" parent="Enemies" unique_id=1610885443 groups=["enemies"] instance=ExtResource("11_n4vm5")]
+position = Vector2(19664.002, -530)
+scale = Vector2(10, 10)
 
 [node name="Objects" type="Node2D" parent="." unique_id=442934244]
 
 [node name="Barrel" type="StaticBody2D" parent="Objects" unique_id=1705085730]
-position = Vector2(20425, -148.00002)
+position = Vector2(20438, -148)
 scale = Vector2(0.8548806, 0.8548806)
 
 [node name="Shape" type="CollisionShape2D" parent="Objects/Barrel" unique_id=2085884123]
@@ -486,6 +509,7 @@ position = Vector2(45, 0)
 shape = SubResource("CapsuleShape2D_l4wr6")
 
 [node name="Barel" type="Sprite2D" parent="Objects/Barrel" unique_id=16635278]
+texture_filter = 1
 position = Vector2(66, 8)
 texture = ExtResource("9_l4wr6")
 
@@ -498,6 +522,7 @@ position = Vector2(45, 0)
 shape = SubResource("CapsuleShape2D_l4wr6")
 
 [node name="Barel" type="Sprite2D" parent="Objects/Barrel2" unique_id=1014912023]
+texture_filter = 1
 position = Vector2(66, 8)
 texture = ExtResource("9_l4wr6")
 
@@ -510,23 +535,9 @@ position = Vector2(45, 0)
 shape = SubResource("CapsuleShape2D_l4wr6")
 
 [node name="Barel" type="Sprite2D" parent="Objects/Barrel3" unique_id=1275047412]
+texture_filter = 1
 position = Vector2(66, 8)
 texture = ExtResource("9_l4wr6")
 
-[node name="Flag" type="Area2D" parent="." unique_id=831915331]
-position = Vector2(22409, -1174)
-scale = Vector2(1.56, 1.56)
-script = ExtResource("10_jtv8s")
-
-[node name="Shape" type="CollisionShape2D" parent="Flag" unique_id=2028824606]
-z_index = 1
-position = Vector2(26.63086, 27.243584)
-shape = SubResource("RectangleShape2D_n4vm5")
-
-[node name="Flag2" type="Sprite2D" parent="Flag" unique_id=1545689690]
-modulate = Color(0.8441274, 1.2112623, 1.2112623, 1)
-position = Vector2(-1, 1.0000153)
-scale = Vector2(0.88294315, 0.8932854)
-texture = ExtResource("11_c81s1")
-
-[connection signal="body_entered" from="Flag" to="Flag" method="_on_body_entered"]
+[node name="Flag" parent="." unique_id=803434551 instance=ExtResource("10_5rvg2")]
+position = Vector2(22676, -1164)

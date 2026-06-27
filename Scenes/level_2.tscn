@@ -197,8 +197,7 @@
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="195_0il0l"]
 [ext_resource type="PackedScene" uid="uid://dwt2f5jdn61p3" path="res://Scenes/portal.tscn" id="196_0il0l"]
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="196_flyn8"]
-[ext_resource type="Script" uid="uid://cy3dxcnha8ots" path="res://Scripts/flag.gd" id="198_dyagb"]
-[ext_resource type="Texture2D" uid="uid://cw7jyn5fqcayr" path="res://Assets/Objects/flag.png" id="199_7lfvh"]
+[ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="198_46x4x"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("2_cggpd")
@@ -1140,9 +1139,6 @@ animations = [{
 "speed": 30.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7lqls"]
-size = Vector2(224.9414, 244.23077)
-
 [node name="Level2" type="Node2D" unique_id=2146547538]
 script = ExtResource("1_v3rpw")
 
@@ -1295,20 +1291,5 @@ position = Vector2(24829, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalC1")
 
-[node name="Flag" type="Area2D" parent="." unique_id=1291549109]
-position = Vector2(36543, -190)
-scale = Vector2(1.56, 1.56)
-script = ExtResource("198_dyagb")
-
-[node name="Shape" type="CollisionShape2D" parent="Flag" unique_id=1304109979]
-z_index = 1
-position = Vector2(26.63086, 27.243584)
-shape = SubResource("RectangleShape2D_7lqls")
-
-[node name="Flag2" type="Sprite2D" parent="Flag" unique_id=1226484233]
-modulate = Color(0.8441274, 1.2112623, 1.2112623, 1)
-position = Vector2(-1, 1.0000153)
-scale = Vector2(0.88294315, 0.8932854)
-texture = ExtResource("199_7lfvh")
-
-[connection signal="body_entered" from="Flag" to="Flag" method="_on_body_entered"]
+[node name="Flag" parent="." unique_id=803434551 instance=ExtResource("198_46x4x")]
+position = Vector2(36768, -139)

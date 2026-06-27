@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://bok76dbww4tj2"]
+
+[ext_resource type="Script" uid="uid://cy3dxcnha8ots" path="res://Scripts/flag.gd" id="1_vie08"]
+[ext_resource type="Texture2D" uid="uid://dvue3cx6mkmxw" path="res://Assets/Objects/flag_anim.png" id="2_cnecg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wrinw"]
+size = Vector2(178.78906, 238.46153)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_chwpn"]
+atlas = ExtResource("2_cnecg")
+region = Rect2(0, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_af3po"]
+atlas = ExtResource("2_cnecg")
+region = Rect2(60, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uy8f0"]
+atlas = ExtResource("2_cnecg")
+region = Rect2(120, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6r07y"]
+atlas = ExtResource("2_cnecg")
+region = Rect2(180, 0, 60, 60)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ioyp"]
+atlas = ExtResource("2_cnecg")
+region = Rect2(240, 0, 60, 60)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_oovug"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_chwpn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_af3po")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uy8f0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6r07y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ioyp")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="Flag" type="Area2D" unique_id=803434551]
+scale = Vector2(1.56, 1.56)
+script = ExtResource("1_vie08")
+
+[node name="Shape" type="CollisionShape2D" parent="." unique_id=1122257168]
+z_index = 1
+position = Vector2(3.5546875, 30.128204)
+shape = SubResource("RectangleShape2D_wrinw")
+
+[node name="anim" type="AnimatedSprite2D" parent="." unique_id=2145199442]
+texture_filter = 1
+position = Vector2(26.922968, 20.224463)
+scale = Vector2(3.76069, 3.8130312)
+sprite_frames = SubResource("SpriteFrames_oovug")
+animation = &"idle"
+autoplay = "idle"
+frame = 4
+frame_progress = 0.54289186
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
