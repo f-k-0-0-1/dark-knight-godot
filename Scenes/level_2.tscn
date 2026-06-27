@@ -198,6 +198,7 @@
 [ext_resource type="PackedScene" uid="uid://dwt2f5jdn61p3" path="res://Scenes/portal.tscn" id="196_0il0l"]
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="196_flyn8"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="198_46x4x"]
+[ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="199_dyagb"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("2_cggpd")
@@ -1293,3 +1294,5 @@ target_portal = NodePath("../PortalC1")
 
 [node name="Flag" parent="." unique_id=803434551 instance=ExtResource("198_46x4x")]
 position = Vector2(36768, -139)
+
+[node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("199_dyagb")]

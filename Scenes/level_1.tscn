@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="6_61niw"]
 [ext_resource type="Script" uid="uid://cvrv3ki1slnap" path="res://Scripts/scene_manager.gd" id="6_q2r7y"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="8_xrdnt"]
+[ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="9_wrinw"]
 
 [node name="Level 1" type="Node2D" unique_id=1953832643]
 script = ExtResource("1_64e2p")
@@ -42,3 +43,5 @@ script = ExtResource("6_q2r7y")
 
 [node name="Flag" parent="." unique_id=803434551 instance=ExtResource("8_xrdnt")]
 position = Vector2(32025, -174)
+
+[node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("9_wrinw")]

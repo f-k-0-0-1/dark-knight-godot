@@ -1,12 +1,9 @@
 extends Node
 
+@onready var level_complete_ui = get_tree().current_scene.find_child("LevelCompleteScreen", true, false)
+
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
-		# Get the level 
-		var next_level: int = SceneManager.current_level.trim_prefix("level_").to_int()
-		
-		# Chanage scene if not on last level
-		if (next_level != SceneManager.last_level):
-			SceneManager.change_scene("level_" + str(next_level + 1));
-		else :
-			SceneManager.change_scene("credits")
+		get_tree().paused = true
+		if level_complete_ui:
+			level_complete_ui.show_level_complete()

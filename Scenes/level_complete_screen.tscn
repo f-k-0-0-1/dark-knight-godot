@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://duxh1rt4bjo2o"]
+
+[ext_resource type="Script" uid="uid://d1tqytmi5p106" path="res://level_complete_screen.gd" id="1_618c7"]
+[ext_resource type="Shader" uid="uid://4cyvubkg70ss" path="res://BlurShader.gdshader" id="1_rgl0m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kikgb"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rgl0m"]
+shader = ExtResource("1_rgl0m")
+shader_parameter/blur_size = 5.0
+
+[node name="LevelCompleteScreen" type="CanvasLayer" unique_id=848071443]
+process_mode = 3
+script = ExtResource("1_618c7")
+
+[node name="DimBackground" type="ColorRect" parent="." unique_id=1280943717]
+material = SubResource("ShaderMaterial_kikgb")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 0.29411766)
+
+[node name="BlurredBackgroundSprite" type="Sprite2D" parent="." unique_id=1352121284]
+material = SubResource("ShaderMaterial_rgl0m")
+centered = false
+
+[node name="MenuPanel" type="Panel" parent="." unique_id=893439406]
+modulate = Color(1, 1, 1, 0.7058824)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="RetryButton" type="Button" parent="MenuPanel" unique_id=1560988444]
+layout_mode = 0
+offset_left = 428.0
+offset_top = 285.0
+offset_right = 694.0
+offset_bottom = 349.0
+theme_override_font_sizes/font_size = 22
+text = "RETRY"
+
+[node name="NextLevelButton" type="Button" parent="MenuPanel" unique_id=242575425]
+layout_mode = 0
+offset_left = 428.0
+offset_top = 195.0
+offset_right = 694.0
+offset_bottom = 259.0
+theme_override_font_sizes/font_size = 22
+text = "NEXT LEVEL"
+
+[node name="MainMenuButton" type="Button" parent="MenuPanel" unique_id=2028791805]
+layout_mode = 0
+offset_left = 428.0
+offset_top = 373.0
+offset_right = 694.0
+offset_bottom = 437.0
+theme_override_font_sizes/font_size = 22
+text = "MAIN MENU"
+
+[node name="QuitButton" type="Button" parent="MenuPanel" unique_id=2033871538]
+layout_mode = 0
+offset_left = 428.0
+offset_top = 458.0
+offset_right = 694.0
+offset_bottom = 522.0
+theme_override_font_sizes/font_size = 22
+text = "QUIT"
+
+[node name="Label" type="Label" parent="." unique_id=740864151]
+offset_left = 428.0
+offset_top = 39.0
+offset_right = 659.0
+offset_bottom = 78.0
+theme_override_font_sizes/font_size = 28
+text = "LEVEL COMPLETED"

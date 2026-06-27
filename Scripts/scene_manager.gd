@@ -12,7 +12,8 @@ var scene_paths: Dictionary = {
 	"level_3" : "res://Scenes/level_3.tscn",
 	"retry_menu": "res://Scenes/retry.tscn",
 	"fireball_scene": "res://Scenes/fireball.tscn",
-	"credits": "res://Scenes/credits.tscn"
+	"credits": "res://Scenes/credits.tscn",
+	"level_complete_screen": "res://Scenes/level_complete_screen.tscn"
 }
 # Loaded Scenes Dic
 var scenes: Dictionary = {}
