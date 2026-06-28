@@ -19,6 +19,7 @@ var bonus_heart_unlocked := false
 var is_dead: bool = false # Explicitly declared with type 'bool'
 var fireball_scene: PackedScene
 var lightning_ball_instance: Area2D
+var cheat_command_scene = null;
 
 var current_health: int = max_health:
 	set(value):
@@ -43,6 +44,7 @@ var is_sprinting := false
 var god_mode := false
 var can_use_lightning := true
 var is_lightning_active := false
+var cheat_command := false
 
 func _ready():
 	fireball_scene = SceneManager.scenes.get("fireball_scene")
@@ -52,6 +54,10 @@ func _input(event):
 	if is_dead:
 		return
 
+	if event.is_action_pressed("cheat_command"):
+		cheat_command = !cheat_command 
+		print("Cheat Command: ", cheat_command)
+		
 	if event.is_action_pressed("god_mode_toggle"):
 		god_mode = !god_mode
 		velocity = Vector2.ZERO
@@ -62,6 +68,18 @@ func _input(event):
 
 	if event.is_action_pressed("lightning_ability"):
 		activate_lightning_ball()
+
+func _process(delta: float) -> void:
+	
+	# Logic for cheat command 
+	if cheat_command and cheat_command_scene == null:
+		cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
+		add_child(cheat_command_scene);
+	elif cheat_command and cheat_command_scene != null:
+		cheat_command_scene.visible = true
+	else:
+		if !cheat_command and cheat_command_scene != null:
+			cheat_command_scene.visible = false
 
 func _physics_process(delta):
 	handle_movement_input()
