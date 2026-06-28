@@ -4,6 +4,6 @@ extends Node
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
-		get_tree().paused = true
+		
 		if level_complete_ui:
 			level_complete_ui.show_level_complete()

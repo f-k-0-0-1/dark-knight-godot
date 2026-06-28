@@ -4,6 +4,7 @@ extends CanvasLayer
 @onready var retry_button: Button = $MenuPanel/RetryButton
 @onready var main_menu_button: Button = $MenuPanel/MainMenuButton
 @onready var quit_button: Button = $MenuPanel/QuitButton
+@onready var level_complete_sound: AudioStreamPlayer = $LevelCompleteSound
 
 func _ready():
 	next_button.pressed.connect(_on_next_pressed)
@@ -15,9 +16,16 @@ func _ready():
 
 func show_level_complete():	
 	visible = true;
-
+	
+	if level_complete_sound:
+		level_complete_sound.play();
+	
 func _on_next_pressed():
 	get_tree().paused = false
+	
+	if level_complete_sound.playing:
+		level_complete_sound.stop()
+
 	var next_level: int = SceneManager.current_level.trim_prefix("level_").to_int()
 	if (next_level != SceneManager.last_level):
 		SceneManager.change_scene("level_" + str(next_level + 1));

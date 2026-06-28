@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d1tqytmi5p106" path="res://Scripts/level_complete_screen.gd" id="1_618c7"]
 [ext_resource type="Shader" uid="uid://bo2yjehime3xk" path="res://Shaders/blurr.gdshader" id="2_618c7"]
+[ext_resource type="AudioStream" uid="uid://b8owy4ryisrbp" path="res://Audio/sfx/Level_Over.mp3" id="3_kh1sa"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kh1sa"]
 shader = ExtResource("2_618c7")
@@ -95,3 +96,6 @@ offset_right = 659.0
 offset_bottom = 78.0
 theme_override_font_sizes/font_size = 28
 text = "LEVEL COMPLETED"
+
+[node name="LevelCompleteSound" type="AudioStreamPlayer" parent="." unique_id=890414956]
+stream = ExtResource("3_kh1sa")
