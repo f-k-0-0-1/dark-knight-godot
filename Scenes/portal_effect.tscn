@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://xmycdws7vtty" path="res://Scripts/portal_effect.gd" id="1_t2u7j"]
 [ext_resource type="Material" uid="uid://4f1aep6k8304" path="res://Shaders/PortalShaderMaterial.tres" id="2_874m8"]
+[ext_resource type="AudioStream" uid="uid://b4dmhbxwft3j8" path="res://Audio/sfx/teleport_sfx.mp3" id="3_tdg6q"]
 
 [node name="PortalEffect" type="CanvasLayer" unique_id=948432008]
 script = ExtResource("1_t2u7j")
@@ -17,3 +18,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 color = Color(0, 0, 0, 1)
+
+[node name="TeleportSound" type="AudioStreamPlayer" parent="." unique_id=1980709832]
+stream = ExtResource("3_tdg6q")
