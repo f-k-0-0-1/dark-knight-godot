@@ -46,18 +46,18 @@ func _on_menu_option_selected(id: int) -> void:
 			get_tree().quit()
 
 func _set_popup_style(popup: PopupMenu) -> void:
-	var theme := Theme.new()
-
+	var new_theme = Theme.new();
+	
 	# Optional: Custom font
 	if ResourceLoader.exists("res://Fonts/YourCustomFont.tres"):
 		var font = load("res://Fonts/YourCustomFont.tres")
-		theme.set_font("font", "PopupMenu", font)
+		new_theme.set_font("font", "PopupMenu", font)
 
 	# Set colors
-	theme.set_color("font_color", "PopupMenu", Color.WHITE)
-	theme.set_color("font_color_hover", "PopupMenu", Color.BLACK)
-	theme.set_color("font_color_pressed", "PopupMenu", Color.GRAY)
-	theme.set_color("bg_color", "PopupMenu", Color(0.1, 0.1, 0.1, 0.95))  # semi-transparent dark background
+	new_theme.set_color("font_color", "PopupMenu", Color.WHITE)
+	new_theme.set_color("font_color_hover", "PopupMenu", Color.BLACK)
+	new_theme.set_color("font_color_pressed", "PopupMenu", Color.GRAY)
+	new_theme.set_color("bg_color", "PopupMenu", Color(0.1, 0.1, 0.1, 0.95))  # semi-transparent dark background
 
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.1, 0.1, 0.1, 0.95)
@@ -68,5 +68,5 @@ func _set_popup_style(popup: PopupMenu) -> void:
 	style.set_content_margin(SIDE_TOP, 6)
 	style.set_content_margin(SIDE_BOTTOM, 6)
 
-	theme.set_stylebox("panel", "PopupMenu", style)
-	popup.theme = theme
+	new_theme.set_stylebox("panel", "PopupMenu", style)
+	popup.theme = new_theme

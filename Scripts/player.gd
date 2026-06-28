@@ -75,15 +75,16 @@ func _input(event):
 	if !cheat_command and event.is_action_pressed("lightning_ability"):
 		activate_lightning_ball()
 
-	if cheat_command and  cheat_command_scene != null and  event.is_action_pressed("Enter"):
+	if cheat_command and cheat_command_scene != null and  event.is_action_pressed("Enter"):
 		cheat_command_scene.run_command();
-		cheat_command = false;
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
+	
 	# Update the level timer text
 	if not level_timer.is_stopped():
-		time_elapsed += delta
+		time_elapsed += _delta
 		timer_label.text = str(snapped(time_elapsed, 0.1)) + "s"
+	
 	# Logic for cheat command 
 	if cheat_command and cheat_command_scene == null:
 		

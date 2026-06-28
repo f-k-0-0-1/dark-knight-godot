@@ -11,7 +11,6 @@ func _ready() -> void:
 	tutorial_instance.show_tutorial(
 		"Press A/D to move\nPress W or Space to jump\nPress F or Enter to shoot\nPress G to toggle God Mode"
 	)
-	
 	tutorial_instance.tutorial_closed.connect(_on_tutorial_closed)
 
 func finish_level(stars_earned: int):

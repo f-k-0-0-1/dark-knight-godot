@@ -29,6 +29,7 @@ Globals="*uid://c1f0kq68bytn6"
 
 [display]
 
+window/size/mode=3
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

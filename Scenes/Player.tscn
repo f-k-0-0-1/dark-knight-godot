@@ -357,7 +357,7 @@ animations = [{
 radius = 76.0
 height = 428.0
 
-[node name="Player" type="CharacterBody2D" unique_id=268462001]
+[node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("97_7jnis")
 shoot_anim_duration = 0.5

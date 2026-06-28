@@ -51,17 +51,17 @@ func start_global_preload() -> void:
 	# Everything is loaded
 	all_scenes_ready.emit()
 
-func get_scene(name: String) -> PackedScene:
-	if scenes.has(name):
-		return scenes[name]
-	push_error("Scene '%s' not registered in SceneManager!" % name)
+func get_scene(scene_name: String) -> PackedScene:
+	if scenes.has(scene_name):
+		return scenes[scene_name]
+	push_error("Scene '%s' not registered in SceneManager!" % scene_name)
 	return null
 
-func change_scene(name: String) -> void:
-	var scene = get_scene(name)
+func change_scene(scene_name: String) -> void:
+	var scene = get_scene(scene_name)
 
 	if scene:
-		if name.begins_with("level_") and name != "level_select":
-			current_level = name
+		if scene_name.begins_with("level_") and scene_name != "level_select":
+			current_level = scene_name
 
 		get_tree().change_scene_to_packed(scene)

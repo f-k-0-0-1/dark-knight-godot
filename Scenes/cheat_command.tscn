@@ -1,59 +1,69 @@
 [gd_scene format=3 uid="uid://dtmqlg45pxab8"]
 
 [ext_resource type="Script" uid="uid://cjf6mfmxvx3xp" path="res://Scripts/cheat_command.gd" id="1_ikxeg"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q4y16"]
-bg_color = Color(0, 0, 0, 0.41568628)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q4y16"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4vdor"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a4t0t"]
+[ext_resource type="StyleBox" uid="uid://j4gp43w8ntdb" path="res://Styles/CheatCode_BG.tres" id="2_bucsw"]
+[ext_resource type="StyleBox" uid="uid://c2px0dssvdb1j" path="res://Styles/CheatCode_BG_Command_line.tres" id="3_t0y77"]
 
 [node name="CheatCode" type="CanvasLayer" unique_id=1276078923]
 script = ExtResource("1_ikxeg")
 
-[node name="Bg" type="Panel" parent="." unique_id=1015151914]
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1900037953]
 anchors_preset = -1
-anchor_top = 0.938
-anchor_right = 0.273
+anchor_top = 0.094000004
+anchor_right = 0.27
 anchor_bottom = 1.0
-offset_top = 0.17596436
-offset_right = 0.5039978
-offset_bottom = -1.0
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_q4y16")
+offset_top = 0.08799744
+offset_right = -0.040008545
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 2
 
-[node name="Label" type="Label" parent="Bg" unique_id=276552587]
-self_modulate = Color(1, 1, 1, 0.8235294)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.013
-anchor_right = 0.083000004
-anchor_bottom = 0.97400004
-offset_left = -0.09500027
-offset_right = -0.14500046
-offset_bottom = 0.013999939
+[node name="InfoBox" type="ScrollContainer" parent="VBox" unique_id=1709011574]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+
+[node name="Label" type="Label" parent="VBox/InfoBox" unique_id=2119476325]
+self_modulate = Color(1, 1, 1, 0.6666667)
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 10
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_bucsw")
+text = "Welcome: 
+Enter:  'help -l' or 'help -m' for Help !
+"
+vertical_alignment = 2
+autowrap_mode = 3
+
+[node name="command_Box" type="HBoxContainer" parent="VBox" unique_id=1874559569]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Label" type="Label" parent="VBox/command_Box" unique_id=276552587]
+modulate = Color(1, 1, 1, 0.627451)
+custom_minimum_size = Vector2(35, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("3_t0y77")
+theme_override_styles/focus = ExtResource("2_bucsw")
 text = ">>"
+horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="command" type="LineEdit" parent="Bg" unique_id=1122686674]
-self_modulate = Color(1, 1, 1, 0.627451)
+[node name="command" type="LineEdit" parent="VBox/command_Box" unique_id=1122686674]
+self_modulate = Color(1, 1, 1, 0.7058824)
 clip_contents = true
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.091000006
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.33499908
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/caret_width = 1
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_q4y16")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_4vdor")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_a4t0t")
+theme_override_styles/normal = ExtResource("3_t0y77")
+theme_override_styles/read_only = ExtResource("3_t0y77")
+theme_override_styles/focus = ExtResource("2_bucsw")
 placeholder_text = "Type <help> for command list."
 emoji_menu_enabled = false
 selecting_enabled = false

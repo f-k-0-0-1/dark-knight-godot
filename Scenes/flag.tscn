@@ -49,7 +49,7 @@ animations = [{
 "speed": 6.0
 }]
 
-[node name="Flag" type="Area2D" unique_id=803434551]
+[node name="Flag" type="Area2D" unique_id=803434551 groups=["flag"]]
 scale = Vector2(1.56, 1.56)
 script = ExtResource("1_vie08")
 

@@ -30,7 +30,7 @@ func _ready():
 	sprite.play("idle")
 	hitbox.body_entered.connect(_on_HitBox_body_entered)
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if is_dead:
 		return
 

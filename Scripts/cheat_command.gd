@@ -1,32 +1,53 @@
 extends Node
 
-@onready var command_box: LineEdit = $Bg/command;
+# GOING TO SLEEP I AM DONE PLS LEAVE ME IF BUGS !!!!!!!!!!!!!!
+
+@onready var command_box: LineEdit = $VBox/command_Box/command
+@onready var info_box: Label = $VBox/InfoBox/Label
 
 # Declarations
 var command : PackedStringArray;
+var player: CharacterBody2D; 
+var flag: Area2D;
 var commands: Dictionary;
 
 func _ready() -> void:
+	
+	# Init refs
+	player = null;
+	flag = null;
+	
 	# Init the dictionary
-		commands = {
-		"help" : [["-l", "m"],[help_line, help_multi]],
-		"teleport" : [["-s", "-e"], [tele_start, tele_end]],
-		"level" : [["-n", "-b"], [level_next, level_before]],
-		};
+	commands = {
+	"help" : [["-l", "-m"],[help_line, help_multi]],
+	"teleport" : [["-s", "-e"], [tele_end, tele_start]],
+	"level" : [["-n", "-b"], [level_next, level_before]],
+	"clear" : [["-all"], [clear_log]],
+	};
 
 # Called from the player Script
 func run_command() -> void:
+	
+	# Init player ref
+	if (player == null):
+		player = get_tree().get_first_node_in_group("player");
+		Globals.PLAYER_TRANS_START = player.global_position;
+		
+	# Init flag rep
+	if (flag == null):
+		flag = get_tree().get_first_node_in_group("flag");
+	
 	# Spilt the commands via spaces
 	command = command_box.text.split(" ", false);
 	
 	# Handle Overflow Args
 	if (command.size() < Globals.MIN_ARG_SIZE):
-		push_warning("Arguments are Underflow !\n");
-		resetAndExit();
+		log_error("Arguments are Underflow !\n");
+		command_box.text= "";
 		return;
 	elif (command.size() > Globals.MAX_ARG_SIZE):
-		push_warning("Arguments are Overflow !\n");
-		resetAndExit();
+		log_error("Arguments are Overflow !\n");
+		command_box.text= "";
 		return;
 	else: pass;
 	
@@ -46,29 +67,78 @@ func run_command() -> void:
 		if arg_index != -1:
 			# Call the function
 			args_funcs[arg_index].call()
-			print("Command Run!")
 		else:
-			push_warning("Invalid Arg: " + arg_name)
-			resetAndExit();
+			log_error("Invalid Arg: " + arg_name + "\n")
+			command_box.text= "";
 			return;
 	else:
-		push_warning("Invalid Command!")
-		resetAndExit();
+		log_error("Invalid Command!\n")
+		command_box.text= "";
 		return;
 
-# Todo Commands are just dummby
 # Call Backs for Help
-func help_line() -> void: print("help line !\n");
-func help_multi() -> void: print("help multi !\n");
+func help_line() -> void: 
+	info_box.text += "Options: " + ", ".join(commands.keys()) + "\n";
+	
+	# Reset Command Box
+	command_box.text= "";
+	
+func help_multi() -> void:
+	info_box.text += Globals.commandsInfo;
+	
+	# Reset Command Box
+	command_box.text= "";
 	
 # Call Backs for Teleport
-func tele_start() -> void: print("tele start !\n");
-func tele_end() -> void: print("tele end !\n");
+func tele_start() -> void: 
+	player.global_position.y = flag.global_position.y;
+	player.global_position.x = flag.global_position.x - Globals.TELE_DIS
+	command_box.text= "";
+	
+func tele_end() -> void:
+	player.global_position = Globals.PLAYER_TRANS_START;
+	command_box.text= "";
 
 # Cal Backs for Level
-func level_next() -> void: print("level next !\n");
-func level_before() -> void: print("level before!\n");
-
-# Clean up Function
-func resetAndExit() -> void:
+func level_next() -> void: 
+	# Current level number 
+	var current_level: int = SceneManager.current_level.trim_prefix("level_").to_int();
+	
+	# Swith to next level
+	if (current_level != SceneManager.last_level):
+		SceneManager.change_scene("level_" + str(current_level + 0x1));
+	else :
+		SceneManager.change_scene("credits") 
+	
+	# Reset flags
+	player = null;
+	flag = null;
+	
+	# Reset Command Box
 	command_box.text= "";
+	
+func level_before() -> void: 
+	# Current level number
+	var current_level: int = SceneManager.current_level.trim_prefix("level_").to_int();
+	
+	# Swith to before level
+	if (current_level > 0x1):
+		SceneManager.change_scene("level_" + str(current_level - 0x1));
+	else :
+		SceneManager.change_scene("level_" + str(current_level));
+	
+	# Reset flags
+	player = null;
+	flag = null;
+	
+	# Reset Command Box
+	command_box.text= "";
+
+func clear_log() -> void:
+	info_box.text = "Enter:  'help -l' or 'help -m' for Help !";
+	
+	# Reset Command Box
+	command_box.text= "";
+
+func log_error(str_err :String) -> void:
+	info_box.text += "\nError: " + str_err;
