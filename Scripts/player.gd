@@ -25,6 +25,7 @@ var cheat_command_scene = null;
 
 @onready var timer_label: Label = $HUD/TimerLabel
 @onready var level_timer: Timer = $HUD/LevelTimer
+
 var time_elapsed: float = 0.0
 
 var current_health: int = max_health:
@@ -87,7 +88,6 @@ func _process(_delta: float) -> void:
 	
 	# Logic for cheat command 
 	if cheat_command and cheat_command_scene == null:
-		
 		cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
 		add_child(cheat_command_scene);
 	elif cheat_command and cheat_command_scene != null:

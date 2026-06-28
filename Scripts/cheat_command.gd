@@ -1,7 +1,5 @@
 extends Node
 
-# GOING TO SLEEP I AM DONE PLS LEAVE ME IF BUGS !!!!!!!!!!!!!!
-
 @onready var command_box: LineEdit = $VBox/command_Box/command
 @onready var info_box: Label = $VBox/InfoBox/Label
 

@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="10_n4vm5"]
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="11_n4vm5"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="14_fxnjf"]
+[ext_resource type="PackedScene" uid="uid://bu7a4locqiqmr" path="res://Scenes/rotating_drum.tscn" id="14_ki8bc"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="15_xjeco"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
@@ -456,7 +457,7 @@ height = 410.0
 [node name="Level3" type="Node2D" unique_id=407411734]
 script = ExtResource("1_j77fg")
 
-[node name="Player" parent="." unique_id=268462001 groups=["player"] instance=ExtResource("6_qf6rc")]
+[node name="Player" parent="." unique_id=268462001 instance=ExtResource("6_qf6rc")]
 position = Vector2(-2037, -300)
 
 [node name="TileMap" type="Node" parent="." unique_id=1879983861]
@@ -491,9 +492,6 @@ position = Vector2(1079, -148)
 
 [node name="flying demon2" parent="Enemies" unique_id=1578147510 groups=["enemies"] instance=ExtResource("10_n4vm5")]
 position = Vector2(3572.0002, -177)
-
-[node name="flying demon3" parent="Enemies" unique_id=431490742 groups=["enemies"] instance=ExtResource("10_n4vm5")]
-position = Vector2(6102, -160)
 
 [node name="flying demon4" parent="Enemies" unique_id=11447505 groups=["enemies"] instance=ExtResource("10_n4vm5")]
 position = Vector2(14028, -228)
@@ -542,6 +540,9 @@ shape = SubResource("CapsuleShape2D_l4wr6")
 texture_filter = 1
 position = Vector2(66, 8)
 texture = ExtResource("9_l4wr6")
+
+[node name="RotatingDrum" parent="Objects" unique_id=2051859578 instance=ExtResource("14_ki8bc")]
+position = Vector2(6039, -109)
 
 [node name="Collectables" type="Node2D" parent="." unique_id=1155344135]
 

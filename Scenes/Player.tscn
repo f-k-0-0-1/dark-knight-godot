@@ -39,7 +39,7 @@
 [ext_resource type="Texture2D" uid="uid://wav5y1k0uqpw" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00018.png" id="67_qvi77"]
 [ext_resource type="Texture2D" uid="uid://tl74jriy4mdi" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00019.png" id="68_8l4tv"]
 [ext_resource type="PackedScene" uid="uid://bc78hkoqfxfy8" path="res://Scenes/tutorial_popup_layer.tscn" id="68_au5ve"]
-[ext_resource type="Script" uid="uid://dnaasseymj631" path="res://Scripts/camera_shake.gd" id="69_6f3s4"]
+[ext_resource type="Script" path="res://Scripts/camera_shake.gd" id="69_6f3s4"]
 [ext_resource type="Texture2D" uid="uid://c7qsglvvmdudi" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00000.png" id="69_jxgrh"]
 [ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="69_yr3al"]
 [ext_resource type="AudioStream" uid="uid://cjak0f75dvjdi" path="res://Audio/sfx/jump.mp3" id="70_ed4yo"]
