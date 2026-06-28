@@ -1,0 +1,116 @@
+[gd_scene format=3 uid="uid://bu7a4locqiqmr"]
+
+[ext_resource type="Script" uid="uid://d1j222igm18qf" path="res://Scenes/rotating_drum.gd" id="1_ftth2"]
+[ext_resource type="Texture2D" uid="uid://by7jf84ljakrf" path="res://Assets/animated_spikes/rotatingDrum.svg" id="1_x8540"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nbwsh"]
+size = Vector2(279.92245, 388.4405)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kgmqw"]
+atlas = ExtResource("1_x8540")
+region = Rect2(20, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s80er"]
+atlas = ExtResource("1_x8540")
+region = Rect2(316, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8jhox"]
+atlas = ExtResource("1_x8540")
+region = Rect2(612, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hed5s"]
+atlas = ExtResource("1_x8540")
+region = Rect2(908, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yykrm"]
+atlas = ExtResource("1_x8540")
+region = Rect2(1204, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2awvy"]
+atlas = ExtResource("1_x8540")
+region = Rect2(1500, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nrv0r"]
+atlas = ExtResource("1_x8540")
+region = Rect2(1796, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gmj2a"]
+atlas = ExtResource("1_x8540")
+region = Rect2(2092, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n8e0l"]
+atlas = ExtResource("1_x8540")
+region = Rect2(2388, 0, 296, 709)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3oi3s"]
+atlas = ExtResource("1_x8540")
+region = Rect2(2684, 0, 296, 709)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rybab"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kgmqw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s80er")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8jhox")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hed5s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yykrm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2awvy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nrv0r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gmj2a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n8e0l")
+}, {
+"duration": 0.8,
+"texture": SubResource("AtlasTexture_3oi3s")
+}],
+"loop": true,
+"name": &"rotating",
+"speed": 8.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ftth2"]
+size = Vector2(278.5715, 388.09528)
+
+[node name="RotatingDrum" type="StaticBody2D" unique_id=2051859578]
+scale = Vector2(0.83999985, 0.83999985)
+script = ExtResource("1_ftth2")
+metadata/_edit_group_ = true
+
+[node name="shape" type="CollisionShape2D" parent="." unique_id=644764003]
+z_index = 1
+position = Vector2(23.134073, 19.220207)
+scale = Vector2(0.9999997, 0.9999997)
+shape = SubResource("RectangleShape2D_nbwsh")
+
+[node name="sprite" type="AnimatedSprite2D" parent="." unique_id=1366711106]
+texture_filter = 1
+position = Vector2(0, 66)
+sprite_frames = SubResource("SpriteFrames_rybab")
+animation = &"rotating"
+autoplay = "rotating"
+frame_progress = 0.5387243
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=132713511]
+
+[node name="area" type="CollisionShape2D" parent="Hitbox" unique_id=66776415]
+position = Vector2(21.428589, 17.857147)
+scale = Vector2(0.9999997, 0.9999997)
+shape = SubResource("RectangleShape2D_ftth2")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_detector_body_entered"]
