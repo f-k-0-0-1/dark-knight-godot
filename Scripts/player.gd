@@ -58,21 +58,26 @@ func _input(event):
 		cheat_command = !cheat_command 
 		print("Cheat Command: ", cheat_command)
 		
-	if event.is_action_pressed("god_mode_toggle"):
+	if !cheat_command and event.is_action_pressed("god_mode_toggle"):
 		god_mode = !god_mode
 		velocity = Vector2.ZERO
 		print("God Mode:", god_mode)
 
-	if event.is_action_pressed("fireball"):
+	if !cheat_command and event.is_action_pressed("fireball"):
 		shoot_fireball()
 
-	if event.is_action_pressed("lightning_ability"):
+	if !cheat_command and event.is_action_pressed("lightning_ability"):
 		activate_lightning_ball()
+
+	if cheat_command and  cheat_command_scene != null and  event.is_action_pressed("Enter"):
+		cheat_command_scene.run_command();
+		cheat_command = false;
 
 func _process(delta: float) -> void:
 	
 	# Logic for cheat command 
 	if cheat_command and cheat_command_scene == null:
+		
 		cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
 		add_child(cheat_command_scene);
 	elif cheat_command and cheat_command_scene != null:
@@ -105,11 +110,11 @@ func _physics_process(delta):
 
 func handle_movement_input():
 	var move_speed := speed
-	is_sprinting = Input.is_action_pressed("ui_shift")
+	is_sprinting = !cheat_command and Input.is_action_pressed("ui_shift")
 	if is_sprinting:
 		move_speed *= sprint_multiplier
 
-	if god_mode:
+	if !cheat_command and god_mode :
 		velocity = Vector2.ZERO
 		if Input.is_action_pressed("move_right"):
 			velocity.x += move_speed
@@ -121,14 +126,14 @@ func handle_movement_input():
 			velocity.y += move_speed
 	else:
 		var input_direction := 0.0
-		if Input.is_action_pressed("move_left"):
+		if !cheat_command and Input.is_action_pressed("move_left"):
 			input_direction -= 1
-		if Input.is_action_pressed("move_right"):
+		if !cheat_command and Input.is_action_pressed("move_right"):
 			input_direction += 1
 
 		velocity.x = input_direction * move_speed
 
-		if Input.is_action_just_pressed("jump") and jump_count < MAX_JUMPS:
+		if !cheat_command and Input.is_action_just_pressed("jump") and jump_count < MAX_JUMPS:
 			velocity.y = jump_velocity
 			jump_count += 1
 			jump_anim_played = false

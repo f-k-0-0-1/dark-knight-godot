@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://dtmqlg45pxab8"]
 
+[ext_resource type="Script" uid="uid://cjf6mfmxvx3xp" path="res://Scripts/cheat_command.gd" id="1_ikxeg"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q4y16"]
 bg_color = Color(0, 0, 0, 0.41568628)
 
@@ -10,6 +12,7 @@ bg_color = Color(0, 0, 0, 0.41568628)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a4t0t"]
 
 [node name="CheatCode" type="CanvasLayer" unique_id=1276078923]
+script = ExtResource("1_ikxeg")
 
 [node name="Bg" type="Panel" parent="." unique_id=1015151914]
 anchors_preset = -1
@@ -38,6 +41,7 @@ autowrap_mode = 3
 
 [node name="command" type="LineEdit" parent="Bg" unique_id=1122686674]
 self_modulate = Color(1, 1, 1, 0.627451)
+clip_contents = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.091000006
@@ -50,5 +54,9 @@ theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxEmpty_q4y16")
 theme_override_styles/read_only = SubResource("StyleBoxEmpty_4vdor")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_a4t0t")
-text = "Teleport END"
+placeholder_text = "Type <Help> for command list."
+emoji_menu_enabled = false
+selecting_enabled = false
+drag_and_drop_selection_enabled = false
 virtual_keyboard_enabled = false
+caret_blink = true
