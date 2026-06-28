@@ -202,6 +202,17 @@
 [ext_resource type="PackedScene" uid="uid://chsw1762yyhp0" path="res://Scenes/portal_effect.tscn" id="201_7lqls"]
 [ext_resource type="PackedScene" uid="uid://m1r7afhf8aax" path="res://Scenes/Player.tscn" id="201_opkhk"]
 
+[sub_resource type="Environment" id="Environment_7lqls"]
+background_mode = 3
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 1.14
+glow_bloom = 0.42
+adjustment_enabled = true
+adjustment_brightness = 1.06
+adjustment_contrast = 1.025
+adjustment_saturation = 1.2
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("2_cggpd")
 texture_region_size = Vector2i(512, 512)
@@ -1145,6 +1156,11 @@ animations = [{
 [node name="Level2" type="Node2D" unique_id=2146547538]
 script = ExtResource("1_v3rpw")
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1405828956]
+environment = SubResource("Environment_7lqls")
+
+[node name="Player" parent="." unique_id=268462001 instance=ExtResource("201_opkhk")]
+
 [node name="Level" type="Node2D" parent="." unique_id=2102138039]
 
 [node name="ground" type="TileMapLayer" parent="Level" unique_id=59306087]
@@ -1315,5 +1331,3 @@ visible = false
 
 [node name="PortalEffect" parent="." unique_id=948432008 instance=ExtResource("201_7lqls")]
 visible = false
-
-[node name="Player" parent="." unique_id=268462001 instance=ExtResource("201_opkhk")]
