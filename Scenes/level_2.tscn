@@ -1263,43 +1263,48 @@ position = Vector2(34942, -335)
 position = Vector2(21934, -445)
 scale = Vector2(10, 10)
 
-[node name="PortalA1" parent="." unique_id=1985962026 instance=ExtResource("196_0il0l")]
+[node name="Portals" type="Node2D" parent="." unique_id=96734206]
+
+[node name="PortalA1" parent="Portals" unique_id=1985962026 instance=ExtResource("196_0il0l")]
 position = Vector2(10411, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalA2")
 
-[node name="PortalA2" parent="." unique_id=173771279 instance=ExtResource("196_0il0l")]
+[node name="PortalA2" parent="Portals" unique_id=173771279 instance=ExtResource("196_0il0l")]
 position = Vector2(12676.001, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalA1")
 
-[node name="PortalB1" parent="." unique_id=649818017 instance=ExtResource("196_0il0l")]
+[node name="PortalB1" parent="Portals" unique_id=649818017 instance=ExtResource("196_0il0l")]
 position = Vector2(16583, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalB2")
 
-[node name="PortalB2" parent="." unique_id=1983110745 instance=ExtResource("196_0il0l")]
+[node name="PortalB2" parent="Portals" unique_id=1983110745 instance=ExtResource("196_0il0l")]
 position = Vector2(18720, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalB1")
 
-[node name="PortalC1" parent="." unique_id=547441923 instance=ExtResource("196_0il0l")]
+[node name="PortalC1" parent="Portals" unique_id=547441923 instance=ExtResource("196_0il0l")]
 position = Vector2(22758.002, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalC2")
 
-[node name="PortalC2" parent="." unique_id=632237017 instance=ExtResource("196_0il0l")]
+[node name="PortalC2" parent="Portals" unique_id=632237017 instance=ExtResource("196_0il0l")]
 position = Vector2(24829, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalC1")
+
+[node name="Collectables" type="Node2D" parent="." unique_id=1152680073]
+
+[node name="CollectableLives" parent="Collectables" unique_id=12706358 instance=ExtResource("200_7lfvh")]
+position = Vector2(6720, -1831)
+
+[node name="CollectableLives2" parent="Collectables" unique_id=704986145 instance=ExtResource("200_7lfvh")]
+position = Vector2(19795, -758)
 
 [node name="Flag" parent="." unique_id=803434551 instance=ExtResource("198_46x4x")]
 position = Vector2(36768, -139)
 
 [node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("199_dyagb")]
-
-[node name="CollectableLives" parent="." unique_id=12706358 instance=ExtResource("200_7lfvh")]
-position = Vector2(6720, -1831)
-
-[node name="CollectableLives2" parent="." unique_id=704986145 instance=ExtResource("200_7lfvh")]
-position = Vector2(19795, -758)
+visible = false

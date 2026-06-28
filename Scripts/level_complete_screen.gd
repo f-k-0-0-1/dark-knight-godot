@@ -1,8 +1,5 @@
 extends CanvasLayer
 
-@onready var blurred_sprite: Sprite2D = $BlurredBackgroundSprite
-@onready var menu_panel: Panel = $MenuPanel
-
 @onready var next_button: Button = $MenuPanel/NextLevelButton
 @onready var retry_button: Button = $MenuPanel/RetryButton
 @onready var main_menu_button: Button = $MenuPanel/MainMenuButton
@@ -16,29 +13,8 @@ func _ready():
 	
 	visible = false
 
-func show_level_complete():
-	$MenuPanel.visible = false
-	await get_tree().process_frame
-
-	var screenshot_image := get_viewport().get_texture().get_image()
-	var screenshot_texture := ImageTexture.create_from_image(screenshot_image)
-	
-	blurred_sprite.texture = screenshot_texture
-
-	var viewport_size = get_viewport().get_visible_rect().size
-	
-	var image_size = screenshot_texture.get_size()
-	
-	var scale_x = viewport_size.x / image_size.x
-	var scale_y = viewport_size.y / image_size.y
-	
-	blurred_sprite.scale = Vector2(scale_x, scale_y)
-	
-	blurred_sprite.centered = false
-	blurred_sprite.position = Vector2.ZERO
-	
-	$MenuPanel.visible = true
-	visible = true
+func show_level_complete():	
+	visible = true;
 
 func _on_next_pressed():
 	get_tree().paused = false

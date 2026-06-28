@@ -1,13 +1,11 @@
 [gd_scene format=3 uid="uid://duxh1rt4bjo2o"]
 
 [ext_resource type="Script" uid="uid://d1tqytmi5p106" path="res://Scripts/level_complete_screen.gd" id="1_618c7"]
-[ext_resource type="Shader" uid="uid://4cyvubkg70ss" path="res://BlurShader.gdshader" id="1_rgl0m"]
+[ext_resource type="Shader" uid="uid://bo2yjehime3xk" path="res://Shaders/blurr.gdshader" id="2_618c7"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kikgb"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rgl0m"]
-shader = ExtResource("1_rgl0m")
-shader_parameter/blur_size = 5.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kh1sa"]
+shader = ExtResource("2_618c7")
+shader_parameter/blur_amount = 3.0000001425
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_618c7"]
 bg_color = Color(0, 0, 0, 0.27450982)
@@ -35,25 +33,10 @@ bg_color = Color(0, 0, 0, 0.39215687)
 
 [node name="LevelCompleteScreen" type="CanvasLayer" unique_id=848071443]
 process_mode = 3
-visible = false
 script = ExtResource("1_618c7")
 
-[node name="DimBackground" type="ColorRect" parent="." unique_id=1280943717]
-material = SubResource("ShaderMaterial_kikgb")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-color = Color(0, 0, 0, 0.29411766)
-
-[node name="BlurredBackgroundSprite" type="Sprite2D" parent="." unique_id=1352121284]
-material = SubResource("ShaderMaterial_rgl0m")
-centered = false
-
 [node name="MenuPanel" type="Panel" parent="." unique_id=893439406]
-modulate = Color(1, 1, 1, 0.7058824)
+material = SubResource("ShaderMaterial_kh1sa")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

@@ -455,7 +455,7 @@ height = 410.0
 [node name="Level3" type="Node2D" unique_id=407411734]
 
 [node name="Player" parent="." unique_id=268462001 groups=["player"] instance=ExtResource("6_qf6rc")]
-position = Vector2(-1747, -177)
+position = Vector2(-1738, -250)
 
 [node name="TileMap" type="Node" parent="." unique_id=1879983861]
 
@@ -541,16 +541,19 @@ texture_filter = 1
 position = Vector2(66, 8)
 texture = ExtResource("9_l4wr6")
 
+[node name="Collectables" type="Node2D" parent="." unique_id=1155344135]
+
+[node name="CollectableLives" parent="Collectables" unique_id=12706358 instance=ExtResource("15_xjeco")]
+position = Vector2(4664, -213)
+
+[node name="CollectableLives2" parent="Collectables" unique_id=1242263616 instance=ExtResource("15_xjeco")]
+position = Vector2(11776, -109)
+
+[node name="CollectableLives3" parent="Collectables" unique_id=1337806481 instance=ExtResource("15_xjeco")]
+position = Vector2(18718, -487)
+
 [node name="Flag" parent="." unique_id=803434551 instance=ExtResource("10_5rvg2")]
 position = Vector2(22676, -1164)
 
 [node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("14_fxnjf")]
-
-[node name="CollectableLives" parent="." unique_id=12706358 instance=ExtResource("15_xjeco")]
-position = Vector2(4664, -213)
-
-[node name="CollectableLives2" parent="." unique_id=1242263616 instance=ExtResource("15_xjeco")]
-position = Vector2(11776, -109)
-
-[node name="CollectableLives3" parent="." unique_id=1337806481 instance=ExtResource("15_xjeco")]
-position = Vector2(18718, -487)
+visible = false
