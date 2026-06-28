@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://ckhm330nvna8v"]
 
+[ext_resource type="Script" uid="uid://ggtkth881klb" path="res://Scripts/level_3.gd" id="1_j77fg"]
 [ext_resource type="Texture2D" uid="uid://dlul14jwck0j4" path="res://Assets/Mossy Tileset/Mossy - TileSet.png" id="1_qf6rc"]
 [ext_resource type="Texture2D" uid="uid://ohai1kksglsv" path="res://Assets/Mossy Tileset/Mossy - MossyHills.png" id="2_5e78q"]
 [ext_resource type="Texture2D" uid="uid://iufq6gh61rno" path="res://Assets/Mossy Tileset/Mossy - Background.png" id="2_qf6rc"]
@@ -453,6 +454,7 @@ radius = 143.0
 height = 410.0
 
 [node name="Level3" type="Node2D" unique_id=407411734]
+script = ExtResource("1_j77fg")
 
 [node name="Player" parent="." unique_id=268462001 groups=["player"] instance=ExtResource("6_qf6rc")]
 position = Vector2(-1738, -250)

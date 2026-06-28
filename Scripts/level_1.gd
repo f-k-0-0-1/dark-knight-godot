@@ -13,9 +13,9 @@ func _ready():
 	)
 	tutorial_instance.tutorial_closed.connect(_on_tutorial_closed)
 
-func finish_level():
+func finish_level(stars_earned: int):
 	# Open the screen (no stars or time passed right now)
-	level_complete_screen.show_level_complete()
+	level_complete_screen.show_level_complete(stars_earned)
 
 func _on_tutorial_closed():
 	print("Tutorial closed!")

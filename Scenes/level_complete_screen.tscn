@@ -2,7 +2,10 @@
 
 [ext_resource type="Script" uid="uid://d1tqytmi5p106" path="res://Scripts/level_complete_screen.gd" id="1_618c7"]
 [ext_resource type="Shader" uid="uid://bo2yjehime3xk" path="res://Shaders/blurr.gdshader" id="2_618c7"]
+[ext_resource type="Texture2D" uid="uid://h8w8c2dhubrm" path="res://Assets/lvel stars sprite/Star.png" id="3_dsgku"]
 [ext_resource type="AudioStream" uid="uid://b8owy4ryisrbp" path="res://Audio/sfx/Level_Over.mp3" id="3_kh1sa"]
+[ext_resource type="Material" uid="uid://dhqurxsiuu8xm" path="res://Shaders/StarEmptyMaterial.tres" id="3_vc44a"]
+[ext_resource type="AudioStream" uid="uid://bher0fc2gmsbm" path="res://Audio/sfx/star_twinkle.mp3" id="6_5gjvb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kh1sa"]
 shader = ExtResource("2_618c7")
@@ -32,6 +35,117 @@ bg_color = Color(0, 0, 0, 0.27450982)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pfw5j"]
 bg_color = Color(0, 0, 0, 0.39215687)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_dsgku"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vc44a"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gjvb"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nsfsr"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o45pw"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfw5j"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2dyr8"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t8515"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tjnsw"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x043v"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4byg"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0co8b"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(320, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t1sfc"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(352, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_caafo"]
+atlas = ExtResource("3_dsgku")
+region = Rect2(384, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8o5u1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dsgku")
+}],
+"loop": true,
+"name": &"empty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vc44a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gjvb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nsfsr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o45pw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfw5j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2dyr8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t8515")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tjnsw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x043v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f4byg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0co8b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t1sfc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_caafo")
+}],
+"loop": true,
+"name": &"full",
+"speed": 12.0
+}]
+
 [node name="LevelCompleteScreen" type="CanvasLayer" unique_id=848071443]
 process_mode = 3
 script = ExtResource("1_618c7")
@@ -47,10 +161,10 @@ mouse_filter = 1
 
 [node name="RetryButton" type="Button" parent="MenuPanel" unique_id=1560988444]
 layout_mode = 0
-offset_left = 428.0
-offset_top = 285.0
-offset_right = 694.0
-offset_bottom = 349.0
+offset_left = 439.0
+offset_top = 344.0
+offset_right = 705.0
+offset_bottom = 389.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_618c7")
 theme_override_styles/hover = SubResource("StyleBoxFlat_5gjvb")
@@ -58,10 +172,10 @@ text = "RETRY"
 
 [node name="NextLevelButton" type="Button" parent="MenuPanel" unique_id=242575425]
 layout_mode = 0
-offset_left = 428.0
-offset_top = 195.0
-offset_right = 694.0
-offset_bottom = 259.0
+offset_left = 439.0
+offset_top = 271.0
+offset_right = 705.0
+offset_bottom = 316.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_kh1sa")
 theme_override_styles/hover = SubResource("StyleBoxFlat_nsfsr")
@@ -69,10 +183,10 @@ text = "NEXT LEVEL"
 
 [node name="MainMenuButton" type="Button" parent="MenuPanel" unique_id=2028791805]
 layout_mode = 0
-offset_left = 428.0
-offset_top = 373.0
-offset_right = 694.0
-offset_bottom = 437.0
+offset_left = 439.0
+offset_top = 416.0
+offset_right = 705.0
+offset_bottom = 461.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_dsgku")
 theme_override_styles/hover = SubResource("StyleBoxFlat_o45pw")
@@ -80,22 +194,49 @@ text = "MAIN MENU"
 
 [node name="QuitButton" type="Button" parent="MenuPanel" unique_id=2033871538]
 layout_mode = 0
-offset_left = 428.0
-offset_top = 458.0
-offset_right = 694.0
-offset_bottom = 522.0
+offset_left = 439.0
+offset_top = 488.0
+offset_right = 705.0
+offset_bottom = 533.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_vc44a")
 theme_override_styles/hover = SubResource("StyleBoxFlat_pfw5j")
 text = "QUIT"
 
+[node name="Star1" type="AnimatedSprite2D" parent="MenuPanel" unique_id=480397454]
+texture_filter = 1
+material = ExtResource("3_vc44a")
+position = Vector2(470, 160)
+scale = Vector2(2.8, 2.8)
+sprite_frames = SubResource("SpriteFrames_8o5u1")
+animation = &"empty"
+
+[node name="Star2" type="AnimatedSprite2D" parent="MenuPanel" unique_id=402753834]
+texture_filter = 1
+material = ExtResource("3_vc44a")
+position = Vector2(570, 130)
+scale = Vector2(3.5, 3.5)
+sprite_frames = SubResource("SpriteFrames_8o5u1")
+animation = &"full"
+
+[node name="Star3" type="AnimatedSprite2D" parent="MenuPanel" unique_id=668598240]
+texture_filter = 1
+material = ExtResource("3_vc44a")
+position = Vector2(670, 160)
+scale = Vector2(2.8, 2.8)
+sprite_frames = SubResource("SpriteFrames_8o5u1")
+animation = &"full"
+
 [node name="Label" type="Label" parent="." unique_id=740864151]
-offset_left = 428.0
+offset_left = 442.0
 offset_top = 39.0
-offset_right = 659.0
+offset_right = 708.0
 offset_bottom = 78.0
 theme_override_font_sizes/font_size = 28
-text = "LEVEL COMPLETED"
+text = " LEVEL COMPLETED"
 
 [node name="LevelCompleteSound" type="AudioStreamPlayer" parent="." unique_id=890414956]
 stream = ExtResource("3_kh1sa")
+
+[node name="StarTwinkleSound" type="AudioStreamPlayer" parent="." unique_id=1769652130]
+stream = ExtResource("6_5gjvb")

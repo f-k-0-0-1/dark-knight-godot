@@ -268,6 +268,21 @@ func start_timer(duration: float, callback: Callable):
 func stop_level_timer():
 	level_timer.stop()
 
+func get_stars_earned() -> int:
+	# EDIT THESE NUMBERS to change how hard it is to get stars!
+	var time_for_3_stars = 35.0
+	var time_for_2_stars = 45.0
+	var time_for_1_star  = 60.0
+	
+	if time_elapsed <= time_for_3_stars:
+		return 3
+	elif time_elapsed <= time_for_2_stars:
+		return 2
+	elif time_elapsed <= time_for_1_star:
+		return 1
+	else:
+		return 0
+
 # Call this if you want to reset the timer (e.g., if the player dies)
 func reset_level_timer():
 	time_elapsed = 0.0

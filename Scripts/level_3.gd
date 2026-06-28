@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 var tutorial_scene := preload("res://Scenes/tutorial_popup_layer.tscn");
 var tutorial_instance : CanvasLayer
