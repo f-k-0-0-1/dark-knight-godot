@@ -402,10 +402,10 @@ script = ExtResource("66_7q0l3")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = 200.0
-offset_top = 31.0
-offset_right = 267.0
-offset_bottom = 46.72148
+offset_left = 220.0
+offset_top = 33.0
+offset_right = 287.0
+offset_bottom = 48.72148
 grow_horizontal = 0
 scale = Vector2(1.44, 1.42)
 pivot_offset = Vector2(922.162, 35.6159)
@@ -414,9 +414,9 @@ pivot_offset = Vector2(922.162, 35.6159)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 127.0
-offset_top = 16.999998
-offset_right = 175.68994
+offset_left = 319.0
+offset_top = 17.0
+offset_right = 367.68994
 offset_bottom = 379.0
 grow_horizontal = 2
 rotation = 1.5707964
@@ -435,6 +435,20 @@ offset_bottom = 284.0
 rotation = -1.5707964
 scale = Vector2(1.9, 1.9)
 text = "A B I L I T Y"
+
+[node name="LevelTimer" type="Timer" parent="HUD" unique_id=1856909894]
+autostart = true
+
+[node name="TimerLabel" type="Label" parent="HUD" unique_id=361035951]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -37.0
+offset_top = 9.0
+offset_right = 37.0
+offset_bottom = 48.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
 position = Vector2(0, -66)

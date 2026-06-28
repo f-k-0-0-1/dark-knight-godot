@@ -3,6 +3,8 @@ extends Node2D
 var tutorial_scene := preload("res://Scenes/tutorial_popup_layer.tscn")
 var tutorial_instance: CanvasLayer
 
+@onready var level_complete_screen: CanvasLayer = $LevelCompleteScreen
+
 func _ready():
 	tutorial_instance = tutorial_scene.instantiate()
 	add_child(tutorial_instance)
@@ -10,6 +12,10 @@ func _ready():
 		"Press A/D to move\nPress W or Space to jump\nPress F or Enter to shoot\nPress G to toggle God Mode"
 	)
 	tutorial_instance.tutorial_closed.connect(_on_tutorial_closed)
+
+func finish_level():
+	# Open the screen (no stars or time passed right now)
+	level_complete_screen.show_level_complete()
 
 func _on_tutorial_closed():
 	print("Tutorial closed!")

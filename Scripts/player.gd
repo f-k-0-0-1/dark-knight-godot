@@ -21,6 +21,10 @@ var fireball_scene: PackedScene
 var lightning_ball_instance: Area2D
 var cheat_command_scene = null;
 
+@onready var timer_label: Label = $HUD/TimerLabel
+@onready var level_timer: Timer = $HUD/LevelTimer
+var time_elapsed: float = 0.0
+
 var current_health: int = max_health:
 	set(value):
 		var old_health = current_health
@@ -74,7 +78,10 @@ func _input(event):
 		cheat_command = false;
 
 func _process(delta: float) -> void:
-	
+	# Update the level timer text
+	if not level_timer.is_stopped():
+		time_elapsed += delta
+		timer_label.text = str(snapped(time_elapsed, 0.1)) + "s"
 	# Logic for cheat command 
 	if cheat_command and cheat_command_scene == null:
 		
@@ -256,6 +263,16 @@ func start_timer(duration: float, callback: Callable):
 	timer.timeout.connect(callback)
 	add_child(timer)
 	timer.start()
+
+# Call this from your Flag when the level is complete
+func stop_level_timer():
+	level_timer.stop()
+
+# Call this if you want to reset the timer (e.g., if the player dies)
+func reset_level_timer():
+	time_elapsed = 0.0
+	timer_label.text = "0.0s"
+	level_timer.start()
 
 func _on_shoot_anim_end():
 	is_shooting = false
