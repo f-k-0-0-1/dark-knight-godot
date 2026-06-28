@@ -200,6 +200,7 @@
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="198_46x4x"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="199_dyagb"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="200_7lfvh"]
+[ext_resource type="PackedScene" uid="uid://chsw1762yyhp0" path="res://Scenes/portal_effect.tscn" id="201_7lqls"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("2_cggpd")
@@ -1265,35 +1266,41 @@ scale = Vector2(10, 10)
 
 [node name="Portals" type="Node2D" parent="." unique_id=96734206]
 
-[node name="PortalA1" parent="Portals" unique_id=1985962026 instance=ExtResource("196_0il0l")]
+[node name="PortalA1" parent="Portals" unique_id=1985962026 node_paths=PackedStringArray("portal_effect") instance=ExtResource("196_0il0l")]
 position = Vector2(10411, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalA2")
+portal_effect = NodePath("../../PortalEffect")
 
-[node name="PortalA2" parent="Portals" unique_id=173771279 instance=ExtResource("196_0il0l")]
+[node name="PortalA2" parent="Portals" unique_id=173771279 node_paths=PackedStringArray("portal_effect") instance=ExtResource("196_0il0l")]
 position = Vector2(12676.001, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalA1")
+portal_effect = NodePath("../../PortalEffect")
 
-[node name="PortalB1" parent="Portals" unique_id=649818017 instance=ExtResource("196_0il0l")]
+[node name="PortalB1" parent="Portals" unique_id=649818017 node_paths=PackedStringArray("portal_effect") instance=ExtResource("196_0il0l")]
 position = Vector2(16583, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalB2")
+portal_effect = NodePath("../../PortalEffect")
 
-[node name="PortalB2" parent="Portals" unique_id=1983110745 instance=ExtResource("196_0il0l")]
+[node name="PortalB2" parent="Portals" unique_id=1983110745 node_paths=PackedStringArray("portal_effect") instance=ExtResource("196_0il0l")]
 position = Vector2(18720, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalB1")
+portal_effect = NodePath("../../PortalEffect")
 
-[node name="PortalC1" parent="Portals" unique_id=547441923 instance=ExtResource("196_0il0l")]
+[node name="PortalC1" parent="Portals" unique_id=547441923 node_paths=PackedStringArray("portal_effect") instance=ExtResource("196_0il0l")]
 position = Vector2(22758.002, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalC2")
+portal_effect = NodePath("../../PortalEffect")
 
-[node name="PortalC2" parent="Portals" unique_id=632237017 instance=ExtResource("196_0il0l")]
+[node name="PortalC2" parent="Portals" unique_id=632237017 node_paths=PackedStringArray("portal_effect") instance=ExtResource("196_0il0l")]
 position = Vector2(24829, -172)
 scale = Vector2(14, 14)
 target_portal = NodePath("../PortalC1")
+portal_effect = NodePath("../../PortalEffect")
 
 [node name="Collectables" type="Node2D" parent="." unique_id=1152680073]
 
@@ -1307,4 +1314,7 @@ position = Vector2(19795, -758)
 position = Vector2(36768, -139)
 
 [node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("199_dyagb")]
+visible = false
+
+[node name="PortalEffect" parent="." unique_id=948432008 instance=ExtResource("201_7lqls")]
 visible = false

@@ -2,6 +2,8 @@ extends CharacterBody2D
 
 signal health_changed(new_health: int, max_health: int)
 
+@onready var camera: Camera2D = $Camera2D
+var dash_locked := false
 @export var speed: float = 650.0
 @export var sprint_multiplier: float = 5.0
 @export var jump_velocity: float = -1150.0
@@ -163,6 +165,15 @@ func handle_landing_reset():
 		jump_anim_played = false
 	was_on_floor = is_on_floor()
 
+func _on_dash_anim_finished():
+	dash_locked = false  # Unlock the animation
+	
+	# Immediately switch back to a valid animation state based on movement
+	if abs(velocity.x) > 10.0:
+		sprite.play("walk")
+	else:
+		sprite.play("idle")
+
 func shoot_fireball():
 	if not can_shoot or fireball_scene == null or is_shooting:
 		return
@@ -174,9 +185,21 @@ func shoot_fireball():
 	fireball.global_position = fire_point.global_position
 	get_tree().current_scene.add_child(fireball)
 
-	sprite.play("dash", false)
+	dash_locked = true
+	sprite.play("dash")
+	sprite.frame = 0
+	
+	# === FIX: Safely disconnect before connecting again ===
+	if sprite.animation_finished.is_connected(_on_dash_anim_finished):
+		sprite.animation_finished.disconnect(_on_dash_anim_finished)
+	sprite.animation_finished.connect(_on_dash_anim_finished, CONNECT_ONE_SHOT)
+	
 	is_shooting = true
 	can_shoot = false
+	
+	var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+	if camera:
+		camera.trigger_shake(5.0, 0.15)
 
 	start_timer(shoot_anim_duration, _on_shoot_anim_end)
 	start_timer(fireball_cooldown, _on_fireball_cooldown_timeout)
@@ -196,7 +219,6 @@ func activate_lightning_ball():
 	ball.scale = Vector2(1.5, 1.5)
 	ball.global_position = global_position + Vector2(50 if facing_right else -50, 0)
 	
-	# Optional: Flip or direction
 	if ball.has_method("set_direction"):
 		ball.set_direction(Vector2(1, 0) if facing_right else Vector2(-1, 0))
 
@@ -291,6 +313,10 @@ func reset_level_timer():
 
 func _on_shoot_anim_end():
 	is_shooting = false
+	if abs(velocity.x) > 10.0:
+		sprite.play("walk")
+	else:
+		sprite.play("idle")
 
 func _on_fireball_cooldown_timeout():
 	can_shoot = true
@@ -298,6 +324,7 @@ func _on_fireball_cooldown_timeout():
 func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	if god_mode:
 		return
+	camera.trigger_shake(12.0, 0.3)
 	player_hurt.play()
 	current_health -= amount
 	var knockback := (global_position - source_position).normalized() * 500.0
@@ -330,10 +357,11 @@ func die() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	camera.trigger_shake(20.0, 0.8)
 	MusicManager.play_game_over()
 
 	set_process(false)
 	set_process_input(false)
 
 	await get_tree().create_timer(0.5).timeout
-	get_tree().change_scene_to_packed(SceneManager.scenes["retry_menu"])
+	SceneManager.change_scene("retry_menu")

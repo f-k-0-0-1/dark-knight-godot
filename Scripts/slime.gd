@@ -10,6 +10,8 @@ extends CharacterBody2D
 @export var hit_cooldown := 0.5
 @export var aggro_range := 800
 
+@onready var camera = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+
 var health := max_health
 var is_dead := false
 var facing_right := true
@@ -104,6 +106,7 @@ func _on_hitbox_body_entered(body: Node) -> void:
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		can_hit = false
 		body.take_damage(25, global_position)
+		camera.trigger_shake(8.0, 0.2)
 		start_hit_cooldown()
 
 func start_hit_cooldown() -> void:
@@ -137,6 +140,7 @@ func die() -> void:
 	is_dead = true
 	health_bar.visible = false
 	collision_shape.call_deferred("set_disabled", true)
+	camera.trigger_shake(6.0, 0.2)
 	death_sound.play()
 	await death_sound.finished
 	queue_free()

@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://4f1aep6k8304"]
+
+[ext_resource type="Shader" uid="uid://b4v126dqpcbaf" path="res://Shaders/portal_shader.gdshader" id="1_kmw2m"]
+
+[resource]
+shader = ExtResource("1_kmw2m")
+shader_parameter/progress = 0.0
+shader_parameter/distortion_strength = 0.2

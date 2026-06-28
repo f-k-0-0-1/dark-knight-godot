@@ -8,6 +8,8 @@ extends CharacterBody2D
 @export var detection_range := 800.0
 @export var attack_range := 50.0
 
+@onready var camera = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+
 # === STATE ===
 var health := max_health
 var is_dead := false
@@ -108,6 +110,7 @@ func die() -> void:
 	is_dead = true
 	velocity = Vector2.ZERO
 	sprite.play("death")
+	camera.trigger_shake(8.0, 0.2)
 	death_sound.play()
 	collision_shape.call_deferred("set_disabled", true)
 	await sprite.animation_finished
@@ -121,7 +124,7 @@ func _on_HitBox_body_entered(body: Node) -> void:
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		sprite.play("attack")
 		body.take_damage(25, global_position)
-
+		camera.trigger_shake(8.0, 0.2)
 		var recoil_direction = (global_position - body.global_position).normalized()
 		velocity = recoil_direction * knockback_strength
 		is_recoiling = true
