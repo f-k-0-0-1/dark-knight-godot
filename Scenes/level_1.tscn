@@ -11,12 +11,27 @@
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="9_wrinw"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="10_chwpn"]
 
+[sub_resource type="Environment" id="Environment_chwpn"]
+background_mode = 3
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 1.14
+glow_bloom = 0.42
+adjustment_enabled = true
+adjustment_brightness = 1.06
+adjustment_contrast = 1.025
+adjustment_saturation = 1.2
+
 [node name="Level 1" type="Node2D" unique_id=1953832643]
 script = ExtResource("1_64e2p")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=55963003]
+environment = SubResource("Environment_chwpn")
 
 [node name="TileMap" parent="." unique_id=1304473903 instance=ExtResource("1_2ynj1")]
 
 [node name="Plants" parent="." unique_id=1871043436 instance=ExtResource("4_diisf")]
+modulate = Color(0.9037378, 1.1014822, 1.1014822, 1)
 position = Vector2(-1057, -1)
 
 [node name="Player" parent="." unique_id=268462001 instance=ExtResource("4_chwpn")]

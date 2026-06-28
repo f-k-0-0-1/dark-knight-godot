@@ -17,6 +17,17 @@
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="14_fxnjf"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="15_xjeco"]
 
+[sub_resource type="Environment" id="Environment_j77fg"]
+background_mode = 3
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 1.14
+glow_bloom = 0.42
+adjustment_enabled = true
+adjustment_brightness = 1.06
+adjustment_contrast = 1.025
+adjustment_saturation = 1.2
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
 texture = ExtResource("1_qf6rc")
 texture_region_size = Vector2i(512, 512)
@@ -456,7 +467,10 @@ height = 410.0
 [node name="Level3" type="Node2D" unique_id=407411734]
 script = ExtResource("1_j77fg")
 
-[node name="Player" parent="." unique_id=268462001 groups=["player"] instance=ExtResource("6_qf6rc")]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=369375890]
+environment = SubResource("Environment_j77fg")
+
+[node name="Player" parent="." unique_id=268462001 instance=ExtResource("6_qf6rc")]
 position = Vector2(-2037, -300)
 
 [node name="TileMap" type="Node" parent="." unique_id=1879983861]
