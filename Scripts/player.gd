@@ -3,6 +3,8 @@ extends CharacterBody2D
 signal health_changed(new_health: int, max_health: int)
 
 @onready var camera: Camera2D = $Camera2D
+@onready var zoom_button: Button = $HUD/ZoomButton
+
 var dash_locked := false
 @export var speed: float = 650.0
 @export var sprint_multiplier: float = 5.0
@@ -55,6 +57,15 @@ var cheat_command := false
 func _ready():
 	fireball_scene = SceneManager.scenes.get("fireball_scene")
 	health_changed.emit(current_health, max_health)
+	if zoom_button:
+		zoom_button.pressed.connect(_on_zoom_button_pressed)
+		# Set initial text
+		zoom_button.text = "2.0x"
+
+func _on_zoom_button_pressed():
+	if camera:
+		var zoom_label = camera.toggle_zoom()
+		zoom_button.text = zoom_label
 
 func _input(event):
 	if is_dead:

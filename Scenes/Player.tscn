@@ -357,6 +357,30 @@ animations = [{
 radius = 76.0
 height = 428.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6f3s4"]
+bg_color = Color(0.032552063, 0.032552063, 0.032552063, 0.56078434)
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3y8b"]
+bg_color = Color(0.03137255, 0.03137255, 0.03137255, 0.56078434)
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ujsok"]
+bg_color = Color(0.03137255, 0.03137255, 0.03137255, 0.47058824)
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("97_7jnis")
@@ -405,10 +429,10 @@ script = ExtResource("66_7q0l3")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = 220.0
-offset_top = 33.0
-offset_right = 287.0
-offset_bottom = 48.72148
+offset_left = 180.0
+offset_top = 38.0
+offset_right = 247.0
+offset_bottom = 53.72148
 grow_horizontal = 0
 scale = Vector2(1.44, 1.42)
 pivot_offset = Vector2(922.162, 35.6159)
@@ -417,9 +441,9 @@ pivot_offset = Vector2(922.162, 35.6159)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 319.0
-offset_top = 17.0
-offset_right = 367.68994
+offset_left = 298.0
+offset_top = 17.000002
+offset_right = 346.68994
 offset_bottom = 379.0
 grow_horizontal = 2
 rotation = 1.5707964
@@ -452,6 +476,21 @@ offset_right = 37.0
 offset_bottom = 48.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 24
+
+[node name="ZoomButton" type="Button" parent="HUD" unique_id=310560884]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -65.0
+offset_top = 14.0
+offset_right = -15.0
+offset_bottom = 64.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_6f3s4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_l3y8b")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ujsok")
+text = "1.0x"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
 position = Vector2(0, -66)
