@@ -25,6 +25,7 @@ boot_splash/use_filter=false
 
 SceneManager="*res://Scripts/scene_manager.gd"
 MusicManager="*uid://j65uaas5bbak"
+Globals="*uid://c1f0kq68bytn6"
 
 [display]
 
