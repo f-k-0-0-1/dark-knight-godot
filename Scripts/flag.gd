@@ -18,6 +18,3 @@ func _on_body_entered(body: Node2D) -> void:
 		var level_root = get_parent()
 		if level_root.has_method("finish_level"):
 			level_root.finish_level(stars_earned)
-
-		if level_complete_ui: 
-			level_complete_ui.show_level_complete()
