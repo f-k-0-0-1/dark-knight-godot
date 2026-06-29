@@ -74,12 +74,10 @@ func _input(event):
 
 	if event.is_action_pressed("cheat_command"):
 		cheat_command = !cheat_command 
-		print("Cheat Command: ", cheat_command)
 		
 	if !cheat_command and event.is_action_pressed("god_mode_toggle"):
 		god_mode = !god_mode
 		velocity = Vector2.ZERO
-		print("God Mode:", god_mode)
 
 	if !cheat_command and event.is_action_pressed("fireball"):
 		shoot_fireball()

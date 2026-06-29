@@ -12,7 +12,6 @@ func _on_body_entered(body: Node2D) -> void:
 		var current_time = 0.0
 		if body.has_method("get_current_time"):
 			current_time = body.get_current_time()
-			print("FLAG READ: ", current_time) # <-- LOOK HERE
 		
 		get_tree().paused = true
 		
