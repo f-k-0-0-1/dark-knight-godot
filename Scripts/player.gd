@@ -302,6 +302,9 @@ func start_timer(duration: float, callback: Callable):
 func stop_level_timer():
 	level_timer.stop()
 
+func get_current_time() -> float:
+	return time_elapsed
+
 func get_stars_earned() -> int:
 	# EDIT THESE NUMBERS to change how hard it is to get stars!
 	var time_for_3_stars = 35.0

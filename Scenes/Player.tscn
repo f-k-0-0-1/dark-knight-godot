@@ -487,6 +487,7 @@ offset_top = 14.0
 offset_right = -15.0
 offset_bottom = 64.0
 grow_horizontal = 0
+focus_mode = 0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_6f3s4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_l3y8b")
@@ -495,7 +496,7 @@ text = "1.0x"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
 position = Vector2(0, -66)
-zoom = Vector2(0.45, 0.45)
+zoom = Vector2(0.4, 0.4)
 process_callback = 0
 limit_enabled = false
 limit_left = -4500
