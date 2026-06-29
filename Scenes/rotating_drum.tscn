@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bu7a4locqiqmr"]
 
-[ext_resource type="Script" uid="uid://d1j222igm18qf" path="res://Scenes/rotating_drum.gd" id="1_ftth2"]
+[ext_resource type="Script" uid="uid://d1j222igm18qf" path="res://Scripts/rotating_drum.gd" id="1_ftth2"]
 [ext_resource type="Texture2D" uid="uid://by7jf84ljakrf" path="res://Assets/animated_spikes/rotatingDrum.svg" id="1_x8540"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nbwsh"]
