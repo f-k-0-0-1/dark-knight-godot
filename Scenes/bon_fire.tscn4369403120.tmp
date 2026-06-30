@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://bvifvvilgom8t"]
+
+[ext_resource type="Texture2D" uid="uid://dg77uwssdc4cs" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_1.png" id="1_ad55n"]
+[ext_resource type="Script" uid="uid://dw6uk0kejdpo4" path="res://Scripts/bon_fire.gd" id="1_rap1v"]
+[ext_resource type="Texture2D" uid="uid://hq3c33eaymky" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_2.png" id="2_rap1v"]
+[ext_resource type="Texture2D" uid="uid://diady1c77y40a" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_3.png" id="3_l0em7"]
+[ext_resource type="Texture2D" uid="uid://cib78l3s3531b" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_4.png" id="4_ph75e"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lh7dv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ad55n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_rap1v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_l0em7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ph75e")
+}],
+"loop": true,
+"name": &"fire",
+"speed": 7.0
+}]
+
+[sub_resource type="Gradient" id="Gradient_ji11v"]
+offsets = PackedFloat32Array(0, 0.97928995)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_576m7"]
+gradient = SubResource("Gradient_ji11v")
+width = 80
+height = 80
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[node name="BonFire" type="Node2D" unique_id=460933891]
+scale = Vector2(5, 5)
+script = ExtResource("1_rap1v")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=535042118]
+texture_filter = 1
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_lh7dv")
+animation = &"fire"
+frame = 1
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1855270378]
+position = Vector2(0.29999638, -7.2999983)
+scale = Vector2(1.4225, 1.0074999)
+color = Color(1, 0.61960787, 0.10980392, 1)
+texture = SubResource("GradientTexture2D_576m7")

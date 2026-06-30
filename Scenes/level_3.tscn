@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="11_n4vm5"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="14_fxnjf"]
 [ext_resource type="PackedScene" uid="uid://bu7a4locqiqmr" path="res://Scenes/rotating_drum.tscn" id="14_ki8bc"]
+[ext_resource type="PackedScene" uid="uid://bvifvvilgom8t" path="res://Scenes/bon_fire.tscn" id="15_nbwsh"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="15_xjeco"]
 
 [sub_resource type="Environment" id="Environment_ki8bc"]
@@ -25,7 +26,6 @@ glow_enabled = true
 glow_intensity = 1.14
 glow_bloom = 0.42
 adjustment_enabled = true
-adjustment_brightness = 1.06
 adjustment_contrast = 1.025
 adjustment_saturation = 1.2
 
@@ -560,6 +560,15 @@ texture = ExtResource("9_l4wr6")
 
 [node name="RotatingDrum" parent="Objects" unique_id=2051859578 instance=ExtResource("14_ki8bc")]
 position = Vector2(6039, -109)
+
+[node name="BonFire" parent="Objects" unique_id=460933891 instance=ExtResource("15_nbwsh")]
+position = Vector2(3196, -129)
+
+[node name="BonFire2" parent="Objects" unique_id=1593297603 instance=ExtResource("15_nbwsh")]
+position = Vector2(9266, -129.00002)
+
+[node name="BonFire3" parent="Objects" unique_id=1944116310 instance=ExtResource("15_nbwsh")]
+position = Vector2(21626.002, -1164)
 
 [node name="Collectables" type="Node2D" parent="." unique_id=1155344135]
 

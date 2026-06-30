@@ -196,6 +196,7 @@
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="195_0il0l"]
 [ext_resource type="PackedScene" uid="uid://dwt2f5jdn61p3" path="res://Scenes/portal.tscn" id="196_0il0l"]
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="196_flyn8"]
+[ext_resource type="PackedScene" uid="uid://bvifvvilgom8t" path="res://Scenes/bon_fire.tscn" id="197_opkhk"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="198_46x4x"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="199_dyagb"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="200_7lfvh"]
@@ -209,7 +210,6 @@ glow_enabled = true
 glow_intensity = 1.14
 glow_bloom = 0.42
 adjustment_enabled = true
-adjustment_brightness = 1.06
 adjustment_contrast = 1.025
 adjustment_saturation = 1.2
 
@@ -1276,6 +1276,17 @@ position = Vector2(34942, -335)
 [node name="shardsoul" parent="Enemies" unique_id=1610885443 groups=["enemies"] instance=ExtResource("196_flyn8")]
 position = Vector2(21934, -445)
 scale = Vector2(10, 10)
+
+[node name="Objects" type="Node2D" parent="." unique_id=1269138318]
+
+[node name="BonFire" parent="Objects" unique_id=460933891 instance=ExtResource("197_opkhk")]
+position = Vector2(4073, -2685)
+
+[node name="BonFire2" parent="Objects" unique_id=821487540 instance=ExtResource("197_opkhk")]
+position = Vector2(32363, -2630)
+
+[node name="BonFire3" parent="Objects" unique_id=1642973894 instance=ExtResource("197_opkhk")]
+position = Vector2(20072.002, -145.00005)
 
 [node name="Portals" type="Node2D" parent="." unique_id=96734206]
 

@@ -9,7 +9,7 @@ var dash_locked := false
 @export var speed: float = 650.0
 @export var sprint_multiplier: float = 5.0
 @export var jump_velocity: float = -1150.0
-@export var gravity: float = 2250.0
+@export var gravity: float = 1500.0
 var cooldown_remaining: float = 0.0
 @export var fireball_cooldown: float = 0.5
 @export var shoot_anim_duration: float = 0.2
@@ -20,7 +20,7 @@ var cooldown_remaining: float = 0.0
 var bonus_heart_unlocked := false
 @onready var ability_cooldown_bar: ProgressBar = $HUD/AbilityCooldownBar
 
-var is_dead: bool = false # Explicitly declared with type 'bool'
+var is_dead: bool = false
 var fireball_scene: PackedScene
 var lightning_ball_instance: Area2D
 var cheat_command_scene = null;
@@ -207,6 +207,7 @@ func shoot_fireball():
 	is_shooting = true
 	can_shoot = false
 	
+	@warning_ignore("shadowed_variable")
 	var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
 	if camera:
 		camera.trigger_shake(5.0, 0.15)
@@ -305,9 +306,9 @@ func get_current_time() -> float:
 
 func get_stars_earned() -> int:
 	# EDIT THESE NUMBERS to change how hard it is to get stars!
-	var time_for_3_stars = 35.0
-	var time_for_2_stars = 45.0
-	var time_for_1_star  = 60.0
+	var time_for_3_stars = 90.0
+	var time_for_2_stars = 105.0
+	var time_for_1_star  = 120.0
 	
 	if time_elapsed <= time_for_3_stars:
 		return 3

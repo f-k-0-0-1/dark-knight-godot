@@ -19,6 +19,7 @@ glow_enabled = true
 glow_intensity = 1.14
 glow_bloom = 0.42
 adjustment_enabled = true
+adjustment_brightness = 0.85
 adjustment_contrast = 1.025
 adjustment_saturation = 1.2
 
@@ -77,15 +78,6 @@ position = Vector2(27773, -335)
 
 [node name="BonFire" parent="Objects" unique_id=460933891 instance=ExtResource("7_af3po")]
 position = Vector2(1707, -144.00002)
-
-[node name="BonFire2" parent="Objects" unique_id=277985312 instance=ExtResource("7_af3po")]
-position = Vector2(9072, -144)
-
-[node name="BonFire3" parent="Objects" unique_id=127729804 instance=ExtResource("7_af3po")]
-position = Vector2(16620, -144.00002)
-
-[node name="BonFire4" parent="Objects" unique_id=632592833 instance=ExtResource("7_af3po")]
-position = Vector2(27002, -144)
 
 [node name="Collectables" type="Node2D" parent="." unique_id=1026508859]
 
