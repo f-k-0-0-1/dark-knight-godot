@@ -18,7 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://bu7a4locqiqmr" path="res://Scenes/rotating_drum.tscn" id="14_ki8bc"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="15_xjeco"]
 
-[sub_resource type="Environment" id="Environment_j77fg"]
+[sub_resource type="Environment" id="Environment_ki8bc"]
 background_mode = 3
 tonemap_mode = 3
 glow_enabled = true
@@ -468,7 +468,10 @@ height = 410.0
 [node name="Level3" type="Node2D" unique_id=407411734]
 script = ExtResource("1_j77fg")
 
-[node name="Player" parent="." unique_id=268462001 groups=["player"] instance=ExtResource("6_qf6rc")]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1259491607]
+environment = SubResource("Environment_ki8bc")
+
+[node name="Player" parent="." unique_id=268462001 instance=ExtResource("6_qf6rc")]
 position = Vector2(-2037, -300)
 
 [node name="TileMap" type="Node" parent="." unique_id=1879983861]
