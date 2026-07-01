@@ -15,7 +15,7 @@ func _ready() -> void:
 
 	# Docs for commands
 	commandsInfo = """
-	\nHere are Some Usefull Commands\n
+	\nHere are Some Useful Commands\n
 	1. Help -l  -> For Sinlge Line Help Commands\n
 	2. Help -m  -> For Multi Line Help Commands\n 
 	3. teleport -s -> Teleport to Start\n

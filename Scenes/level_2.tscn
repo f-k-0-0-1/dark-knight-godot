@@ -96,8 +96,7 @@
 [ext_resource type="Texture2D" uid="uid://ce464kjmijevt" path="res://Assets/Plant Animations/Plant 1/Plant1_00087.png" id="95_fc5se"]
 [ext_resource type="Texture2D" uid="uid://dstfsavby3kak" path="res://Assets/Plant Animations/Plant 1/Plant1_00088.png" id="96_382or"]
 [ext_resource type="Texture2D" uid="uid://ddhkycnipfi0s" path="res://Assets/Plant Animations/Plant 1/Plant1_00089.png" id="97_1gvl3"]
-[ext_resource type="Script" uid="uid://dq1h0xesmsmh5" path="res://Scripts/plant_1.gd" id="98_vgtj3"]
-[ext_resource type="Script" uid="uid://pr3l7bfualqi" path="res://Scripts/plant_5.gd" id="99_xd2d3"]
+[ext_resource type="Script" uid="uid://dq1h0xesmsmh5" path="res://Scripts/plant.gd" id="98_vgtj3"]
 [ext_resource type="Texture2D" uid="uid://dod63sa0oy36u" path="res://Assets/Plant Animations/Plant 5/Plant5_00000.png" id="100_j5rxi"]
 [ext_resource type="Texture2D" uid="uid://bxljqjaj5knfu" path="res://Assets/Plant Animations/Plant 5/Plant5_00001.png" id="101_2x2s5"]
 [ext_resource type="Texture2D" uid="uid://us2lvku74qr5" path="res://Assets/Plant Animations/Plant 5/Plant5_00002.png" id="102_hcgii"]
@@ -158,8 +157,6 @@
 [ext_resource type="Texture2D" uid="uid://bdrqjh5bb3mur" path="res://Assets/Plant Animations/Plant 5/Plant5_00057.png" id="157_dqyhv"]
 [ext_resource type="Texture2D" uid="uid://ctl72mpyxfl8g" path="res://Assets/Plant Animations/Plant 5/Plant5_00058.png" id="158_8qs7b"]
 [ext_resource type="Texture2D" uid="uid://11w7l5cfdtd6" path="res://Assets/Plant Animations/Plant 5/Plant5_00059.png" id="159_hpnbg"]
-[ext_resource type="Script" uid="uid://cor4bfuffnp21" path="res://Scripts/plant_3.gd" id="160_8d2mg"]
-[ext_resource type="Script" uid="uid://fplygwqocn4k" path="res://Scripts/plant_4.gd" id="161_vjl6x"]
 [ext_resource type="Texture2D" uid="uid://bpjkaltbccyqq" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00000.png" id="162_pxhps"]
 [ext_resource type="Texture2D" uid="uid://b7i1edo15t4cv" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00001.png" id="163_s2tvm"]
 [ext_resource type="Texture2D" uid="uid://b2nfikonwd2hj" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00002.png" id="164_uthry"]
@@ -190,13 +187,11 @@
 [ext_resource type="Texture2D" uid="uid://cdd4ktegkxayr" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00027.png" id="189_mljkq"]
 [ext_resource type="Texture2D" uid="uid://d3vx567k4duij" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00028.png" id="190_cncpc"]
 [ext_resource type="Texture2D" uid="uid://duvgm5tmyfhla" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00029.png" id="191_hotwo"]
-[ext_resource type="Script" uid="uid://n0hkhvgg3hy3" path="res://Scripts/plant_2.gd" id="192_6y0ub"]
-[ext_resource type="Script" uid="uid://cleioeykopog6" path="res://Scripts/plant_6.gd" id="193_y3l8r"]
 [ext_resource type="PackedScene" uid="uid://bospax0kwjtgf" path="res://Scenes/slime.tscn" id="194_fv16h"]
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="195_0il0l"]
 [ext_resource type="PackedScene" uid="uid://dwt2f5jdn61p3" path="res://Scenes/portal.tscn" id="196_0il0l"]
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="196_flyn8"]
-[ext_resource type="PackedScene" path="res://Scenes/bon_fire.tscn" id="197_opkhk"]
+[ext_resource type="PackedScene" uid="uid://b4qkx4fb51jp5" path="res://Scenes/bon_fire.tscn" id="197_opkhk"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="198_46x4x"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="199_dyagb"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="200_7lfvh"]
@@ -1201,51 +1196,51 @@ script = ExtResource("98_vgtj3")
 [node name="plant5" type="AnimatedSprite2D" parent="Plants" unique_id=2105156699]
 position = Vector2(8871, -115)
 sprite_frames = SubResource("SpriteFrames_vtjdv")
-script = ExtResource("99_xd2d3")
+script = ExtResource("98_vgtj3")
 
 [node name="plant11" type="AnimatedSprite2D" parent="Plants" unique_id=901906000]
 position = Vector2(33749, -2520)
 sprite_frames = SubResource("SpriteFrames_vtjdv")
-script = ExtResource("99_xd2d3")
+script = ExtResource("98_vgtj3")
 
 [node name="plant3" type="AnimatedSprite2D" parent="Plants" unique_id=1452117814]
 position = Vector2(15814, -78)
 sprite_frames = SubResource("SpriteFrames_aycvq")
-script = ExtResource("160_8d2mg")
+script = ExtResource("98_vgtj3")
 
 [node name="plant4" type="AnimatedSprite2D" parent="Plants" unique_id=1346885088]
 position = Vector2(21792, -145)
 sprite_frames = SubResource("SpriteFrames_aycvq")
-script = ExtResource("161_vjl6x")
+script = ExtResource("98_vgtj3")
 
 [node name="plant7" type="AnimatedSprite2D" parent="Plants" unique_id=1070230888]
 position = Vector2(20454, -145)
 sprite_frames = SubResource("SpriteFrames_aycvq")
-script = ExtResource("161_vjl6x")
+script = ExtResource("98_vgtj3")
 
 [node name="plant2" type="AnimatedSprite2D" parent="Plants" unique_id=626320066]
 position = Vector2(26436, -53)
 sprite_frames = SubResource("SpriteFrames_cedfm")
 frame_progress = 0.548756
-script = ExtResource("192_6y0ub")
+script = ExtResource("98_vgtj3")
 
 [node name="plant8" type="AnimatedSprite2D" parent="Plants" unique_id=1702816412]
 position = Vector2(28882, -58)
 sprite_frames = SubResource("SpriteFrames_cedfm")
 frame_progress = 0.548756
-script = ExtResource("192_6y0ub")
+script = ExtResource("98_vgtj3")
 
 [node name="plant6" type="AnimatedSprite2D" parent="Plants" unique_id=1662278003]
 position = Vector2(10790, 10)
 sprite_frames = SubResource("SpriteFrames_cedfm")
 frame_progress = 0.532776
-script = ExtResource("193_y3l8r")
+script = ExtResource("98_vgtj3")
 
 [node name="plant9" type="AnimatedSprite2D" parent="Plants" unique_id=2072505829]
 position = Vector2(-1306, -56)
 sprite_frames = SubResource("SpriteFrames_cedfm")
 frame_progress = 0.532776
-script = ExtResource("193_y3l8r")
+script = ExtResource("98_vgtj3")
 
 [node name="Enemies" type="Node2D" parent="." unique_id=459851782]
 

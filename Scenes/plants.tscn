@@ -1,4 +1,4 @@
-[gd_scene load_steps=190 format=3 uid="uid://cbff503014sno"]
+[gd_scene format=3 uid="uid://cbff503014sno"]
 
 [ext_resource type="Texture2D" uid="uid://ddr4mw654aapu" path="res://Assets/Plant Animations/Plant 1/Plant1_00000.png" id="1_fhq3y"]
 [ext_resource type="Texture2D" uid="uid://cxnkkds7jotpy" path="res://Assets/Plant Animations/Plant 1/Plant1_00001.png" id="2_igq6u"]
@@ -91,9 +91,8 @@
 [ext_resource type="Texture2D" uid="uid://dstfsavby3kak" path="res://Assets/Plant Animations/Plant 1/Plant1_00088.png" id="89_jqqkd"]
 [ext_resource type="Texture2D" uid="uid://ddhkycnipfi0s" path="res://Assets/Plant Animations/Plant 1/Plant1_00089.png" id="90_e3l22"]
 [ext_resource type="Texture2D" uid="uid://dod63sa0oy36u" path="res://Assets/Plant Animations/Plant 5/Plant5_00000.png" id="91_gha7r"]
-[ext_resource type="Script" path="res://Scripts/plant_1.gd" id="91_pm2y4"]
+[ext_resource type="Script" uid="uid://dq1h0xesmsmh5" path="res://Scripts/plant.gd" id="91_pm2y4"]
 [ext_resource type="Texture2D" uid="uid://bxljqjaj5knfu" path="res://Assets/Plant Animations/Plant 5/Plant5_00001.png" id="92_ben7s"]
-[ext_resource type="Script" path="res://Scripts/plant_5.gd" id="92_mnhu8"]
 [ext_resource type="Texture2D" uid="uid://us2lvku74qr5" path="res://Assets/Plant Animations/Plant 5/Plant5_00002.png" id="93_wje8j"]
 [ext_resource type="Texture2D" uid="uid://c00by8f5ciyos" path="res://Assets/Plant Animations/Plant 5/Plant5_00003.png" id="94_wh83t"]
 [ext_resource type="Texture2D" uid="uid://baft7mpeqquwx" path="res://Assets/Plant Animations/Plant 5/Plant5_00004.png" id="95_c1if5"]
@@ -154,10 +153,8 @@
 [ext_resource type="Texture2D" uid="uid://11w7l5cfdtd6" path="res://Assets/Plant Animations/Plant 5/Plant5_00059.png" id="150_u2os3"]
 [ext_resource type="Texture2D" uid="uid://bpjkaltbccyqq" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00000.png" id="151_0001g"]
 [ext_resource type="Texture2D" uid="uid://b7i1edo15t4cv" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00001.png" id="152_vu135"]
-[ext_resource type="Script" path="res://Scripts/plant_3.gd" id="153_0bymt"]
 [ext_resource type="Texture2D" uid="uid://b2nfikonwd2hj" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00002.png" id="153_6l7y6"]
 [ext_resource type="Texture2D" uid="uid://b5cpn6ov1mxgt" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00003.png" id="154_6udkd"]
-[ext_resource type="Script" path="res://Scripts/plant_4.gd" id="154_e3i4d"]
 [ext_resource type="Texture2D" uid="uid://bigbymukxjowj" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00004.png" id="155_c30ih"]
 [ext_resource type="Texture2D" uid="uid://bf248wppmp73x" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00005.png" id="156_545nm"]
 [ext_resource type="Texture2D" uid="uid://c3gmat7aldov3" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00006.png" id="157_w4f01"]
@@ -184,8 +181,6 @@
 [ext_resource type="Texture2D" uid="uid://cdd4ktegkxayr" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00027.png" id="178_pq35d"]
 [ext_resource type="Texture2D" uid="uid://d3vx567k4duij" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00028.png" id="179_rv7yh"]
 [ext_resource type="Texture2D" uid="uid://duvgm5tmyfhla" path="res://Assets/Plant Animations/Plant 8 Poison/PlantPosion_00029.png" id="180_hbl7n"]
-[ext_resource type="Script" path="res://Scripts/plant_2.gd" id="185_amj4p"]
-[ext_resource type="Script" path="res://Scripts/plant_6.gd" id="186_xiw8k"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vtjdv"]
 animations = [{
@@ -751,36 +746,36 @@ animations = [{
 "speed": 30.0
 }]
 
-[node name="Plants" type="Node2D" groups=["Plant"]]
+[node name="Plants" type="Node2D" unique_id=1298837234 groups=["Plant"]]
 
-[node name="plant1" type="AnimatedSprite2D" parent="."]
+[node name="plant1" type="AnimatedSprite2D" parent="." unique_id=735246165]
 sprite_frames = SubResource("SpriteFrames_vtjdv")
 frame_progress = 0.875013
 script = ExtResource("91_pm2y4")
 
-[node name="plant5" type="AnimatedSprite2D" parent="."]
+[node name="plant5" type="AnimatedSprite2D" parent="." unique_id=544473922]
 position = Vector2(8671, -96)
 sprite_frames = SubResource("SpriteFrames_vtjdv")
-script = ExtResource("92_mnhu8")
+script = ExtResource("91_pm2y4")
 
-[node name="plant3" type="AnimatedSprite2D" parent="."]
+[node name="plant3" type="AnimatedSprite2D" parent="." unique_id=849896499]
 position = Vector2(2200, -37)
 sprite_frames = SubResource("SpriteFrames_aycvq")
-script = ExtResource("153_0bymt")
+script = ExtResource("91_pm2y4")
 
-[node name="plant4" type="AnimatedSprite2D" parent="."]
+[node name="plant4" type="AnimatedSprite2D" parent="." unique_id=1318889313]
 position = Vector2(7474, -145)
 sprite_frames = SubResource("SpriteFrames_aycvq")
-script = ExtResource("154_e3i4d")
+script = ExtResource("91_pm2y4")
 
-[node name="plant2" type="AnimatedSprite2D" parent="."]
+[node name="plant2" type="AnimatedSprite2D" parent="." unique_id=615218573]
 position = Vector2(5113, -53)
 sprite_frames = SubResource("SpriteFrames_cedfm")
 frame_progress = 0.548756
-script = ExtResource("185_amj4p")
+script = ExtResource("91_pm2y4")
 
-[node name="plant6" type="AnimatedSprite2D" parent="."]
+[node name="plant6" type="AnimatedSprite2D" parent="." unique_id=2021231273]
 position = Vector2(11927, -73)
 sprite_frames = SubResource("SpriteFrames_cedfm")
 frame_progress = 0.532776
-script = ExtResource("186_xiw8k")
+script = ExtResource("91_pm2y4")
