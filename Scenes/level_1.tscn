@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://cvrv3ki1slnap" path="res://Scripts/scene_manager.gd" id="6_q2r7y"]
 [ext_resource type="PackedScene" uid="uid://b4qkx4fb51jp5" path="res://Scenes/bon_fire.tscn" id="7_af3po"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="8_xrdnt"]
+[ext_resource type="PackedScene" uid="uid://cpsebg2lxc8ax" path="res://Scenes/coin.tscn" id="9_uy8f0"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="9_wrinw"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="10_chwpn"]
 
@@ -97,6 +98,26 @@ position = Vector2(4175, -345)
 [node name="CollectableLives2" parent="Collectables" unique_id=12706358 instance=ExtResource("10_chwpn")]
 z_index = 5
 position = Vector2(14367, -311)
+
+[node name="Coin" parent="Collectables" unique_id=1862024736 instance=ExtResource("9_uy8f0")]
+z_index = 5
+position = Vector2(1525.0001, -485.00003)
+
+[node name="Coin4" parent="Collectables" unique_id=1835874526 instance=ExtResource("9_uy8f0")]
+z_index = 5
+position = Vector2(1428, -379)
+
+[node name="Coin5" parent="Collectables" unique_id=1688560209 instance=ExtResource("9_uy8f0")]
+z_index = 5
+position = Vector2(1900.0001, -375)
+
+[node name="Coin2" parent="Collectables" unique_id=1181953488 instance=ExtResource("9_uy8f0")]
+z_index = 5
+position = Vector2(1662.0001, -523)
+
+[node name="Coin3" parent="Collectables" unique_id=2001143811 instance=ExtResource("9_uy8f0")]
+z_index = 5
+position = Vector2(1816.0001, -486.00003)
 
 [node name="Flag" parent="." unique_id=803434551 instance=ExtResource("8_xrdnt")]
 position = Vector2(32020.002, -128)

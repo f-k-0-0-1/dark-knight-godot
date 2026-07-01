@@ -5,6 +5,10 @@ signal health_changed(new_health: int, max_health: int)
 @onready var camera: Camera2D = $Camera2D
 @onready var zoom_button: Button = $HUD/ZoomButton
 
+@onready var coin_counter_label: Label = $HUD/CoinCounter
+@onready var sword: Node2D = $SwordHolder/Sword
+@onready var sword_holder = $SwordHolder
+
 var dash_locked := false
 @export var speed: float = 650.0
 @export var sprint_multiplier: float = 5.0
@@ -59,12 +63,19 @@ var is_lightning_active := false
 var cheat_command := false
 
 func _ready():
+	Globals.level_coins_updated.connect(_update_coin_ui)
+	_update_coin_ui(Globals.level_coins)
 	fireball_scene = SceneManager.scenes.get("fireball_scene")
 	health_changed.emit(current_health, max_health)
 	if zoom_button:
 		zoom_button.pressed.connect(_on_zoom_button_pressed)
 		# Set initial text
 		zoom_button.text = "2.0x"
+	Globals.reset_level_coins()
+	
+func _update_coin_ui(new_total: int):
+	if coin_counter_label:
+		coin_counter_label.text = str(new_total)
 
 func _on_zoom_button_pressed():
 	if camera:
@@ -74,7 +85,11 @@ func _on_zoom_button_pressed():
 func _input(event):
 	if is_dead:
 		return
-
+		
+	if event.is_action_pressed("sword_attack"):
+		if sword and sword.has_method("swing"):
+			sword.swing(facing_right)
+			
 	if event.is_action_pressed("cheat_command"):
 		cheat_command = !cheat_command 
 		
@@ -127,7 +142,18 @@ func _physics_process(delta):
 		ability_cooldown_bar.value = lightning_ability_cooldown
 
 func handle_movement_input():
+	if velocity.x != 0:
+		facing_right = velocity.x > 0
+
+		sprite.flip_h = !facing_right
+
+	if facing_right:
+		sword_holder.position = Vector2(20, -5)
+	else:
+		sword_holder.position = Vector2(-20, -5)
+		
 	var move_speed := speed
+	
 	is_sprinting = !cheat_command and Input.is_action_pressed("ui_shift")
 	if is_sprinting:
 		move_speed *= sprint_multiplier
@@ -159,10 +185,6 @@ func handle_movement_input():
 				jump_sound.play()
 			else:
 				double_jump_sound.play()
-
-	if velocity.x != 0:
-		facing_right = velocity.x > 0
-		sprite.flip_h = not facing_right
 
 func apply_gravity(delta):
 	if not is_on_floor():

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://lnwbof5s0xcp"]
+[gd_scene format=3 uid="uid://o65byi7tpq1o"]
 
 [ext_resource type="Script" uid="uid://cflvr6ura7p3y" path="res://Scripts/shop.gd" id="1_dcoym"]
 [ext_resource type="Texture2D" uid="uid://cabfb6xgwsr7j" path="res://Assets/Store/store_bg.png" id="1_e5ji4"]
@@ -21,7 +21,8 @@
 [ext_resource type="Texture2D" uid="uid://blwuex0oyph6o" path="res://Assets/Store/store_close_button.png" id="17_3ro81"]
 [ext_resource type="Texture2D" uid="uid://bvnr25sin0gr0" path="res://Assets/Store/store_close_button_clicked.png" id="18_tvfaq"]
 [ext_resource type="Texture2D" uid="uid://ca4mwfvx47ln5" path="res://Assets/Store/store_close_button_hover.png" id="19_d5t61"]
-[ext_resource type="PackedScene" uid="uid://btthfvjd8d7bn" path="res://Scenes/Shop_item.tscn" id="22_dcoym"]
+[ext_resource type="PackedScene" path="res://Scenes/Shop_item.tscn" id="22_dcoym"]
+[ext_resource type="Texture2D" uid="uid://bjv2uugxqpx2f" path="res://Assets/coin_Sheet.png" id="23_3ro81"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dcoym"]
 shader = ExtResource("1_k8g64")
@@ -39,6 +40,91 @@ border_color = Color(0.3361338, 0.47514522, 0.096109815, 1)
 texture = ExtResource("1_e5ji4")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8yhm2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ro81"]
+bg_color = Color(0, 0, 0, 0.64705884)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ro81"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tvfaq"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d5t61"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y7ov5"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6tx2d"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ciunf"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3oad8"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uc8wc"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ddtph"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(128, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkmau"]
+atlas = ExtResource("23_3ro81")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d5t61"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ro81")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tvfaq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d5t61")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y7ov5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6tx2d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ciunf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3oad8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uc8wc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ddtph")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkmau")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
 
 [node name="Shop" type="CanvasLayer" unique_id=425098900]
 script = ExtResource("1_dcoym")
@@ -276,5 +362,38 @@ custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
+
+[node name="Panel" type="Panel" parent="." unique_id=1268203142]
+anchors_preset = -1
+anchor_left = 0.86200005
+anchor_top = 0.019000001
+anchor_right = 0.99100006
+anchor_bottom = 0.105000004
+offset_left = -0.024047852
+offset_top = -3.3120012
+offset_right = -89.032104
+offset_bottom = -33.04
+grow_horizontal = 0
+scale = Vector2(2.5, 2.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_3ro81")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Panel" unique_id=548442931]
+z_index = 1
+position = Vector2(14.800003, 12.800002)
+scale = Vector2(1.2, 1.2)
+sprite_frames = SubResource("SpriteFrames_d5t61")
+
+[node name="CoinDisplayLabel" type="Label" parent="Panel" unique_id=1357349875]
+z_index = 1
+texture_filter = 1
+layout_direction = 3
+layout_mode = 0
+offset_left = 3.1999817
+offset_top = 1.1999997
+offset_right = 31.199982
+offset_bottom = 24.199999
+text = "00"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="UI/Seperator/Top/HBox/CloseButton" to="." method="_on_close_button_pressed"]

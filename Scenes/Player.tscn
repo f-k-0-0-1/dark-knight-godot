@@ -41,14 +41,13 @@
 [ext_resource type="PackedScene" uid="uid://bc78hkoqfxfy8" path="res://Scenes/tutorial_popup_layer.tscn" id="68_au5ve"]
 [ext_resource type="Script" uid="uid://dnaasseymj631" path="res://Scripts/camera_shake.gd" id="69_6f3s4"]
 [ext_resource type="Texture2D" uid="uid://c7qsglvvmdudi" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00000.png" id="69_jxgrh"]
-[ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="69_yr3al"]
 [ext_resource type="AudioStream" uid="uid://cjak0f75dvjdi" path="res://Audio/sfx/jump.mp3" id="70_ed4yo"]
 [ext_resource type="Texture2D" uid="uid://drfq31wgkhb5s" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00001.png" id="70_g4mod"]
-[ext_resource type="PackedScene" path="res://Scenes/ambient_glow.tscn" id="70_l3y8b"]
 [ext_resource type="AudioStream" uid="uid://7famd7b5cj2q" path="res://Audio/sfx/player_hurt.mp3" id="71_fsa4a"]
 [ext_resource type="Texture2D" uid="uid://b7x18o17a5bsm" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00002.png" id="71_tih4q"]
 [ext_resource type="Texture2D" uid="uid://boeyl63vds0ll" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00003.png" id="72_2yy7l"]
 [ext_resource type="Texture2D" uid="uid://big3k20ahhovl" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00004.png" id="73_8gwyq"]
+[ext_resource type="PackedScene" uid="uid://cgg1gy8u8qthd" path="res://Scenes/sword.tscn" id="73_l3y8b"]
 [ext_resource type="Texture2D" uid="uid://o21rda5gyxfb" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00005.png" id="74_nxdfc"]
 [ext_resource type="Texture2D" uid="uid://733hf886jnwu" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00006.png" id="75_s57pu"]
 [ext_resource type="Texture2D" uid="uid://dvd58e4xvsui6" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00007.png" id="76_if58w"]
@@ -385,11 +384,9 @@ corner_radius_bottom_left = 30
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("97_7jnis")
-shoot_anim_duration = 0.5
-lightning_ball_scene = ExtResource("69_yr3al")
-lightning_ability_duration = 2.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2121547936]
+position = Vector2(0, -59)
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_xq6lo")
 animation = &"dash"
@@ -399,7 +396,7 @@ frame_progress = 1.0
 [node name="Timer" type="Timer" parent="." unique_id=1664795997]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=776816597]
-position = Vector2(0, 25)
+position = Vector2(0, -38)
 shape = SubResource("CapsuleShape2D_ll8vc")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2123092284]
@@ -494,6 +491,15 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_l3y8b")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ujsok")
 text = "1.0x"
 
+[node name="CoinCounter" type="Label" parent="HUD" unique_id=1174659706]
+offset_left = 1096.0
+offset_top = 84.0
+offset_right = 1140.0
+offset_bottom = 119.0
+theme_override_font_sizes/font_size = 25
+text = "0"
+horizontal_alignment = 2
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
 position = Vector2(0, -66)
 zoom = Vector2(0.4, 0.4)
@@ -510,12 +516,14 @@ drag_right_margin = 0.3
 drag_bottom_margin = 0.7
 script = ExtResource("69_6f3s4")
 
-[node name="AmbientGlow" parent="Camera2D" unique_id=1338851922 instance=ExtResource("70_l3y8b")]
-visible = false
-amount = 10
-
 [node name="FirePoint" type="Marker2D" parent="." unique_id=1372658391]
-position = Vector2(-93, 61)
+position = Vector2(0, -38)
+
+[node name="SwordHolder" type="Marker2D" parent="." unique_id=197118218]
+
+[node name="Sword" parent="SwordHolder" unique_id=1465021790 instance=ExtResource("73_l3y8b")]
+rotation = 2.0943952
+scale = Vector2(0.35000002, 0.35000002)
 
 [node name="TutorialPopupLayer" parent="." unique_id=2077236878 instance=ExtResource("68_au5ve")]
 
