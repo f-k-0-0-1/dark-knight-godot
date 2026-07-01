@@ -18,12 +18,14 @@ extends Control
 func _ready():
 	# Back button
 	back_button.pressed.connect(_on_back_pressed)
+	
+	#Shop Button
+	shop_button.pressed.connect(_on_shopButton_pressed);
 
 	# Playable levels
 	level1.pressed.connect(_on_level1_pressed)
 	level2.pressed.connect(_on_level2_pressed)
 	level3.pressed.connect(_on_level3_pressed)
-	shop_button.pressed.connect(_on_shopButton_pressed);
 
 	# Locked levels
 	level4.disabled = true
