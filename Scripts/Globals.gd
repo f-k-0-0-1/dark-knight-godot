@@ -23,4 +23,5 @@ func _ready() -> void:
 	5. level -b -> Bypass Level Behind\n
 	6. level -n -> Bypass to Next Level\n
 	7. clear -all ->  To Clear The Commands & Error Logs\n
+	8. shop  - (use '-' for no args) -> To Open Shop Menu\n
 	"""

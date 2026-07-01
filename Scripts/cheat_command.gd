@@ -21,6 +21,7 @@ func _ready() -> void:
 	"teleport" : [["-s", "-e"], [tele_end, tele_start]],
 	"level" : [["-n", "-b"], [level_next, level_before]],
 	"clear" : [["-all"], [clear_log]],
+	"shop" : [["-"], [init_shop]]
 	};
 
 # Called from the player Script
@@ -39,10 +40,11 @@ func run_command() -> void:
 	command = command_box.text.split(" ", false);
 	
 	# Handle Overflow/UnderFlow Args
-	if (command.size() < Globals.MIN_ARG_SIZE):
+	if (command.size() < Globals.MIN_ARG_SIZE && command[0]):
 		log_error("Arguments are Underflow !\n");
 		command_box.text= "";
 		return;
+	
 	elif (command.size() > Globals.MAX_ARG_SIZE):
 		log_error("Arguments are Overflow !\n");
 		command_box.text= "";
@@ -66,6 +68,11 @@ func run_command() -> void:
 			# Call the function
 			args_funcs[arg_index].call()
 		else:
+			if (arg_name) == "-":
+				log_error("Need Arguments: Type help -m for Help\n")
+				command_box.text = "";
+				return;
+			# Handel Other
 			log_error("Invalid Arg: " + arg_name + "\n")
 			command_box.text= "";
 			return;
@@ -140,3 +147,10 @@ func clear_log() -> void:
 
 func log_error(str_err :String) -> void:
 	info_box.text += "\nError: " + str_err;
+	
+func init_shop() -> void:
+	var shop: CanvasLayer = SceneManager.get_scene("shop_menu").instantiate()
+	get_tree().current_scene.add_child(shop);
+	
+	# Reset Command Box
+	command_box.text= "";
