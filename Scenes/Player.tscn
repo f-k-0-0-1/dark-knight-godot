@@ -39,11 +39,12 @@
 [ext_resource type="Texture2D" uid="uid://wav5y1k0uqpw" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00018.png" id="67_qvi77"]
 [ext_resource type="Texture2D" uid="uid://tl74jriy4mdi" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00019.png" id="68_8l4tv"]
 [ext_resource type="PackedScene" uid="uid://bc78hkoqfxfy8" path="res://Scenes/tutorial_popup_layer.tscn" id="68_au5ve"]
-[ext_resource type="Script" path="res://Scripts/camera_shake.gd" id="69_6f3s4"]
+[ext_resource type="Script" uid="uid://dnaasseymj631" path="res://Scripts/camera_shake.gd" id="69_6f3s4"]
 [ext_resource type="Texture2D" uid="uid://c7qsglvvmdudi" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00000.png" id="69_jxgrh"]
 [ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="69_yr3al"]
 [ext_resource type="AudioStream" uid="uid://cjak0f75dvjdi" path="res://Audio/sfx/jump.mp3" id="70_ed4yo"]
 [ext_resource type="Texture2D" uid="uid://drfq31wgkhb5s" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00001.png" id="70_g4mod"]
+[ext_resource type="PackedScene" uid="uid://bcgeeh78xolyr" path="res://Scenes/ambient_glow.tscn" id="70_l3y8b"]
 [ext_resource type="AudioStream" uid="uid://7famd7b5cj2q" path="res://Audio/sfx/player_hurt.mp3" id="71_fsa4a"]
 [ext_resource type="Texture2D" uid="uid://b7x18o17a5bsm" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00002.png" id="71_tih4q"]
 [ext_resource type="Texture2D" uid="uid://boeyl63vds0ll" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00003.png" id="72_2yy7l"]
@@ -357,6 +358,30 @@ animations = [{
 radius = 76.0
 height = 428.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6f3s4"]
+bg_color = Color(0.032552063, 0.032552063, 0.032552063, 0.56078434)
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3y8b"]
+bg_color = Color(0.03137255, 0.03137255, 0.03137255, 0.56078434)
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ujsok"]
+bg_color = Color(0.03137255, 0.03137255, 0.03137255, 0.47058824)
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("97_7jnis")
@@ -380,7 +405,6 @@ shape = SubResource("CapsuleShape2D_ll8vc")
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2123092284]
 
 [node name="MenuButton" type="MenuButton" parent="HUD" unique_id=990444789]
-texture_filter = 1
 offset_left = 8.0
 offset_top = 10.0
 offset_right = 65.0
@@ -391,24 +415,25 @@ expand_icon = true
 item_count = 5
 popup/item_0/text = "PAUSE"
 popup/item_0/id = 0
-popup/item_1/text = "RESUME"
-popup/item_1/id = 4
-popup/item_2/text = "RETRY"
-popup/item_2/id = 1
+popup/item_1/text = "RETRY"
+popup/item_1/id = 2
+popup/item_2/text = "BGM Mute"
+popup/item_2/checkable = 1
+popup/item_2/id = 3
 popup/item_3/text = "MAIN MENU"
-popup/item_3/id = 3
+popup/item_3/id = 4
 popup/item_4/text = "QUIT"
-popup/item_4/id = 2
+popup/item_4/id = 5
 script = ExtResource("66_7q0l3")
 
 [node name="player_lives" parent="HUD" unique_id=830781883 instance=ExtResource("67_jytj4")]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = 220.0
-offset_top = 33.0
-offset_right = 287.0
-offset_bottom = 48.72148
+offset_left = 180.0
+offset_top = 38.0
+offset_right = 247.0
+offset_bottom = 53.72148
 grow_horizontal = 0
 scale = Vector2(1.44, 1.42)
 pivot_offset = Vector2(922.162, 35.6159)
@@ -417,9 +442,9 @@ pivot_offset = Vector2(922.162, 35.6159)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 319.0
-offset_top = 17.0
-offset_right = 367.68994
+offset_left = 298.0
+offset_top = 17.000002
+offset_right = 346.68994
 offset_bottom = 379.0
 grow_horizontal = 2
 rotation = 1.5707964
@@ -453,9 +478,25 @@ offset_bottom = 48.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 24
 
+[node name="ZoomButton" type="Button" parent="HUD" unique_id=310560884]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -65.0
+offset_top = 14.0
+offset_right = -15.0
+offset_bottom = 64.0
+grow_horizontal = 0
+focus_mode = 0
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_6f3s4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_l3y8b")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ujsok")
+text = "1.0x"
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=31563295]
 position = Vector2(0, -66)
-zoom = Vector2(0.45, 0.45)
+zoom = Vector2(0.4, 0.4)
 process_callback = 0
 limit_enabled = false
 limit_left = -4500
@@ -468,6 +509,9 @@ drag_top_margin = 0.5
 drag_right_margin = 0.3
 drag_bottom_margin = 0.7
 script = ExtResource("69_6f3s4")
+
+[node name="AmbientGlow" parent="Camera2D" unique_id=1338851922 instance=ExtResource("70_l3y8b")]
+amount = 10
 
 [node name="FirePoint" type="Marker2D" parent="." unique_id=1372658391]
 position = Vector2(-93, 61)

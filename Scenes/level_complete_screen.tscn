@@ -162,9 +162,9 @@ mouse_filter = 1
 [node name="RetryButton" type="Button" parent="MenuPanel" unique_id=1560988444]
 layout_mode = 0
 offset_left = 439.0
-offset_top = 344.0
+offset_top = 380.0
 offset_right = 705.0
-offset_bottom = 389.0
+offset_bottom = 425.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_618c7")
 theme_override_styles/hover = SubResource("StyleBoxFlat_5gjvb")
@@ -173,9 +173,9 @@ text = "RETRY"
 [node name="NextLevelButton" type="Button" parent="MenuPanel" unique_id=242575425]
 layout_mode = 0
 offset_left = 439.0
-offset_top = 271.0
+offset_top = 320.0
 offset_right = 705.0
-offset_bottom = 316.0
+offset_bottom = 365.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_kh1sa")
 theme_override_styles/hover = SubResource("StyleBoxFlat_nsfsr")
@@ -184,9 +184,9 @@ text = "NEXT LEVEL"
 [node name="MainMenuButton" type="Button" parent="MenuPanel" unique_id=2028791805]
 layout_mode = 0
 offset_left = 439.0
-offset_top = 416.0
+offset_top = 440.0
 offset_right = 705.0
-offset_bottom = 461.0
+offset_bottom = 485.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_dsgku")
 theme_override_styles/hover = SubResource("StyleBoxFlat_o45pw")
@@ -195,9 +195,9 @@ text = "MAIN MENU"
 [node name="QuitButton" type="Button" parent="MenuPanel" unique_id=2033871538]
 layout_mode = 0
 offset_left = 439.0
-offset_top = 488.0
+offset_top = 500.0
 offset_right = 705.0
-offset_bottom = 533.0
+offset_bottom = 545.0
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_vc44a")
 theme_override_styles/hover = SubResource("StyleBoxFlat_pfw5j")
@@ -226,6 +226,24 @@ position = Vector2(670, 160)
 scale = Vector2(2.8, 2.8)
 sprite_frames = SubResource("SpriteFrames_8o5u1")
 animation = &"full"
+
+[node name="BestTimeLabel" type="Label" parent="MenuPanel" unique_id=944915771]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 264.0
+offset_right = 704.0
+offset_bottom = 287.0
+horizontal_alignment = 1
+
+[node name="NewRecordLabel" type="Label" parent="MenuPanel" unique_id=242258616]
+layout_mode = 1
+offset_left = 448.0
+offset_top = 224.0
+offset_right = 704.0
+offset_bottom = 250.0
+theme_override_font_sizes/font_size = 18
+text = "★ NEW RECORD! __.__★"
+horizontal_alignment = 1
 
 [node name="Label" type="Label" parent="." unique_id=740864151]
 offset_left = 442.0

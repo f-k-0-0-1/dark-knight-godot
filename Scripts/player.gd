@@ -3,11 +3,13 @@ extends CharacterBody2D
 signal health_changed(new_health: int, max_health: int)
 
 @onready var camera: Camera2D = $Camera2D
+@onready var zoom_button: Button = $HUD/ZoomButton
+
 var dash_locked := false
 @export var speed: float = 650.0
 @export var sprint_multiplier: float = 5.0
 @export var jump_velocity: float = -1150.0
-@export var gravity: float = 2250.0
+@export var gravity: float = 1500.0
 var cooldown_remaining: float = 0.0
 @export var fireball_cooldown: float = 0.5
 @export var shoot_anim_duration: float = 0.2
@@ -18,7 +20,7 @@ var cooldown_remaining: float = 0.0
 var bonus_heart_unlocked := false
 @onready var ability_cooldown_bar: ProgressBar = $HUD/AbilityCooldownBar
 
-var is_dead: bool = false # Explicitly declared with type 'bool'
+var is_dead: bool = false
 var fireball_scene: PackedScene
 var lightning_ball_instance: Area2D
 var cheat_command_scene = null;
@@ -56,6 +58,15 @@ var cheat_command := false
 func _ready():
 	fireball_scene = SceneManager.scenes.get("fireball_scene")
 	health_changed.emit(current_health, max_health)
+	if zoom_button:
+		zoom_button.pressed.connect(_on_zoom_button_pressed)
+		# Set initial text
+		zoom_button.text = "2.0x"
+
+func _on_zoom_button_pressed():
+	if camera:
+		var zoom_label = camera.toggle_zoom()
+		zoom_button.text = zoom_label
 
 func _input(event):
 	if is_dead:
@@ -63,12 +74,10 @@ func _input(event):
 
 	if event.is_action_pressed("cheat_command"):
 		cheat_command = !cheat_command 
-		print("Cheat Command: ", cheat_command)
 		
 	if !cheat_command and event.is_action_pressed("god_mode_toggle"):
 		god_mode = !god_mode
 		velocity = Vector2.ZERO
-		print("God Mode:", god_mode)
 
 	if !cheat_command and event.is_action_pressed("fireball"):
 		shoot_fireball()
@@ -198,6 +207,7 @@ func shoot_fireball():
 	is_shooting = true
 	can_shoot = false
 	
+	@warning_ignore("shadowed_variable")
 	var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
 	if camera:
 		camera.trigger_shake(5.0, 0.15)
@@ -291,11 +301,14 @@ func start_timer(duration: float, callback: Callable):
 func stop_level_timer():
 	level_timer.stop()
 
+func get_current_time() -> float:
+	return time_elapsed
+
 func get_stars_earned() -> int:
 	# EDIT THESE NUMBERS to change how hard it is to get stars!
-	var time_for_3_stars = 35.0
-	var time_for_2_stars = 45.0
-	var time_for_1_star  = 60.0
+	var time_for_3_stars = 90.0
+	var time_for_2_stars = 105.0
+	var time_for_1_star  = 120.0
 	
 	if time_elapsed <= time_for_3_stars:
 		return 3
