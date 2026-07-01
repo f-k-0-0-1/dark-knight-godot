@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://btthfvjd8d7bn"]
+
+[ext_resource type="Texture2D" uid="uid://3eyriep4mgib" path="res://Assets/Store/shop_item.png" id="1_vu2ah"]
+
+[node name="Item" type="TextureRect" unique_id=1188531429]
+clip_contents = true
+custom_minimum_size = Vector2(200, 250)
+texture = ExtResource("1_vu2ah")
+expand_mode = 1

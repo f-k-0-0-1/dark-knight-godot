@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://cjp23qe6ktpxs" path="res://Assets/Store/top_menu/top_menu_btn_1_clicked.png" id="3_ckylj"]
 [ext_resource type="Texture2D" uid="uid://dkvvdwrb88qpf" path="res://Assets/Store/top_menu/top_menu_btn_1_hover.png" id="4_2aaoe"]
 [ext_resource type="Texture2D" uid="uid://txi51ampdvnd" path="res://Assets/Store/top_menu/top_menu_btn_2_normal.png" id="5_2aaoe"]
-[ext_resource type="Texture2D" uid="uid://3eyriep4mgib" path="res://Assets/Store/shop_item.png" id="5_ct2yw"]
 [ext_resource type="Texture2D" uid="uid://k0vunm45rhpi" path="res://Assets/Store/top_menu/top_menu_btn_2_clicked.png" id="6_ct2yw"]
 [ext_resource type="Texture2D" uid="uid://1mum8rc4erfj" path="res://Assets/Store/top_menu/top_menu_btn_2_hover.png" id="7_ccd4q"]
 [ext_resource type="Texture2D" uid="uid://bs241fi0oficg" path="res://Assets/Store/top_menu/top_menu_btn_3_normal.png" id="8_dael7"]
@@ -22,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://blwuex0oyph6o" path="res://Assets/Store/store_close_button.png" id="17_3ro81"]
 [ext_resource type="Texture2D" uid="uid://bvnr25sin0gr0" path="res://Assets/Store/store_close_button_clicked.png" id="18_tvfaq"]
 [ext_resource type="Texture2D" uid="uid://ca4mwfvx47ln5" path="res://Assets/Store/store_close_button_hover.png" id="19_d5t61"]
+[ext_resource type="PackedScene" uid="uid://btthfvjd8d7bn" path="res://Scenes/Shop_item.tscn" id="22_dcoym"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dcoym"]
 shader = ExtResource("1_k8g64")
@@ -230,7 +230,6 @@ offset_bottom = 9.893982
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 0
-scroll_horizontal = 5
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 0
 
@@ -246,47 +245,29 @@ layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
 
-[node name="Item" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=670698324]
-clip_contents = true
-custom_minimum_size = Vector2(200, 250)
+[node name="Item" parent="UI/Seperator/Bottom/HBox" unique_id=1188531429 instance=ExtResource("22_dcoym")]
 layout_mode = 2
-texture = ExtResource("5_ct2yw")
-expand_mode = 1
 
-[node name="Item2" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=2079312455]
-clip_contents = true
-custom_minimum_size = Vector2(200, 250)
+[node name="Item2" parent="UI/Seperator/Bottom/HBox" unique_id=155790097 instance=ExtResource("22_dcoym")]
 layout_mode = 2
-texture = ExtResource("5_ct2yw")
-expand_mode = 1
 
-[node name="Item6" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=735849573]
-clip_contents = true
-custom_minimum_size = Vector2(200, 250)
+[node name="Item3" parent="UI/Seperator/Bottom/HBox" unique_id=1296862561 instance=ExtResource("22_dcoym")]
 layout_mode = 2
-texture = ExtResource("5_ct2yw")
-expand_mode = 1
 
-[node name="Item3" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=409586722]
-clip_contents = true
-custom_minimum_size = Vector2(200, 250)
+[node name="Item4" parent="UI/Seperator/Bottom/HBox" unique_id=1934183447 instance=ExtResource("22_dcoym")]
 layout_mode = 2
-texture = ExtResource("5_ct2yw")
-expand_mode = 1
 
-[node name="Item4" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=1027791045]
-clip_contents = true
-custom_minimum_size = Vector2(200, 250)
+[node name="Item5" parent="UI/Seperator/Bottom/HBox" unique_id=1611942852 instance=ExtResource("22_dcoym")]
 layout_mode = 2
-texture = ExtResource("5_ct2yw")
-expand_mode = 1
 
-[node name="Item5" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=1373533817]
-clip_contents = true
-custom_minimum_size = Vector2(200, 250)
+[node name="Item6" parent="UI/Seperator/Bottom/HBox" unique_id=1521458155 instance=ExtResource("22_dcoym")]
 layout_mode = 2
-texture = ExtResource("5_ct2yw")
-expand_mode = 1
+
+[node name="Item7" parent="UI/Seperator/Bottom/HBox" unique_id=409632822 instance=ExtResource("22_dcoym")]
+layout_mode = 2
+
+[node name="Item8" parent="UI/Seperator/Bottom/HBox" unique_id=1456202240 instance=ExtResource("22_dcoym")]
+layout_mode = 2
 
 [node name="End" type="VSeparator" parent="UI/Seperator/Bottom/HBox" unique_id=717316113]
 custom_minimum_size = Vector2(20, 0)
