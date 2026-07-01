@@ -511,6 +511,7 @@ drag_bottom_margin = 0.7
 script = ExtResource("69_6f3s4")
 
 [node name="AmbientGlow" parent="Camera2D" unique_id=1338851922 instance=ExtResource("70_l3y8b")]
+visible = false
 amount = 10
 
 [node name="FirePoint" type="Marker2D" parent="." unique_id=1372658391]
