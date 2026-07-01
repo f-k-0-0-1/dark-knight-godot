@@ -19,6 +19,9 @@ var cooldown_remaining: float = 0.0
 @export var max_health: int = 100
 var bonus_heart_unlocked := false
 @onready var ability_cooldown_bar: ProgressBar = $HUD/AbilityCooldownBar
+@onready var jump_sound: AudioStreamPlayer = $JumpSound
+@onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound
+@onready var player_hurt: AudioStreamPlayer = $PlayerHurt
 
 var is_dead: bool = false
 var fireball_scene: PackedScene
@@ -122,10 +125,6 @@ func _physics_process(delta):
 	if cooldown_remaining <= 0:
 		cooldown_remaining = 0
 		ability_cooldown_bar.value = lightning_ability_cooldown
-
-@onready var jump_sound: AudioStreamPlayer = $JumpSound
-@onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound
-@onready var player_hurt: AudioStreamPlayer = $PlayerHurt
 
 func handle_movement_input():
 	var move_speed := speed

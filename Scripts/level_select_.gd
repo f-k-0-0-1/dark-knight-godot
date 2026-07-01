@@ -12,6 +12,7 @@ extends Control
 @onready var level8: TextureButton = $GridContainer/level8
 @onready var level9: TextureButton = $GridContainer/level9
 @onready var level10: TextureButton = $GridContainer/level10
+@onready var shop_button: TextureButton = $ShopButton;
 
 
 func _ready():
@@ -22,6 +23,7 @@ func _ready():
 	level1.pressed.connect(_on_level1_pressed)
 	level2.pressed.connect(_on_level2_pressed)
 	level3.pressed.connect(_on_level3_pressed)
+	shop_button.pressed.connect(_on_shopButton_pressed);
 
 	# Locked levels
 	level4.disabled = true
@@ -54,4 +56,8 @@ func _on_level3_pressed():
 	MusicManager.play_button_click()
 	await get_tree().create_timer(0.1).timeout
 	SceneManager.change_scene("level_3")
+	
+func _on_shopButton_pressed() -> void:
+	var shop_menu: CanvasLayer = SceneManager.get_scene("shop_menu").instantiate();
+	self.add_child(shop_menu);
 	

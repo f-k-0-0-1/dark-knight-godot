@@ -1,0 +1,297 @@
+[gd_scene format=3 uid="uid://lnwbof5s0xcp"]
+
+[ext_resource type="Script" uid="uid://cflvr6ura7p3y" path="res://Scripts/shop.gd" id="1_dcoym"]
+[ext_resource type="Texture2D" uid="uid://cabfb6xgwsr7j" path="res://Assets/Store/store_bg.png" id="1_e5ji4"]
+[ext_resource type="Shader" uid="uid://bo2yjehime3xk" path="res://Shaders/blurr.gdshader" id="1_k8g64"]
+[ext_resource type="Texture2D" uid="uid://nl4xuccs8rwq" path="res://Assets/Store/top_menu/top_menu_btn_1.png" id="2_wndna"]
+[ext_resource type="Texture2D" uid="uid://cjp23qe6ktpxs" path="res://Assets/Store/top_menu/top_menu_btn_1_clicked.png" id="3_ckylj"]
+[ext_resource type="Texture2D" uid="uid://dkvvdwrb88qpf" path="res://Assets/Store/top_menu/top_menu_btn_1_hover.png" id="4_2aaoe"]
+[ext_resource type="Texture2D" uid="uid://txi51ampdvnd" path="res://Assets/Store/top_menu/top_menu_btn_2_normal.png" id="5_2aaoe"]
+[ext_resource type="Texture2D" uid="uid://3eyriep4mgib" path="res://Assets/Store/shop_item.png" id="5_ct2yw"]
+[ext_resource type="Texture2D" uid="uid://k0vunm45rhpi" path="res://Assets/Store/top_menu/top_menu_btn_2_clicked.png" id="6_ct2yw"]
+[ext_resource type="Texture2D" uid="uid://1mum8rc4erfj" path="res://Assets/Store/top_menu/top_menu_btn_2_hover.png" id="7_ccd4q"]
+[ext_resource type="Texture2D" uid="uid://bs241fi0oficg" path="res://Assets/Store/top_menu/top_menu_btn_3_normal.png" id="8_dael7"]
+[ext_resource type="Texture2D" uid="uid://b337ingog55ab" path="res://Assets/Store/top_menu/top_menu_btn_3_clicked.png" id="9_gufdo"]
+[ext_resource type="Texture2D" uid="uid://cogojmvqcasx1" path="res://Assets/Store/top_menu/top_menu_btn_3_hover.png" id="10_ox0pj"]
+[ext_resource type="Texture2D" uid="uid://dfnho7oag36mh" path="res://Assets/Store/top_menu/top_menu_btn_4_normal.png" id="11_wvogg"]
+[ext_resource type="Texture2D" uid="uid://k3xqqeygvu3i" path="res://Assets/Store/top_menu/top_menu_btn_4_clicked.png" id="12_estnu"]
+[ext_resource type="Texture2D" uid="uid://85nawrhj1tty" path="res://Assets/Store/top_menu/top_menu_btn_4_hover.png" id="13_mk6g2"]
+[ext_resource type="Texture2D" uid="uid://c1vi2454ndd0h" path="res://Assets/Store/top_menu/top_menu_empty_btn.png" id="14_kgt2b"]
+[ext_resource type="Texture2D" uid="uid://sfvkpaiji1lw" path="res://Assets/Store/top_menu/top_menu_empty_btn_clicked.png" id="15_k8g64"]
+[ext_resource type="Texture2D" uid="uid://cdwh1s68plkqk" path="res://Assets/Store/top_menu/top_menu_empty_btn_hover.png" id="16_dcoym"]
+[ext_resource type="Texture2D" uid="uid://blwuex0oyph6o" path="res://Assets/Store/store_close_button.png" id="17_3ro81"]
+[ext_resource type="Texture2D" uid="uid://bvnr25sin0gr0" path="res://Assets/Store/store_close_button_clicked.png" id="18_tvfaq"]
+[ext_resource type="Texture2D" uid="uid://ca4mwfvx47ln5" path="res://Assets/Store/store_close_button_hover.png" id="19_d5t61"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dcoym"]
+shader = ExtResource("1_k8g64")
+shader_parameter/blur_amount = 2.5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k8g64"]
+bg_color = Color(1, 0.36078432, 0, 0)
+border_width_left = 100
+border_width_top = 100
+border_width_right = 100
+border_width_bottom = 100
+border_color = Color(0.3361338, 0.47514522, 0.096109815, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6r07y"]
+texture = ExtResource("1_e5ji4")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8yhm2"]
+
+[node name="Shop" type="CanvasLayer" unique_id=425098900]
+script = ExtResource("1_dcoym")
+
+[node name="BG" type="Panel" parent="." unique_id=2109564939]
+material = SubResource("ShaderMaterial_dcoym")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Border" type="Panel" parent="." unique_id=914765620]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 160.0
+offset_top = 92.0
+offset_right = -165.0
+offset_bottom = -89.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_k8g64")
+
+[node name="UI" type="PanelContainer" parent="." unique_id=451124154]
+texture_filter = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 161.77777
+offset_top = 94.0
+offset_right = -167.11115
+offset_bottom = -91.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_6r07y")
+
+[node name="Seperator" type="Control" parent="UI" unique_id=1940210451]
+clip_children = 1
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Top" type="ScrollContainer" parent="UI/Seperator" unique_id=711821293]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.497
+anchor_top = 0.108
+anchor_right = 0.5
+anchor_bottom = 0.27
+offset_left = -378.86398
+offset_top = -0.0040016174
+offset_right = 382.6667
+offset_bottom = -0.010002136
+grow_horizontal = 2
+size_flags_vertical = 0
+mouse_filter = 0
+mouse_default_cursor_shape = 1
+scroll_horizontal = 20
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="HBox" type="HBoxContainer" parent="UI/Seperator/Top" unique_id=1002005883]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="Start" type="VSeparator" parent="UI/Seperator/Top/HBox" unique_id=702106434]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
+
+[node name="Weapons" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=299475210]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("2_wndna")
+texture_pressed = ExtResource("3_ckylj")
+texture_hover = ExtResource("4_2aaoe")
+texture_focused = ExtResource("2_wndna")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Heal" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=382669298]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("5_2aaoe")
+texture_pressed = ExtResource("6_ct2yw")
+texture_hover = ExtResource("7_ccd4q")
+texture_focused = ExtResource("5_2aaoe")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="PowerUps" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=113733697]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("8_dael7")
+texture_pressed = ExtResource("9_gufdo")
+texture_hover = ExtResource("10_ox0pj")
+texture_focused = ExtResource("8_dael7")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Boosters" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=307828161]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("11_wvogg")
+texture_pressed = ExtResource("12_estnu")
+texture_hover = ExtResource("13_mk6g2")
+texture_focused = ExtResource("11_wvogg")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Empty" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=594731882]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("14_kgt2b")
+texture_pressed = ExtResource("15_k8g64")
+texture_hover = ExtResource("16_dcoym")
+texture_focused = ExtResource("14_kgt2b")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Empty2" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=2096363157]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("14_kgt2b")
+texture_pressed = ExtResource("15_k8g64")
+texture_hover = ExtResource("16_dcoym")
+texture_focused = ExtResource("14_kgt2b")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Empty3" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=1062411809]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("14_kgt2b")
+texture_pressed = ExtResource("15_k8g64")
+texture_hover = ExtResource("16_dcoym")
+texture_focused = ExtResource("14_kgt2b")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="CloseButton" type="TextureButton" parent="UI/Seperator/Top/HBox" unique_id=1405714616]
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("17_3ro81")
+texture_pressed = ExtResource("18_tvfaq")
+texture_hover = ExtResource("19_d5t61")
+texture_focused = ExtResource("17_3ro81")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="End" type="VSeparator" parent="UI/Seperator/Top/HBox" unique_id=964571217]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
+
+[node name="Bottom" type="ScrollContainer" parent="UI/Seperator" unique_id=1536484134]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.497
+anchor_top = 0.287
+anchor_right = 0.497
+anchor_bottom = 0.86200005
+offset_left = -379.86398
+offset_top = 0.119003296
+offset_right = 389.13602
+offset_bottom = 9.893982
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 0
+scroll_horizontal = 5
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+
+[node name="HBox" type="HBoxContainer" parent="UI/Seperator/Bottom" unique_id=1937601526]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Start" type="VSeparator" parent="UI/Seperator/Bottom/HBox" unique_id=1541523493]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
+
+[node name="Item" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=670698324]
+clip_contents = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 2
+texture = ExtResource("5_ct2yw")
+expand_mode = 1
+
+[node name="Item2" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=2079312455]
+clip_contents = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 2
+texture = ExtResource("5_ct2yw")
+expand_mode = 1
+
+[node name="Item6" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=735849573]
+clip_contents = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 2
+texture = ExtResource("5_ct2yw")
+expand_mode = 1
+
+[node name="Item3" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=409586722]
+clip_contents = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 2
+texture = ExtResource("5_ct2yw")
+expand_mode = 1
+
+[node name="Item4" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=1027791045]
+clip_contents = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 2
+texture = ExtResource("5_ct2yw")
+expand_mode = 1
+
+[node name="Item5" type="TextureRect" parent="UI/Seperator/Bottom/HBox" unique_id=1373533817]
+clip_contents = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 2
+texture = ExtResource("5_ct2yw")
+expand_mode = 1
+
+[node name="End" type="VSeparator" parent="UI/Seperator/Bottom/HBox" unique_id=717316113]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
+
+[connection signal="pressed" from="UI/Seperator/Top/HBox/CloseButton" to="." method="_on_close_button_pressed"]

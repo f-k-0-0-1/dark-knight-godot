@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bospax0kwjtgf" path="res://Scenes/slime.tscn" id="5_1jukv"]
 [ext_resource type="PackedScene" uid="uid://ca3psb6v06l34" path="res://Scenes/flying_demon.tscn" id="6_61niw"]
 [ext_resource type="Script" uid="uid://cvrv3ki1slnap" path="res://Scripts/scene_manager.gd" id="6_q2r7y"]
-[ext_resource type="PackedScene" path="res://Scenes/bon_fire.tscn" id="7_af3po"]
+[ext_resource type="PackedScene" uid="uid://b4qkx4fb51jp5" path="res://Scenes/bon_fire.tscn" id="7_af3po"]
 [ext_resource type="PackedScene" uid="uid://bok76dbww4tj2" path="res://Scenes/flag.tscn" id="8_xrdnt"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="9_wrinw"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="10_chwpn"]
