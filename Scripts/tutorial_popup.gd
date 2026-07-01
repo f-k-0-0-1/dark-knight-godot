@@ -4,6 +4,7 @@ extends CanvasLayer
 @onready var close_button: Button = $PopupPanel/CloseButton
 @onready var auto_close_timer: Timer = $PopupPanel/AutoCloseTimer
 
+@warning_ignore("unused_signal")
 signal tutorial_closed
 
 func _ready():

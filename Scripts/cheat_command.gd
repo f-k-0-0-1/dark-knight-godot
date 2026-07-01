@@ -1,7 +1,7 @@
 extends Node
 
-@onready var command_box: LineEdit = $VBox/command_Box/command
-@onready var info_box: Label = $VBox/InfoBox/Label
+@onready var command_box: LineEdit = $VBox/command_Box/command;
+@onready var info_box: Label = $VBox/InfoBox/Label;
 
 # Declarations
 var command : PackedStringArray;
@@ -38,7 +38,7 @@ func run_command() -> void:
 	# Spilt the commands via spaces
 	command = command_box.text.split(" ", false);
 	
-	# Handle Overflow Args
+	# Handle Overflow/UnderFlow Args
 	if (command.size() < Globals.MIN_ARG_SIZE):
 		log_error("Arguments are Underflow !\n");
 		command_box.text= "";
