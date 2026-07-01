@@ -44,7 +44,7 @@
 [ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="69_yr3al"]
 [ext_resource type="AudioStream" uid="uid://cjak0f75dvjdi" path="res://Audio/sfx/jump.mp3" id="70_ed4yo"]
 [ext_resource type="Texture2D" uid="uid://drfq31wgkhb5s" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00001.png" id="70_g4mod"]
-[ext_resource type="PackedScene" uid="uid://bcgeeh78xolyr" path="res://Scenes/ambient_glow.tscn" id="70_l3y8b"]
+[ext_resource type="PackedScene" path="res://Scenes/ambient_glow.tscn" id="70_l3y8b"]
 [ext_resource type="AudioStream" uid="uid://7famd7b5cj2q" path="res://Audio/sfx/player_hurt.mp3" id="71_fsa4a"]
 [ext_resource type="Texture2D" uid="uid://b7x18o17a5bsm" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00002.png" id="71_tih4q"]
 [ext_resource type="Texture2D" uid="uid://boeyl63vds0ll" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00003.png" id="72_2yy7l"]

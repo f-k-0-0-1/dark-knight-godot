@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://chsw1762yyhp0"]
 
-[ext_resource type="Script" uid="uid://xmycdws7vtty" path="res://Scripts/portal_effect.gd" id="1_t2u7j"]
+[ext_resource type="Script" path="res://Scripts/portal_effect.gd" id="1_t2u7j"]
 [ext_resource type="Material" uid="uid://4f1aep6k8304" path="res://Shaders/PortalShaderMaterial.tres" id="2_874m8"]
 [ext_resource type="AudioStream" uid="uid://b4dmhbxwft3j8" path="res://Audio/sfx/teleport_sfx.mp3" id="3_tdg6q"]
 

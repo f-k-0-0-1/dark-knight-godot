@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://bvifvvilgom8t"]
+[gd_scene format=3 uid="uid://b4qkx4fb51jp5"]
 
 [ext_resource type="Texture2D" uid="uid://dg77uwssdc4cs" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_1.png" id="1_ad55n"]
-[ext_resource type="Script" uid="uid://dw6uk0kejdpo4" path="res://Scripts/bon_fire.gd" id="1_rap1v"]
+[ext_resource type="Script" path="res://Scripts/bon_fire.gd" id="1_rap1v"]
 [ext_resource type="Texture2D" uid="uid://hq3c33eaymky" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_2.png" id="2_rap1v"]
 [ext_resource type="Texture2D" uid="uid://diady1c77y40a" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_3.png" id="3_l0em7"]
 [ext_resource type="Texture2D" uid="uid://cib78l3s3531b" path="res://Assets/Bonvicio_Bonfire_1-0/Bonfire_4.png" id="4_ph75e"]
