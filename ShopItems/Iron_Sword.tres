@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://bjegnf4sctdov"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_2m13l"]
+[ext_resource type="Texture2D" uid="uid://be0dyf51vs62d" path="res://Assets/Mincraft Weapon Pack {1}/Iron Sword-1.png.png" id="2_bctvd"]
+
+[resource]
+script = ExtResource("1_2m13l")
+item_name = "Iron Sword"
+category = "sword"
+price = 150
+sprite_texture = ExtResource("2_bctvd")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"

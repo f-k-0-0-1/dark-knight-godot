@@ -1,9 +1,46 @@
-[gd_scene format=3 uid="uid://btthfvjd8d7bn"]
+[gd_scene format=3 uid="uid://eq1mngsr6pnt"]
 
-[ext_resource type="Texture2D" uid="uid://3eyriep4mgib" path="res://Assets/Store/shop_item.png" id="1_vu2ah"]
+[ext_resource type="Script" uid="uid://qqkgomgpywey" path="res://Scripts/shop_item.gd" id="1_hsgix"]
+[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png" id="2_b8rhe"]
 
-[node name="Item" type="TextureRect" unique_id=1188531429]
-clip_contents = true
-custom_minimum_size = Vector2(200, 250)
-texture = ExtResource("1_vu2ah")
+[node name="ShopItem" type="Control" unique_id=222652382]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_hsgix")
+
+[node name="ItemSprite" type="TextureRect" parent="." unique_id=893329278]
+layout_mode = 0
+offset_right = 1092.0
+offset_bottom = 1092.0
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("2_b8rhe")
 expand_mode = 1
+
+[node name="ItemName" type="Label" parent="." unique_id=1465529461]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 8.0
+offset_right = 122.0
+offset_bottom = 31.0
+text = "Sword"
+
+[node name="ItemPrice" type="Label" parent="." unique_id=1405107260]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 115.0
+offset_right = 72.0
+offset_bottom = 138.0
+text = "100"
+
+[node name="BuyButton" type="Button" parent="." unique_id=1925525528]
+layout_mode = 1
+offset_left = 81.0
+offset_top = 171.0
+offset_right = 121.0
+offset_bottom = 202.0
+text = "Buy"
