@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://h1llsirdhljl" path="res://Scenes/shardsoul.tscn" id="11_n4vm5"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="14_fxnjf"]
 [ext_resource type="PackedScene" uid="uid://bu7a4locqiqmr" path="res://Scenes/rotating_drum.tscn" id="14_ki8bc"]
-[ext_resource type="PackedScene" uid="uid://bvifvvilgom8t" path="res://Scenes/bon_fire.tscn" id="15_nbwsh"]
+[ext_resource type="PackedScene" path="res://Scenes/bon_fire.tscn" id="15_nbwsh"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="15_xjeco"]
 
 [sub_resource type="Environment" id="Environment_ki8bc"]
