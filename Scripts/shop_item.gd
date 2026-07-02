@@ -22,9 +22,15 @@ func _assign_texture(item_data: ItemData):
 	_update_button_state()
 	
 func _update_button_state():
-	if current_item_data.item_name in Globals.owned_items:
+
+	if current_item_data.item_name == Globals.equipped_item_name:
+		buy_button.text = "EQUIPPED"
+		buy_button.disabled = true
+
+	elif current_item_data.item_name in Globals.owned_items:
 		buy_button.text = "EQUIP"
 		buy_button.disabled = false
+
 	else:
 		buy_button.text = "BUY (" + str(current_item_data.price) + ")"
 		buy_button.disabled = false
@@ -33,26 +39,22 @@ func _on_buy_pressed():
 	var item_name = current_item_data.item_name
 	var price = current_item_data.price
 	
-	# CASE 1: Player already owns the item -> Equip it
 	if item_name in Globals.owned_items:
+		
 		Globals.equipped_item_name = item_name
+		Globals.save_inventory()
 		Globals.weapon_equipped.emit(item_name)
-		print("Equipped: ", item_name)
+		Globals.inventory_updated.emit()
+		print("Equipped:", item_name)
 		return
 	
-	# CASE 2: Player doesn't own it -> Check wallet
 	if Globals.player_coins >= price:
 
 		Globals.add_coins(-price)
-
 		Globals.owned_items.append(item_name)
-
 		Globals.equipped_item_name = item_name
-
 		Globals.save_inventory()
-
 		Globals.inventory_updated.emit()
-
 		Globals.weapon_equipped.emit(item_name)
 
 		print("Purchased and equipped: ", item_name)

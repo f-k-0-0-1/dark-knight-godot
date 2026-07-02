@@ -152,10 +152,13 @@ func _physics_process(delta):
 		ability_cooldown_bar.value = lightning_ability_cooldown
 
 func handle_movement_input():
-	if velocity.x != 0:
-		facing_right = velocity.x > 0
 
-		sprite.flip_h = !facing_right
+	var input_direction_A := Input.get_axis("move_left", "move_right")
+
+	if input_direction_A != 0:
+		facing_right = input_direction_A > 0
+
+	sprite.flip_h = !facing_right
 
 	if facing_right:
 		sword_holder.position = Vector2(20, -5)
