@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://m1r7afhf8aax"]
 
+[ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="2_l3y8b"]
 [ext_resource type="Texture2D" uid="uid://b5pgosn7hwav5" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00000.png" id="17_lrj6g"]
 [ext_resource type="Texture2D" uid="uid://cqjso8te4fshr" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00001.png" id="18_ytcev"]
 [ext_resource type="Texture2D" uid="uid://dadu0xus6luha" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00002.png" id="19_kk0t0"]
@@ -384,6 +385,7 @@ corner_radius_bottom_left = 30
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("97_7jnis")
+lightning_ball_scene = ExtResource("2_l3y8b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2121547936]
 position = Vector2(0, -59)

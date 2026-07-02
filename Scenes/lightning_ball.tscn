@@ -198,6 +198,8 @@ script = ExtResource("1_jpx7n")
 scale = Vector2(3.5, 3.5)
 sprite_frames = SubResource("SpriteFrames_ie7ns")
 animation = &"charge"
+frame = 24
+frame_progress = 1.0
 speed_scale = 0.7
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=309791117]

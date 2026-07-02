@@ -45,7 +45,6 @@ func _on_buy_pressed():
 		Globals.save_inventory()
 		Globals.weapon_equipped.emit(item_name)
 		Globals.inventory_updated.emit()
-		print("Equipped:", item_name)
 		return
 	
 	if Globals.player_coins >= price:
@@ -56,7 +55,5 @@ func _on_buy_pressed():
 		Globals.save_inventory()
 		Globals.inventory_updated.emit()
 		Globals.weapon_equipped.emit(item_name)
-
-		print("Purchased and equipped: ", item_name)
 
 		_update_button_state()

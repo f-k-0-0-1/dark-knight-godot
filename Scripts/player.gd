@@ -95,7 +95,13 @@ func _on_zoom_button_pressed():
 func _input(event):
 	if is_dead:
 		return
-		
+	
+	if event.is_action_pressed("fireball"):
+		shoot_fireball()
+
+	if event.is_action_pressed("lightning_ability"):
+		activate_lightning_ball()
+	
 	if event.is_action_pressed("sword_attack"):
 		if sword and sword.has_method("swing"):
 			sword.swing(facing_right)

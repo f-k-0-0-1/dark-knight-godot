@@ -93,7 +93,6 @@ func save_inventory():
 	config.set_value("inventory", "equipped", equipped_item_name)
 	
 	config.save(file_path)
-	print("Inventory saved.")
 
 func load_inventory():
 	var config = ConfigFile.new()
@@ -108,4 +107,3 @@ func load_inventory():
 			owned_items = []
 		
 		equipped_item_name = config.get_value("inventory", "equipped", "")
-		print("Inventory loaded.")
