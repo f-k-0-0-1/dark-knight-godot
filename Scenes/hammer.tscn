@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://stghbqk3dcxb"]
+
+[ext_resource type="Script" uid="uid://cmdie7pigcu63" path="res://Scripts/hammer.gd" id="1_l8gpf"]
+[ext_resource type="Texture2D" uid="uid://vmuj13y5xtpp" path="res://Assets/Store/hammer/hammer1.png" id="2_nvmri"]
+[ext_resource type="AudioStream" uid="uid://cqd76h5sh3dml" path="res://Assets/Store/hammer/hammer_sound.mp3" id="3_ry3hk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l3y8b"]
+size = Vector2(73.16365, 36.778187)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ujsok"]
+size = Vector2(18.091482, 35.01883)
+
+[node name="Hammer" type="Node2D" unique_id=970730986]
+rotation = 0.24085544
+scale = Vector2(1.7199986, 1.7199986)
+script = ExtResource("1_l8gpf")
+swing_angle = 200.0
+
+[node name="Axis" type="Node2D" parent="." unique_id=9266580]
+position = Vector2(-0.08894563, -0.5745519)
+
+[node name="Texture" type="Sprite2D" parent="Axis" unique_id=1539397345]
+texture_filter = 1
+position = Vector2(46.762424, -51.363308)
+texture = ExtResource("2_nvmri")
+
+[node name="HitBox" type="Area2D" parent="Axis/Texture" unique_id=116409096]
+z_index = 1
+scale = Vector2(1, 0.7878787)
+
+[node name="Collider" type="CollisionShape2D" parent="Axis/Texture/HitBox" unique_id=685576141]
+position = Vector2(21.383514, -44.15087)
+rotation = 0.6667162
+scale = Vector2(0.9999991, 0.9999994)
+shape = SubResource("RectangleShape2D_l3y8b")
+
+[node name="BottomCollider" type="CollisionShape2D" parent="Axis/Texture/HitBox" unique_id=603352549]
+position = Vector2(1.4820709, -15.382423)
+rotation = 0.5218535
+scale = Vector2(0.99999887, 0.9999987)
+shape = SubResource("RectangleShape2D_ujsok")
+
+[node name="HammerSound" type="AudioStreamPlayer" parent="." unique_id=1119629270]
+stream = ExtResource("3_ry3hk")
+volume_db = 24.0
+pitch_scale = 0.86
+
+[connection signal="body_entered" from="Axis/Texture/HitBox" to="." method="_on_hit_box_body_entered"]

@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://b7qm3xktxj8yk"]
+
+[ext_resource type="Script" uid="uid://bm2sidbj1jtol" path="res://Scripts/inventory_slot.gd" id="1_slot"]
+
+[node name="InventorySlot" type="PanelContainer" unique_id=238488823]
+custom_minimum_size = Vector2(70, 70)
+script = ExtResource("1_slot")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1469521334]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Content" type="VBoxContainer" parent="MarginContainer" unique_id=522539641]
+layout_mode = 2
+
+[node name="ItemTexture" type="TextureRect" parent="MarginContainer/Content" unique_id=352276524]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemName" type="Label" parent="MarginContainer/Content" unique_id=1674955735]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = " "
+horizontal_alignment = 1
+
+[node name="EquippedIndicator" type="Label" parent="MarginContainer/Content" unique_id=296618995]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 12
+text = "★"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=947884208]
+layout_mode = 2
+flat = true
