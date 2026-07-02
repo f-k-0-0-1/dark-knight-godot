@@ -1,0 +1,2868 @@
+
+=== Scripts/bon_fire.gd ===
+
+extends Node2D
+
+# Get the reference to the AnimatedSprite2D node
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+
+func _ready():
+	# Play the "fire" animation set up in your SpriteFrames
+	animated_sprite.play("fire")
+
+=== Scripts/camera_shake.gd ===
+
+extends Camera2D
+
+# === SETTINGS ===
+@export var max_intensity: float = 15.0
+@export var shake_duration: float = 0.4
+@export var shake_frequency: float = 25.0 
+
+# === STATE ===
+var shake_strength: float = 0.0
+var shake_timer: float = 0.0
+var is_shaking := false
+var original_position: Vector2 = Vector2.ZERO
+
+# === ZOOM STATE (2x, 5x, 8x Zoomed Out) ===
+# 0.5 = 2x   |   0.2 = 5x   |   0.125 = 8x
+var zoom_levels := [0.5, 0.2, 0.125]
+# Labels to display on the button for each level
+var zoom_labels := ["2x", "5x", "8x"]
+var current_zoom_index := 0 # Starts at 2x (index 0)
+var zoom_tween: Tween
+
+func _ready():
+	# Save the static position of the camera
+	original_position = position
+	
+	# Set initial zoom to 2x (0.5)
+	zoom = Vector2(zoom_levels[current_zoom_index], zoom_levels[current_zoom_index])
+	zoom_tween = create_tween()
+	zoom_tween.kill()
+
+func _process(delta: float) -> void:
+	if not is_shaking:
+		return
+
+	# 1. Update the timer
+	shake_timer -= delta
+	
+	# 2. Decay
+	shake_strength = max_intensity * (shake_timer / shake_duration)
+	shake_strength = max(shake_strength, 0.0)
+	
+	# 3. Generate the Jitter
+	var time = Time.get_ticks_msec() / 1000.0
+	var noise_x = sin(time * shake_frequency) * cos(time * (shake_frequency * 0.9))
+	var noise_y = cos(time * shake_frequency * 1.1) * sin(time * (shake_frequency * 0.8))
+	
+	# 4. Apply the offset
+	position = original_position + Vector2(
+		noise_x * shake_strength,
+		noise_y * shake_strength
+	)
+	
+	# 5. Reset when finished
+	if shake_timer <= 0.0:
+		is_shaking = false
+		position = original_position
+
+# === SHAKE TRIGGER ===
+func trigger_shake(intensity: float = max_intensity, duration: float = shake_duration):
+	if is_shaking:
+		return
+		
+	shake_strength = intensity
+	shake_timer = duration
+	is_shaking = true
+
+# === ZOOM LOGIC (3 Stages) ===
+func toggle_zoom():
+	# 1. Move to the next index
+	current_zoom_index += 1
+	
+	# 2. Loop back to 2x (0) if we go past 8x
+	if current_zoom_index >= zoom_levels.size():
+		current_zoom_index = 0
+	
+	# 3. Get the target zoom value
+	var target_zoom = zoom_levels[current_zoom_index]
+	
+	# 4. Kill any existing tween
+	if zoom_tween and zoom_tween.is_running():
+		zoom_tween.kill()
+	
+	zoom_tween = create_tween()
+	zoom_tween.set_trans(Tween.TRANS_QUAD)
+	zoom_tween.set_ease(Tween.EASE_IN_OUT)
+	
+	# Animate the zoom
+	zoom_tween.tween_property(self, "zoom", Vector2(target_zoom, target_zoom), 0.4)
+	
+	# 5. Return the text label (e.g. "5x") for the button
+	return zoom_labels[current_zoom_index]
+
+=== Scripts/cheat_command.gd ===
+
+extends Node
+
+@onready var command_box: LineEdit = $VBox/command_Box/command;
+@onready var info_box: Label = $VBox/InfoBox/Label;
+
+# Declarations
+var command : PackedStringArray;
+var player: CharacterBody2D; 
+var flag: Area2D;
+var commands: Dictionary;
+
+func _ready() -> void:
+	
+	# Init refs
+	player = null;
+	flag = null;
+	
+	# Init the dictionary
+	commands = {
+	"help" : [["-l", "-m"],[help_line, help_multi]],
+	"teleport" : [["-s", "-e"], [tele_end, tele_start]],
+	"level" : [["-n", "-b"], [level_next, level_before]],
+	"clear" : [["-all"], [clear_log]],
+	"shop" : [["-"], [init_shop]]
+	};
+
+# Called from the player Script
+func run_command() -> void:
+	
+	# Init player ref
+	if (player == null):
+		player = get_tree().get_first_node_in_group("player");
+		Globals.PLAYER_TRANS_START = player.global_position;
+		
+	# Init flag rep
+	if (flag == null):
+		flag = get_tree().get_first_node_in_group("flag");
+	
+	# Spilt the commands via spaces
+	command = command_box.text.split(" ", false);
+	
+	# Handle Overflow/UnderFlow Args
+	if (command.size() < Globals.MIN_ARG_SIZE && command[0]):
+		log_error("Arguments are Underflow !\n");
+		command_box.text= "";
+		return;
+	
+	elif (command.size() > Globals.MAX_ARG_SIZE):
+		log_error("Arguments are Overflow !\n");
+		command_box.text= "";
+		return;
+	else: pass;
+	
+	# Extract the info
+	var cmd_name = command[0];
+	var arg_name = command[1];
+
+	# Check if the command exists
+	if commands.has(cmd_name):
+		var cmd_data = commands[cmd_name]; # key.value
+		var args = cmd_data[0];  # key.value[0]
+		var args_funcs = cmd_data[1]; # key.value[1]
+		
+		# Find the index of the argument
+		var arg_index = args.find(arg_name);
+		
+		if arg_index != -1:
+			# Call the function
+			args_funcs[arg_index].call()
+		else:
+			if (arg_name) == "-":
+				log_error("Need Arguments: Type help -m for Help\n")
+				command_box.text = "";
+				return;
+			# Handel Other
+			log_error("Invalid Arg: " + arg_name + "\n")
+			command_box.text= "";
+			return;
+	else:
+		log_error("Invalid Command!\n")
+		command_box.text= "";
+		return;
+
+# Call Backs for Help
+func help_line() -> void: 
+	info_box.text += "Options: " + ", ".join(commands.keys()) + "\n";
+	
+	# Reset Command Box
+	command_box.text= "";
+	
+func help_multi() -> void:
+	info_box.text += Globals.commandsInfo;
+	
+	# Reset Command Box
+	command_box.text= "";
+	
+# Call Backs for Teleport
+func tele_start() -> void: 
+	player.global_position.y = flag.global_position.y;
+	player.global_position.x = flag.global_position.x - Globals.TELE_DIS
+	command_box.text= "";
+	
+func tele_end() -> void:
+	player.global_position = Globals.PLAYER_TRANS_START;
+	command_box.text= "";
+
+# Cal Backs for Level
+func level_next() -> void: 
+	# Current level number 
+	var current_level: int = SceneManager.current_level.trim_prefix("level_").to_int();
+	
+	# Swith to next level
+	if (current_level != SceneManager.last_level):
+		SceneManager.change_scene("level_" + str(current_level + 0x1));
+	else :
+		SceneManager.change_scene("credits") 
+	
+	# Reset flags
+	player = null;
+	flag = null;
+	
+	# Reset Command Box
+	command_box.text= "";
+	
+func level_before() -> void: 
+	# Current level number
+	var current_level: int = SceneManager.current_level.trim_prefix("level_").to_int();
+	
+	# Swith to before level
+	if (current_level > 0x1):
+		SceneManager.change_scene("level_" + str(current_level - 0x1));
+	else :
+		SceneManager.change_scene("level_" + str(current_level));
+	
+	# Reset flags
+	player = null;
+	flag = null;
+	
+	# Reset Command Box
+	command_box.text= "";
+
+func clear_log() -> void:
+	info_box.text = "Enter:  'help -l' or 'help -m' for Help !";
+	
+	# Reset Command Box
+	command_box.text= "";
+
+func log_error(str_err :String) -> void:
+	info_box.text += "\nError: " + str_err;
+	
+func init_shop() -> void:
+	var shop: CanvasLayer = SceneManager.get_scene("shop_menu").instantiate()
+	get_tree().current_scene.add_child(shop);
+	
+	# Reset Command Box
+	command_box.text= "";
+
+=== Scripts/coin.gd ===
+
+extends Area2D
+
+@onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var coin_sound: AudioStreamPlayer = $CoinSound
+
+signal coin_collected
+
+func _ready():
+	body_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node2D):
+	if body.is_in_group("player"):
+		anim_sprite.visible = false
+		$CollisionShape2D.call_deferred("set_disabled", true)
+		
+		if coin_sound:
+			coin_sound.play()
+		
+		# === CHANGED: Use the Level Coin function ===
+		Globals.add_level_coin()
+		coin_collected.emit()
+		
+		await get_tree().create_timer(0.5).timeout
+		queue_free()
+
+=== Scripts/collectable_lives.gd ===
+
+extends Area2D
+
+@export var heal_amount := 25
+
+# Float settings
+@export var float_height := 4.0
+@export var float_speed := 2.0
+
+# Pulse settings
+@export var pulse_amount := 0.04
+@export var pulse_speed := 2.0
+
+@onready var pickup_sound: AudioStreamPlayer = $AudioStreamPlayer
+@onready var sprite: Sprite2D = $Sprite2D
+
+var start_position: Vector2
+var time := 0.0
+
+func _ready():
+	body_entered.connect(_on_body_entered)
+	start_position = position
+
+func _process(delta):
+	time += delta
+
+	# Gentle floating
+	position.y = start_position.y + sin(time * float_speed) * float_height
+
+	# Gentle pulse
+	var scale_factor = 1.0 + sin(time * pulse_speed) * pulse_amount
+	sprite.scale = Vector2.ONE * scale_factor
+
+func _on_body_entered(body):
+
+	if !body.is_in_group("player"):
+		return
+
+	if body.current_health < body.max_health:
+		body.heal(heal_amount)
+
+	elif body.add_bonus_heart():
+
+		var floating_text = SceneManager.scenes["floating_text"].instantiate()
+		floating_text.text = "Bonus Life"
+		floating_text.global_position = global_position
+
+		get_tree().current_scene.add_child(floating_text)
+
+	set_deferred("monitoring", false)
+	$CollisionShape2D.set_deferred("disabled", true)
+
+	if pickup_sound:
+		pickup_sound.play()
+
+	sprite.hide()
+
+	await pickup_sound.finished
+
+	queue_free()
+
+=== Scripts/credits.gd ===
+
+extends Control
+
+@onready var back_button: Button = $Panel/back
+
+func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+	back_button.pressed.connect(_on_back_pressed)
+
+func _on_back_pressed():
+	get_tree().change_scene_to_packed(SceneManager.scenes["main_menu"])
+
+=== Scripts/fireball.gd ===
+
+extends Area2D
+
+@export var speed: float = 1500.0
+@export var lifetime: float = 1.0  # seconds before disappearing
+var direction: Vector2 = Vector2.RIGHT
+
+@onready var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var timer: Timer = $Timer  # Make sure the Timer node exists and is named "Timer"
+@onready var shoot_sound: AudioStreamPlayer = $ShootSound
+
+func _ready():
+	sprite.flip_h = direction.x < 0
+	sprite.play("fly")
+	shoot_sound.play()
+	timer.wait_time = lifetime
+	timer.one_shot = true
+	timer.start()
+
+func _physics_process(delta: float) -> void:
+	position += direction * speed * delta
+
+func _on_body_entered(body: Node) -> void:
+	if body.is_in_group("enemies"):
+		if body.has_method("take_damage"):
+			body.take_damage(1, global_position)
+			camera.trigger_shake(10.0, 0.3)
+		queue_free()
+
+func _on_timer_timeout() -> void:
+	queue_free()
+
+=== Scripts/flag.gd ===
+
+extends Area2D
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group("player"):
+		if body.has_method("stop_level_timer"):
+			body.stop_level_timer()
+		
+		var stars_earned = 0
+		if body.has_method("get_stars_earned"):
+			stars_earned = body.get_stars_earned()
+		
+		var current_time = 0.0
+		if body.has_method("get_current_time"):
+			current_time = body.get_current_time()
+		
+		get_tree().paused = true
+		
+		var level_root = get_parent()
+		if level_root.has_method("finish_level"):
+			level_root.finish_level(stars_earned, current_time)
+
+=== Scripts/floating_text.gd ===
+
+extends Label
+
+@export var move_distance := 80.0
+@export var duration := 1.5
+
+func _ready():
+
+	modulate.a = 1.0
+
+	var tween = create_tween()
+
+	tween.set_parallel(true)
+
+	# Move upward
+	tween.tween_property(
+		self,
+		"global_position:y",
+		global_position.y - move_distance,
+		duration
+	)
+
+	# Fade out
+	tween.tween_property(
+		self,
+		"modulate:a",
+		0.0,
+		duration
+	)
+
+	await tween.finished
+
+	queue_free()
+
+=== Scripts/flying_demon.gd ===
+
+extends CharacterBody2D
+
+# === CONFIG ===
+@export var max_health := 1
+@export var move_speed := 200.0
+@export var sprint_multiplier := 3.0
+@export var knockback_strength := 400.0
+@export var detection_range := 800.0
+@export var attack_range := 50.0
+
+@onready var camera = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+
+# === STATE ===
+var health := max_health
+var is_dead := false
+var is_aggro := false
+var facing_right := true
+var is_recoiling := false
+
+# === NODES ===
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var health_bar: ProgressBar = $ProgressBar
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var hitbox: Area2D = $HitBox
+@onready var timer: Timer = $Timer
+
+func _ready():
+	add_to_group("enemies")
+	update_health_bar()
+	sprite.play("idle")
+	hitbox.body_entered.connect(_on_HitBox_body_entered)
+
+func _physics_process(_delta: float) -> void:
+	if is_dead:
+		return
+
+	if is_recoiling:
+		move_and_slide()
+		return
+
+	var player := get_closest_player()
+	if player:
+		var distance = global_position.distance_to(player.global_position)
+
+		if distance < detection_range:
+			is_aggro = true
+			chase_player(player)
+		else:
+			is_aggro = false
+			velocity = Vector2.ZERO
+	else:
+		is_aggro = false
+		velocity = Vector2.ZERO
+
+	move_and_slide()
+	update_animation()
+
+# === CHASE & MOVEMENT ===
+func chase_player(player: Node2D) -> void:
+	var direction := (player.global_position - global_position).normalized()
+
+	# Flip sprite based on direction
+	facing_right = direction.x > 0
+	sprite.flip_h = not facing_right
+
+	# Sprint if close
+	var speed = move_speed
+	if global_position.distance_to(player.global_position) < detection_range / 2:
+		speed *= sprint_multiplier
+
+	velocity = direction * speed
+
+# === ANIMATION ===
+func update_animation():
+	if is_dead:
+		return
+	if is_aggro:
+		if sprite.animation != "fly":
+			sprite.play("fly")
+	else:
+		if sprite.animation != "idle":
+			sprite.play("idle")
+
+# === DAMAGE ===
+func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
+	if is_dead:
+		return
+
+	health -= amount
+	health = max(health, 0)
+	update_health_bar()
+
+	# Knockback away from source
+	if source_position != Vector2.ZERO:
+		var knockback_dir := (global_position - source_position).normalized()
+		velocity = knockback_dir * knockback_strength
+
+	sprite.play("hurt")
+
+	if health <= 0:
+		die()
+
+func update_health_bar() -> void:
+	health_bar.value = float(health) / float(max_health) * 100.0
+
+# === DEATH ===
+@onready var death_sound: AudioStreamPlayer = $DeathSound
+
+func die() -> void:
+	is_dead = true
+	velocity = Vector2.ZERO
+	sprite.play("death")
+	camera.trigger_shake(8.0, 0.2)
+	death_sound.play()
+	collision_shape.call_deferred("set_disabled", true)
+	await sprite.animation_finished
+	queue_free()
+
+# === ATTACK ===
+func _on_HitBox_body_entered(body: Node) -> void:
+	if is_dead or is_recoiling:
+		return
+
+	if body.is_in_group("player") and body.has_method("take_damage"):
+		sprite.play("attack")
+		body.take_damage(25, global_position)
+		camera.trigger_shake(8.0, 0.2)
+		var recoil_direction = (global_position - body.global_position).normalized()
+		velocity = recoil_direction * knockback_strength
+		is_recoiling = true
+		await get_tree().create_timer(0.3).timeout
+		if is_instance_valid(self) and not is_dead:
+			is_recoiling = false
+
+# === GET PLAYER ===
+func get_closest_player() -> Node2D:
+	var players = get_tree().get_nodes_in_group("player")
+	if players.is_empty():
+		return null
+
+	var closest: Node2D = players[0]
+	var closest_dist := global_position.distance_to(closest.global_position)
+
+	for p in players:
+		var dist = global_position.distance_to(p.global_position)
+		if dist < closest_dist:
+			closest = p
+			closest_dist = dist
+	return closest
+
+=== Scripts/Globals.gd ===
+
+extends Node;
+
+# Globlas Vars
+var MAX_ARG_SIZE: int;
+var MIN_ARG_SIZE: int;
+var TELE_DIS: float;
+var PLAYER_TRANS_START: Vector2;
+var commandsInfo: String;
+
+var player_coins: int = 0
+signal coins_updated(new_total: int)
+
+var level_coins: int = 0
+signal level_coins_updated(new_total: int)
+
+func _ready() -> void:
+	load_coins()
+	MAX_ARG_SIZE = 2;
+	MIN_ARG_SIZE = 2;
+	TELE_DIS = 1200.00;
+	PLAYER_TRANS_START = Vector2(0, 0);
+
+	# Docs for commands
+	commandsInfo = """
+	\nHere are Some Useful Commands\n
+	1. Help -l  -> For Sinlge Line Help Commands\n
+	2. Help -m  -> For Multi Line Help Commands\n 
+	3. teleport -s -> Teleport to Start\n
+	4. teleport -e -> Teleport to End\n
+	5. level -b -> Bypass Level Behind\n
+	6. level -n -> Bypass to Next Level\n
+	7. clear -all ->  To Clear The Commands & Error Logs\n
+	8. shop  - (use '-' for no args) -> To Open Shop Menu\n
+	"""
+
+# Use this when collecting coins in a level
+func add_level_coin():
+	level_coins += 1
+	level_coins_updated.emit(level_coins)
+	
+	# Also add it to the permanent wallet for the Global saving system
+	player_coins += 1
+	coins_updated.emit(player_coins)
+	save_coins()
+
+# Call this when the level starts to reset the counter
+func reset_level_coins():
+	level_coins = 0
+	level_coins_updated.emit(level_coins)
+
+func save_coins():
+	var config = ConfigFile.new()
+	var file_path = "user://save_data.ini"
+	
+	config.load(file_path)
+	config.set_value("player_data", "coins", player_coins)
+	config.save(file_path)
+
+func load_coins():
+	var config = ConfigFile.new()
+	var file_path = "user://save_data.ini"
+	
+	if config.load(file_path) == OK:
+		player_coins = config.get_value("player_data", "coins", 0)
+	else:
+		player_coins = 0
+
+=== Scripts/hammer.gd ===
+
+extends Node2D
+
+# Declarations
+@onready var axis: Node2D = $Axis;
+@onready var hitbox: Area2D = $Axis/Texture/HitBox;
+@onready var swing_sound: AudioStreamPlayer = $HammerSound
+
+# Settings exported to the editor
+@export var damage: int = 2;
+@export var swing_duration: float = 0.20;
+@export var swing_angle: float = 120.0;
+@export var base_angle: float = -45.0;
+
+# Flags
+var is_swinging: bool = false;
+var enemy_hit: bool = false;
+var facing_right: bool = true;
+
+# Ready Function
+func _ready():
+
+	axis.rotation_degrees = base_angle;
+
+	hitbox.monitoring = false;
+	hitbox.monitorable = false;
+
+# Handle swing
+func swing(is_facing_right: bool):
+
+	if is_swinging:
+		return;
+
+	is_swinging = true;
+	enemy_hit = false;
+	facing_right = is_facing_right;
+
+	hitbox.monitoring = true;
+	hitbox.monitorable = true;
+
+	if swing_sound:
+		swing_sound.play();
+
+	var start_angle: float;
+	var end_angle: float;
+
+	if facing_right:
+		start_angle = base_angle - swing_angle / 2.0;
+		end_angle = base_angle + swing_angle / 2.0;
+	else:
+		start_angle = 180.0 - base_angle + swing_angle / 2.0;
+		end_angle = 180.0 - base_angle - swing_angle / 2.0;
+
+	axis.rotation_degrees = start_angle;
+
+	var tween := create_tween();
+	tween.set_trans(Tween.TRANS_QUAD);
+	tween.set_ease(Tween.EASE_OUT);
+
+	tween.tween_property(
+		axis,
+		"rotation_degrees",
+		end_angle,
+		swing_duration
+	);
+
+	await tween.finished;
+
+	if facing_right:
+		axis.rotation_degrees = base_angle;
+	else:
+		axis.rotation_degrees = 180.0 - base_angle;
+
+	hitbox.monitoring = false;
+	hitbox.monitorable = false;
+
+	is_swinging = false;
+
+
+func _on_hit_box_body_entered(body: Node2D) -> void:
+	if enemy_hit:
+		return;
+
+	if body.is_in_group("enemies") and body.has_method("take_damage"):
+		enemy_hit = true;
+		body.take_damage(damage, global_position);
+
+=== Scripts/Inventory.gd ===
+
+extends Node
+
+# Inventory system for managing player items
+class_name Inventory
+
+@export var max_slots: int = 4
+var items: Array = []
+var equipped_item: Item = null
+
+signal item_added(item: Item)
+signal item_removed(item: Item)
+signal item_equipped(item: Item)
+signal item_unequipped(item: Item)
+
+func _ready():
+    # Initialize empty inventory
+    items = []
+
+func add_item(item: Item) -> bool:
+    if items.size() >= max_slots:
+        push_error("Inventory is full!")
+        return false
+    
+    items.append(item)
+    item_added.emit(item)
+    return true
+
+func remove_item(item: Item) -> bool:
+    var index = items.find(item)
+    if index == -1:
+        push_error("Item not found in inventory!")
+        return false
+    
+    items.remove_at(index)
+    
+    # Unequip if this item was equipped
+    if equipped_item == item:
+        unequip_item()
+    
+    item_removed.emit(item)
+    return true
+
+func equip_item(item: Item) -> bool:
+    if not items.has(item):
+        push_error("Cannot equip item not in inventory!")
+        return false
+    
+    # Unequip current item if any
+    if equipped_item:
+        unequip_item()
+    
+    equipped_item = item
+    item.is_equipped = true
+    item_equipped.emit(item)
+    return true
+
+func unequip_item() -> bool:
+    if not equipped_item:
+        push_error("No item equipped!")
+        return false
+    
+    equipped_item.is_equipped = false
+    var old_item = equipped_item
+    equipped_item = null
+    item_unequipped.emit(old_item)
+    return true
+
+func get_items() -> Array:
+    return items.duplicate()
+
+func get_equipped_item() -> Item:
+    return equipped_item
+
+func has_item(item_name: String) -> bool:
+    for item in items:
+        if item.item_name == item_name:
+            return true
+    return false
+
+func get_item_by_name(item_name: String) -> Item:
+    for item in items:
+        if item.item_name == item_name:
+            return item
+    return null
+=== Scripts/ItemData.gd ===
+
+extends Node
+
+class_name Item
+
+@export var item_name: String
+@export var item_type: String = "sword"
+@export var is_equipped: bool = false
+
+var equipped_animation_player: AnimatedSprite2D
+
+func _init()
+   pass
+
+func equip_animation()
+   if equipped_animation_player:
+       equipped_animation_player.play("equip")
+       yield_("animation_finished")
+       is_equipped = true
+
+func unequip_animation()
+   if equipped_animation_player:
+       equipped_animation_player.play("unequip")
+       yield_("animation_finished")
+       is_equipped = false
+=== Scripts/level_1.gd ===
+
+extends Node2D
+
+var tutorial_scene := preload("res://Scenes/tutorial_popup_layer.tscn")
+var tutorial_instance: CanvasLayer
+@onready var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+@onready var level_complete_screen: CanvasLayer = $LevelCompleteScreen
+
+func _ready():
+	tutorial_instance = tutorial_scene.instantiate()
+	add_child(tutorial_instance)
+	tutorial_instance.show_tutorial(
+		"Press A/D to move\nPress W or Space to jump\nPress F or Enter to shoot\nPress G to toggle God Mode"
+	)
+	tutorial_instance.tutorial_closed.connect(_on_tutorial_closed)
+
+func finish_level(stars_earned: int, current_time: float):
+	var is_new_record = _save_best_time(current_time)
+	$LevelCompleteScreen.show_level_complete(stars_earned, current_time, is_new_record)
+
+func _save_best_time(current_time: float) -> bool:
+	var config = ConfigFile.new()
+	var file_path = "user://level_times.ini"
+	
+	config.load(file_path)
+	
+	var level_name = SceneManager.current_level
+	var saved_best = config.get_value(level_name, "best_time", 9999.0)
+	
+	if saved_best == 0.0:
+		saved_best = 9999.0
+	
+	var is_new_record = false
+	
+	if current_time < saved_best:
+		config.set_value(level_name, "best_time", current_time)
+		config.save(file_path)
+		is_new_record = true
+	
+	return is_new_record
+
+func _on_tutorial_closed():
+	pass
+
+=== Scripts/level_2.gd ===
+
+extends Node2D
+
+var tutorial_scene := preload("res://Scenes/tutorial_popup_layer.tscn")
+var tutorial_instance: CanvasLayer
+@onready var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+@onready var level_complete_screen: CanvasLayer = $LevelCompleteScreen
+
+func _ready():
+	tutorial_instance = tutorial_scene.instantiate()
+	add_child(tutorial_instance)
+	tutorial_instance.show_tutorial(
+		"Press A/D to move\nPress W or Space to jump\nPress F or Enter to shoot\nPress G to toggle God Mode"
+	)
+	tutorial_instance.tutorial_closed.connect(_on_tutorial_closed)
+
+func finish_level(stars_earned: int, current_time: float):
+	var is_new_record = _save_best_time(current_time)
+	$LevelCompleteScreen.show_level_complete(stars_earned, current_time, is_new_record)
+
+func _save_best_time(current_time: float) -> bool:
+	var config = ConfigFile.new()
+	var file_path = "user://level_times.ini"
+	
+	config.load(file_path)
+	
+	var level_name = SceneManager.current_level
+	var saved_best = config.get_value(level_name, "best_time", 9999.0)
+	
+	if saved_best == 0.0:
+		saved_best = 9999.0
+	
+	var is_new_record = false
+	
+	if current_time < saved_best:
+		config.set_value(level_name, "best_time", current_time)
+		config.save(file_path)
+		is_new_record = true
+	
+	return is_new_record
+
+func _on_tutorial_closed():
+	pass
+
+=== Scripts/level_3.gd ===
+
+extends Node2D
+
+var tutorial_scene := preload("res://Scenes/tutorial_popup_layer.tscn")
+var tutorial_instance: CanvasLayer
+@onready var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+@onready var level_complete_screen: CanvasLayer = $LevelCompleteScreen
+
+func _ready():
+	tutorial_instance = tutorial_scene.instantiate()
+	add_child(tutorial_instance)
+	tutorial_instance.show_tutorial(
+		"Press A/D to move\nPress W or Space to jump\nPress F or Enter to shoot\nPress G to toggle God Mode"
+	)
+	tutorial_instance.tutorial_closed.connect(_on_tutorial_closed)
+
+func finish_level(stars_earned: int, current_time: float):
+	var is_new_record = _save_best_time(current_time)
+	$LevelCompleteScreen.show_level_complete(stars_earned, current_time, is_new_record)
+
+func _save_best_time(current_time: float) -> bool:
+	var config = ConfigFile.new()
+	var file_path = "user://level_times.ini"
+	
+	config.load(file_path)
+	
+	var level_name = SceneManager.current_level
+	var saved_best = config.get_value(level_name, "best_time", 9999.0)
+	
+	if saved_best == 0.0:
+		saved_best = 9999.0
+	
+	var is_new_record = false
+	
+	if current_time < saved_best:
+		config.set_value(level_name, "best_time", current_time)
+		config.save(file_path)
+		is_new_record = true
+	
+	return is_new_record
+
+func _on_tutorial_closed():
+	pass
+
+=== Scripts/level_complete_screen.gd ===
+
+extends CanvasLayer
+
+# === BUTTONS ===
+@onready var next_button: Button = $MenuPanel/NextLevelButton
+@onready var retry_button: Button = $MenuPanel/RetryButton
+@onready var main_menu_button: Button = $MenuPanel/MainMenuButton
+@onready var quit_button: Button = $MenuPanel/QuitButton
+@onready var level_complete_sound: AudioStreamPlayer = $LevelCompleteSound
+
+# === STAR TWINKLE SOUND ===
+@onready var star_twinkle_sound: AudioStreamPlayer = $StarTwinkleSound
+
+# === 3 ANIMATED STARS ===
+@onready var star1: AnimatedSprite2D = $MenuPanel/Star1
+@onready var star2: AnimatedSprite2D = $MenuPanel/Star2
+@onready var star3: AnimatedSprite2D = $MenuPanel/Star3
+
+# === BEST TIME LABELS ===
+@onready var best_time_label: Label = $MenuPanel/BestTimeLabel
+@onready var new_record_label: Label = $MenuPanel/NewRecordLabel
+
+# === GRAY SHADER ===
+@onready var gray_material: ShaderMaterial = preload("res://Shaders/StarEmptyMaterial.tres")
+
+func _ready():
+	next_button.pressed.connect(_on_next_pressed)
+	retry_button.pressed.connect(_on_retry_pressed)
+	main_menu_button.pressed.connect(_on_main_menu_pressed)
+	quit_button.pressed.connect(_on_quit_pressed)
+	
+	visible = false
+
+func show_level_complete(stars_earned: int, current_time: float, is_new_record: bool = false):
+	visible = true
+	
+	if level_complete_sound:
+		level_complete_sound.play()
+	
+	# === BEST TIME LOGIC ===
+	var config = ConfigFile.new()
+	var file_path = "user://level_times.ini"
+	
+	var saved_best = null
+	if config.load(file_path) == OK:
+		saved_best = config.get_value(SceneManager.current_level, "best_time", null)
+	
+	if best_time_label != null:
+		if saved_best != null and saved_best > 0.0:
+			best_time_label.text = "Best Time: " + String.num(float(saved_best), 1) + "s"
+		else:
+			best_time_label.text = "Best Time: " + String.num(float(current_time), 1) + "s"
+			
+	if new_record_label != null:
+		if is_new_record:
+			new_record_label.visible = true
+			new_record_label.text = "★ NEW RECORD! (" + String.num(float(current_time), 1) + "s) ★"
+			new_record_label.modulate = Color.WHITE
+			new_record_label.scale = Vector2(1.0, 1.0)
+			new_record_label.position = Vector2(448,224)
+			
+			var pop_tween = create_tween()
+			new_record_label.scale = Vector2(0.5, 0.5)
+			pop_tween.tween_property(new_record_label, "scale", Vector2(1.2, 1.2), 0.2)
+			pop_tween.tween_property(new_record_label, "scale", Vector2(1.0, 1.0), 0.1)
+		else:
+			if saved_best != null and saved_best > 0.0:
+				new_record_label.visible = true
+				new_record_label.text = "Your Time: " + String.num(float(current_time), 1) + "s"
+				new_record_label.modulate = Color(0.8, 0.8, 0.8)
+				new_record_label.scale = Vector2(1.0, 1.0)
+				new_record_label.position = Vector2(448,224)
+			else:
+				new_record_label.visible = false
+				new_record_label.modulate = Color.WHITE
+
+	# === STARS LOGIC ===
+	star1.material = gray_material
+	star2.material = gray_material
+	star3.material = gray_material
+	star1.play("empty")
+	star2.play("empty")
+	star3.play("empty")
+	
+	if stars_earned == 0:
+		return
+
+	await get_tree().create_timer(1.0).timeout
+	star_twinkle_sound.play()
+	star1.material = null
+	star1.play("full")
+	
+	if stars_earned >= 2:
+		await get_tree().create_timer(0.8).timeout
+		star_twinkle_sound.play()
+		star2.material = null
+		star2.play("full")
+		
+	if stars_earned >= 3:
+		await get_tree().create_timer(0.8).timeout
+		star_twinkle_sound.play()
+		star3.material = null
+		star3.play("full")
+
+# === BUTTON HANDLERS ===
+func _on_next_pressed():
+	get_tree().paused = false
+	if level_complete_sound.playing:
+		level_complete_sound.stop()
+
+	var next_level: int = SceneManager.current_level.trim_prefix("level_").to_int()
+	if (next_level != SceneManager.last_level):
+		SceneManager.change_scene("level_" + str(next_level + 1));
+	else :
+		SceneManager.change_scene("credits") 
+
+func _on_retry_pressed():
+	SceneManager.change_scene(SceneManager.current_level)
+
+func _on_main_menu_pressed():
+	SceneManager.change_scene("main_menu")
+
+func _on_quit_pressed():
+	get_tree().quit()
+
+=== Scripts/level_select_.gd ===
+
+extends Control
+
+@onready var back_button: Button = $BackButton
+
+@onready var level1: TextureButton = $GridContainer/level1
+@onready var level2: TextureButton = $GridContainer/level2
+@onready var level3: TextureButton = $GridContainer/level3
+@onready var level4: TextureButton = $GridContainer/level4
+@onready var level5: TextureButton = $GridContainer/level5
+@onready var level6: TextureButton = $GridContainer/level6
+@onready var level7: TextureButton = $GridContainer/level7
+@onready var level8: TextureButton = $GridContainer/level8
+@onready var level9: TextureButton = $GridContainer/level9
+@onready var level10: TextureButton = $GridContainer/level10
+@onready var shop_button: TextureButton = $ShopButton;
+
+
+func _ready():
+	# Back button
+	back_button.pressed.connect(_on_back_pressed)
+	
+	#Shop Button
+	shop_button.pressed.connect(_on_shopButton_pressed);
+
+	# Playable levels
+	level1.pressed.connect(_on_level1_pressed)
+	level2.pressed.connect(_on_level2_pressed)
+	level3.pressed.connect(_on_level3_pressed)
+
+	# Locked levels
+	level4.disabled = true
+	level5.disabled = true
+	level6.disabled = true
+	level7.disabled = true
+	level8.disabled = true
+	level9.disabled = true
+	level10.disabled = true
+
+
+func _on_back_pressed():
+	MusicManager.play_button_click()
+	await get_tree().create_timer(0.1).timeout
+	SceneManager.change_scene("main_menu")
+
+
+func _on_level1_pressed():
+	MusicManager.play_button_click()
+	await get_tree().create_timer(0.1).timeout
+	SceneManager.change_scene("level_1")
+
+
+func _on_level2_pressed():
+	MusicManager.play_button_click()
+	await get_tree().create_timer(0.1).timeout
+	SceneManager.change_scene("level_2")
+
+func _on_level3_pressed():
+	MusicManager.play_button_click()
+	await get_tree().create_timer(0.1).timeout
+	SceneManager.change_scene("level_3")
+	
+func _on_shopButton_pressed() -> void:
+	var shop_menu: CanvasLayer = SceneManager.get_scene("shop_menu").instantiate();
+	self.add_child(shop_menu);
+	
+
+=== Scripts/lightning_ball.gd ===
+
+extends Area2D
+
+@export var damage: int = 1
+@export var grow_duration: float = 0.3
+@export var full_scale: Vector2 = Vector2(1, 1)
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var shape: CollisionShape2D = $CollisionShape2D
+
+@onready var shoot_sound: AudioStreamPlayer = $ShootSound
+
+func _ready():
+	# Play the animation once
+	sprite.play("charge")
+	shoot_sound.play()
+	# Start with scale 0 and tween to full scale
+	shape.scale = Vector2.ZERO
+	var tween := get_tree().create_tween()
+	tween.tween_property(shape, "scale", full_scale, grow_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+	# Destroy this node after the animation is done
+	sprite.animation_finished.connect(queue_free)
+
+	# Enable damage
+	body_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node):
+	if body.is_in_group("enemies") and body.has_method("take_damage"):
+		body.take_damage(damage, global_position)
+
+=== Scripts/loadingScreen.gd ===
+
+extends Control
+
+@onready var progress_bar: TextureProgressBar = $PBar
+
+func _ready() -> void:
+	# SceneManager's loader signals
+	SceneManager.preload_progress_updated.connect(_on_progress_changed)
+	SceneManager.all_scenes_ready.connect(_on_loading_finished)
+	
+	# Set bar to 0 
+	progress_bar.value = 0
+	
+	# Wait then start loading
+	await get_tree().process_frame
+	SceneManager.start_global_preload()
+
+func _on_progress_changed(per: float) -> void:
+	progress_bar.value = per
+
+func _on_loading_finished() -> void:
+	SceneManager.change_scene("main_menu")
+
+=== Scripts/main_menu.gd ===
+
+extends Control
+
+@onready var play_button: Button = $Panel/Play
+@onready var credits_button: Button = $Panel/Credits
+@onready var quit_button: Button = $Panel/Quit
+@onready var click_sound: AudioStreamPlayer = $clicksound
+@onready var mute_sound_btn : Button = $Panel/Sound
+
+func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Check for the bg sound flag
+	if !MusicManager.isMusicPlaying:
+		mute_sound_btn.get_child(0).visible = true;
+		mute_sound_btn.get_child(1).visible = false;
+	else:
+		mute_sound_btn.get_child(1).visible = true
+		mute_sound_btn.get_child(0).visible = false;
+		
+	
+	if not play_button or not quit_button:
+		push_error("Play or Quit button not found! Check your node names and paths.")
+		return
+
+	play_button.pressed.connect(_on_play_pressed)
+	credits_button.pressed.connect(_on_credits_pressed)
+	quit_button.pressed.connect(_on_quit_pressed)
+
+func _on_play_pressed():
+	click_sound.play()
+	await click_sound.finished
+	get_tree().paused = false
+	
+	if SceneManager.scenes.has("level_select"):
+		get_tree().change_scene_to_packed(SceneManager.scenes["level_select"])
+	else:
+		push_error("Scene 'LevelSelect' not found in SceneManager!")
+		
+func _on_credits_pressed():
+	click_sound.play()
+	await click_sound.finished
+	get_tree().change_scene_to_packed(SceneManager.scenes["credits"])
+
+func _on_quit_pressed():
+	click_sound.play()
+	await click_sound.finished
+	get_tree().paused = false
+	get_tree().quit()
+
+
+func _on_sound_pressed() -> void:
+	if MusicManager.isMusicPlaying:
+		MusicManager.music.stop();
+		mute_sound_btn.get_child(0).visible = true;
+		mute_sound_btn.get_child(1).visible = false;
+		MusicManager.isMusicPlaying = false;
+	else:
+		MusicManager.music.play();
+		mute_sound_btn.get_child(1).visible = true
+		mute_sound_btn.get_child(0).visible = false;
+		MusicManager.isMusicPlaying = true;
+
+=== Scripts/menu_button.gd ===
+
+extends MenuButton
+
+func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Strip the white outline from the main MenuButton itself if focused
+	add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+
+	var popup := get_popup()
+	popup.clear()
+	_set_popup_style(popup)
+
+	# Cleaned up item strings—fancy styling handles the visual depth
+	var pause_text = "▶  Resume" if get_tree().paused else "⏸  Pause"
+	popup.add_item(pause_text, 0)      # Index 0
+	popup.add_item("🔁  Retry", 1)       # Index 1
+	
+	# Initial Dynamic Text Check
+	var bgm_text = "🔇  BGM Mute" if MusicManager.isMusicPlaying else "🔊  BGM Unmute"
+	popup.add_item(bgm_text, 2)         # Index 2
+	
+	popup.add_item("🏠  Main Menu", 3)   # Index 3
+	popup.add_item("🚪  Quit", 4)        # Index 4
+
+	popup.id_pressed.connect(_on_menu_option_selected)
+
+func _on_menu_option_selected(id: int) -> void:
+	match id:
+		0:
+			MusicManager.play_button_click()
+			
+			if get_tree().paused:
+				# Game is currently paused -> Resume it
+				get_tree().paused = false
+				get_popup().set_item_text(0, "⏸  Pause")
+			else:
+				# Game is running -> Pause it
+				await get_tree().create_timer(0.15, true).timeout # Snappier latency feel
+				get_tree().paused = true
+				get_popup().set_item_text(0, "▶  Resume")
+		
+		1:
+			MusicManager.play_button_click()
+			get_tree().paused = false
+			get_tree().reload_current_scene()
+		
+		2:
+			MusicManager.play_button_click()
+			# Toggled state flip
+			MusicManager.isMusicPlaying = !MusicManager.isMusicPlaying
+			
+			# FIXED: Changed index from 3 to 2 to match its position
+			if MusicManager.isMusicPlaying:
+				get_popup().set_item_text(2, "🔇  BGM Mute")
+				MusicManager.music.play()
+			else:
+				get_popup().set_item_text(2, "🔊  BGM Unmute")
+				MusicManager.music.stop()
+		
+		3:
+			MusicManager.play_button_click()
+			get_tree().paused = false
+			if SceneManager.scenes.has("main_menu"):
+				get_tree().change_scene_to_packed(SceneManager.scenes["main_menu"])
+			else:
+				push_error("Scene 'main_menu' not found in SceneManager!")
+				
+		4:
+			MusicManager.play_button_click()
+			get_tree().paused = false
+			get_tree().quit()
+
+func _set_popup_style(popup: PopupMenu) -> void:
+	var luxury_theme = Theme.new()
+	
+	# --- 1. Typography & Colors ---
+	if ResourceLoader.exists("res://Fonts/YourCustomFont.tres"):
+		var font = load("res://Fonts/YourCustomFont.tres")
+		luxury_theme.set_font("font", "PopupMenu", font)
+		
+	# High-end Metallic/Neon Text States
+	luxury_theme.set_color("font_color", "PopupMenu", Color(0.95, 0.95, 0.98)) # Clean diamond white
+	luxury_theme.set_color("font_color_hover", "PopupMenu", Color(1.0, 0.65, 0.0)) # Cyberpunk Gold / Amber hover
+	luxury_theme.set_color("font_color_pressed", "PopupMenu", Color(0.6, 0.6, 0.6))
+	
+	# Extra item vertical padding for a spacious, premium look
+	luxury_theme.set_constant("v_separation", "PopupMenu", 12)
+
+	# --- 2. Main Background Panel (Sleek Obsidian Glass) ---
+	var panel_style := StyleBoxFlat.new()
+	
+	# AAA UI trick: Deep charcoal tint with high translucency looks identical to premium frosted glass
+	panel_style.bg_color = Color(0.06, 0.06, 0.08, 0.93)
+	
+	# Clean rounded edges
+	panel_style.set_corner_radius_all(8)
+	
+	# 3D Metallic Rim Light effect (Thin, translucent white outline)
+	panel_style.border_width_left = 1
+	panel_style.border_width_top = 1
+	panel_style.border_width_right = 1
+	panel_style.border_width_bottom = 1
+	panel_style.border_blend = true 
+	panel_style.border_color = Color(1.0, 1.0, 1.0, 0.12) # Catches light beautifully without being harsh
+
+	# Deep volumetric soft shadow to give physical depth
+	panel_style.shadow_color = Color(0.0, 0.0, 0.0, 0.7)
+	panel_style.shadow_size = 16
+	panel_style.shadow_offset = Vector2(0, 8)
+
+	# Inner Panel Padding layout
+	panel_style.set_content_margin(SIDE_LEFT, 16)
+	panel_style.set_content_margin(SIDE_RIGHT, 16)
+	panel_style.set_content_margin(SIDE_TOP, 12)
+	panel_style.set_content_margin(SIDE_BOTTOM, 12)
+	
+	luxury_theme.set_stylebox("panel", "PopupMenu", panel_style)
+
+	# --- 3. Hover Selection Style (Glow Strip Accent) ---
+	var hover_style := StyleBoxFlat.new()
+	hover_style.bg_color = Color(1.0, 0.65, 0.0, 0.07) # Micro-dose highlight matching the text glow
+	hover_style.set_corner_radius_all(4)
+	
+	# Sharp left vertical indicator accent
+	hover_style.border_width_left = 3
+	hover_style.border_color = Color(1.0, 0.651, 0.0, 0.0)
+	
+	hover_style.set_content_margin(SIDE_LEFT, 12)
+	hover_style.set_content_margin(SIDE_TOP, 6)
+	hover_style.set_content_margin(SIDE_BOTTOM, 6)
+	
+	luxury_theme.set_stylebox("hover", "PopupMenu", hover_style)
+
+	# --- 4. Safely Hide the Scrollbar ---
+	luxury_theme.set_stylebox("scroll", "PopupMenu", StyleBoxEmpty.new())
+	luxury_theme.set_stylebox("scroll_focus", "PopupMenu", StyleBoxEmpty.new())
+	luxury_theme.set_constant("scrollbar_width", "PopupMenu", 0)
+
+	# Apply final verified theme properties
+	popup.theme = luxury_theme
+
+=== Scripts/music_manager.gd ===
+
+extends Node2D
+
+#static var 
+static var isMusicPlaying: bool 
+
+@onready var music: AudioStreamPlayer = $AudioStreamPlayer
+@onready var sfx: AudioStreamPlayer = $GameOver
+@onready var button_click: AudioStreamPlayer = $buttonclick
+
+func _ready():
+	music.play()
+	isMusicPlaying = true
+	
+func play_game_over():
+	sfx.stream = preload("res://Audio/sfx/game over.mp3")
+	sfx.play()
+
+func play_button_click():
+	button_click.play()
+
+=== Scripts/plant.gd ===
+
+extends AnimatedSprite2D
+
+func _ready():
+	play("default")
+
+=== Scripts/player.gd ===
+
+extends CharacterBody2D
+
+signal health_changed(new_health: int, max_health: int)
+
+@onready var camera: Camera2D = $Camera2D
+@onready var zoom_button: Button = $HUD/ZoomButton
+
+@onready var coin_counter_label: Label = $HUD/CoinCounter
+@onready var weapon_holder = $WeaponHolder
+
+var inventory: Inventory
+var weapon: Node2D
+
+var sword_scene: PackedScene
+var hammer_scene: PackedScene
+
+var dash_locked := false
+@export var speed: float = 650.0
+@export var sprint_multiplier: float = 5.0
+@export var jump_velocity: float = -1150.0
+@export var gravity: float = 1500.0
+var cooldown_remaining: float = 0.0
+@export var fireball_cooldown: float = 0.5
+@export var shoot_anim_duration: float = 0.2
+@export var lightning_ball_scene: PackedScene
+@export var lightning_ability_duration: float = 3.0
+@export var lightning_ability_cooldown: float = 10.0
+@export var max_health: int = 100
+var bonus_heart_unlocked := false
+@onready var ability_cooldown_bar: ProgressBar = $HUD/AbilityCooldownBar
+@onready var jump_sound: AudioStreamPlayer = $JumpSound
+@onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound
+@onready var player_hurt: AudioStreamPlayer = $PlayerHurt
+
+var is_dead: bool = false
+var fireball_scene: PackedScene
+var lightning_ball_instance: Area2D
+var cheat_command_scene = null;
+
+@onready var timer_label: Label = $HUD/TimerLabel
+@onready var level_timer: Timer = $HUD/LevelTimer
+
+var time_elapsed: float = 0.0
+
+var current_health: int = max_health
+	set(value):
+		var old_health = current_health
+		current_health = clampi(value, 0, max_health)
+		if current_health != old_health:
+			health_changed.emit(current_health, max_health)
+
+const MAX_JUMPS := 2
+var jump_count := 0
+var was_on_floor := false
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var fire_point: Marker2D = $FirePoint
+@onready var heart_ui = $"."
+
+var facing_right := true
+var can_shoot := true
+var is_shooting := false
+var jump_anim_played := false
+var is_sprinting := false
+var god_mode := false
+var can_use_lightning := true
+var is_lightning_active := false
+var cheat_command := false
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var fire_point: Marker2D = $FirePoint
+@onready var heart_ui = $HUD/CoinsLabel
+
+func _ready():
+    Globals.level_coins_updated.connect(_update_coin_ui)
+    _update_coin_ui(Globals.level_coins)
+    fireball_scene = SceneManager.scenes.get("fireball_scene")
+    health_changed.emit(current_health, max_health)
+    if zoom_button:
+        zoom_button.pressed.connect(_on_zoom_button_pressed)
+        # Set initial text
+        zoom_button.text = "2.0x"
+    Globals.reset_level_coins()
+    
+    # Load inventory
+    load_inventory()
+    
+    # Load weapon scenes
+    load_weapons()
+    
+    # Handle weapon switching on ready
+    equip_weapon_by_name("sword")
+    
+    update_weapon()
+	
+func _update_coin_ui(new_total: int):
+	if coin_counter_label:
+		coin_counter_label.text = str(new_total)
+
+func _input(event):
+	if is_dead:
+		return
+		
+	if event.is_action_pressed("sword_attack"):
+		if weapon and weapon.has_method("swing"):
+			weapon.swing(facing_right);
+			
+	if event.is_action_pressed("cheat_command"):
+		cheat_command = !cheat_command 
+		
+	if !cheat_command and event.is_action_pressed("god_mode_toggle"):
+		god_mode = !god_mode
+		velocity = Vector2.ZERO
+
+	if !cheat_command and event.is_action_pressed("fireball"):
+		shoot_fireball()
+
+	if !cheat_command and event.is_action_pressed("lightning_ability"):
+		activate_lightning_ball()
+
+	if cheat_command and cheat_command_scene != null and  event.is_action_pressed("Enter"):
+		cheat_command_scene.run_command();
+
+func _process(_delta: float) -> void:
+	
+	# Update the level timer text
+	if not level_timer.is_stopped():
+		time_elapsed += _delta
+		timer_label.text = str(snapped(time_elapsed, 0.1)) + "s"
+	
+	# Logic for cheat command 
+	if cheat_command and cheat_command_scene == null:
+		cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
+		add_child(cheat_command_scene);
+	elif cheat_command and cheat_command_scene != null:
+		cheat_command_scene.visible = true
+	else:
+		if !cheat_command and cheat_command_scene != null:
+			cheat_command_scene.visible = false
+
+func _physics_process(delta):
+	handle_movement_input()
+	if not god_mode:
+		apply_gravity(delta)
+
+	move_and_slide()
+	handle_landing_reset()
+	handle_animation()
+	update_lightning_ball_position()
+	
+	if cooldown_remaining > 0:
+		cooldown_remaining -= delta
+		ability_cooldown_bar.value = lightning_ability_cooldown - cooldown_remaining
+
+	if cooldown_remaining <= 0:
+		cooldown_remaining = 0
+		ability_cooldown_bar.value = lightning_ability_cooldown
+
+func handle_movement_input():
+	if velocity.x != 0:
+		facing_right = velocity.x > 0
+
+		sprite.flip_h = !facing_right
+
+	if facing_right:
+		weapon_holder.position = Vector2(20, -5);
+	else:
+		weapon_holder.position = Vector2(-20, -5);
+		
+	var move_speed := speed
+	
+	is_sprinting = !cheat_command and Input.is_action_pressed("ui_shift")
+	if is_sprinting:
+		move_speed *= sprint_multiplier
+
+	if !cheat_command and god_mode :
+		velocity = Vector2.ZERO
+		if Input.is_action_pressed("move_right"):
+			velocity.x += move_speed
+		if Input.is_action_pressed("move_left"):
+			velocity.x -= move_speed
+		if Input.is_action_pressed("move_up"):
+			velocity.y -= move_speed
+		if Input.is_action_pressed("move_down"):
+			velocity.y += move_speed
+	else:
+		var input_direction := 0.0
+		if !cheat_command and Input.is_action_pressed("move_left"):
+			input_direction -= 1
+		if !cheat_command and Input.is_action_pressed("move_right"):
+			input_direction += 1
+
+		velocity.x = input_direction * move_speed
+
+		if !cheat_command and Input.is_action_just_pressed("jump") and jump_count < MAX_JUMPS:
+			velocity.y = jump_velocity
+			jump_count += 1
+			jump_anim_played = false
+			if jump_count == 1:
+				jump_sound.play()
+			else:
+				double_jump_sound.play()
+
+func apply_gravity(delta):
+	if not is_on_floor():
+		velocity.y += gravity * delta
+
+func handle_landing_reset():
+	if is_on_floor() and not was_on_floor:
+		jump_count = 0
+		jump_anim_played = false
+	was_on_floor = is_on_floor()
+
+func _on_dash_anim_finished():
+	dash_locked = false  # Unlock the animation
+	
+	# Immediately switch back to a valid animation state based on movement
+	if abs(velocity.x) > 10.0:
+		sprite.play("walk")
+	else:
+		sprite.play("idle")
+
+func shoot_fireball():
+	if not can_shoot or fireball_scene == null or is_shooting:
+		return
+	if is_sprinting:
+		return
+
+	var fireball = fireball_scene.instantiate()
+	fireball.direction = Vector2.RIGHT if facing_right else Vector2.LEFT
+	fireball.global_position = fire_point.global_position
+	get_tree().current_scene.add_child(fireball)
+
+	dash_locked = true
+	sprite.play("dash")
+	sprite.frame = 0
+	
+	# === FIX: Safely disconnect before connecting again ===
+	if sprite.animation_finished.is_connected(_on_dash_anim_finished):
+		sprite.animation_finished.disconnect(_on_dash_anim_finished)
+	sprite.animation_finished.connect(_on_dash_anim_finished, CONNECT_ONE_SHOT)
+	
+	is_shooting = true
+	can_shoot = false
+	
+	@warning_ignore("shadowed_variable")
+	var camera: Camera2D = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+	if camera:
+		camera.trigger_shake(5.0, 0.15)
+
+	start_timer(shoot_anim_duration, _on_shoot_anim_end)
+	start_timer(fireball_cooldown, _on_fireball_cooldown_timeout)
+
+func activate_lightning_ball():
+	if not can_use_lightning or lightning_ball_scene == null:
+		return
+
+	can_use_lightning = false
+	is_lightning_active = true
+	
+	cooldown_remaining = lightning_ability_cooldown
+	ability_cooldown_bar.max_value = lightning_ability_cooldown
+	ability_cooldown_bar.value = 0
+	
+	var ball = lightning_ball_scene.instantiate() as Area2D
+	ball.scale = Vector2(1.5, 1.5)
+	ball.global_position = global_position + Vector2(50 if facing_right else -50, 0)
+	
+	if ball.has_method("set_direction"):
+		ball.set_direction(Vector2(1, 0) if facing_right else Vector2(-1, 0))
+
+	if ball.has_method("activate"):
+		ball.activate()
+
+	get_tree().current_scene.add_child(ball)
+
+	# Start cleanup timer
+	var cleanup_timer = Timer.new()
+	cleanup_timer.wait_time = lightning_ability_duration
+	cleanup_timer.one_shot = true
+	cleanup_timer.timeout.connect(func():
+		if is_instance_valid(ball):
+			if ball.has_method("deactivate"):
+				ball.deactivate()
+			ball.queue_free()
+		is_lightning_active = false
+	)
+	add_child(cleanup_timer)
+	cleanup_timer.start()
+
+	start_timer(lightning_ability_cooldown, _on_lightning_cooldown_timeout)
+
+	start_timer(lightning_ability_duration, _on_lightning_ability_end)
+
+func _on_lightning_ability_end():
+	is_lightning_active = false
+	if is_instance_valid(lightning_ball_instance):
+		lightning_ball_instance.visible = false
+		if lightning_ball_instance.has_method("deactivate"):
+			lightning_ball_instance.deactivate()
+
+func _on_lightning_cooldown_timeout():
+	can_use_lightning = true
+
+func update_lightning_ball_position():
+	if is_instance_valid(lightning_ball_instance) and lightning_ball_instance.visible:
+		var offset = Vector2(50, 0) if facing_right else Vector2(-50, 0)
+		lightning_ball_instance.global_position = global_position + offset
+		lightning_ball_instance.scale.x = abs(lightning_ball_instance.scale.x) if facing_right else -abs(lightning_ball_instance.scale.x)
+		if lightning_ball_instance.has_method("set_direction"):
+			lightning_ball_instance.set_direction(Vector2(1,0) if facing_right else Vector2(-1,0))
+
+func handle_animation():
+	if is_shooting:
+		return
+
+	if god_mode and velocity.length() > 0:
+		sprite.play("idle")
+	elif not is_on_floor():
+		if not jump_anim_played:
+			sprite.play("jump", false)
+			jump_anim_played = true
+	elif abs(velocity.x) > 0:
+		sprite.play("run" if is_sprinting else "walk")
+	else:
+		sprite.play("idle")
+
+func start_timer(duration: float, callback: Callable):
+	var timer := Timer.new()
+	timer.wait_time = duration
+	timer.one_shot = true
+	timer.timeout.connect(callback)
+	add_child(timer)
+	timer.start()
+
+# Call this from your Flag when the level is complete
+func stop_level_timer():
+	level_timer.stop()
+
+func get_current_time() -> float:
+	return time_elapsed
+
+func get_stars_earned() -> int:
+	# EDIT THESE NUMBERS to change how hard it is to get stars!
+	var time_for_3_stars = 90.0
+	var time_for_2_stars = 105.0
+	var time_for_1_star  = 120.0
+	
+	if time_elapsed <= time_for_3_stars:
+		return 3
+	elif time_elapsed <= time_for_2_stars:
+		return 2
+	elif time_elapsed <= time_for_1_star:
+		return 1
+	else:
+		return 0
+
+# Call this if you want to reset the timer (e.g., if the player dies)
+func reset_level_timer():
+	time_elapsed = 0.0
+	timer_label.text = "0.0s"
+	level_timer.start()
+
+func _on_shoot_anim_end():
+	is_shooting = false
+	if abs(velocity.x) > 10.0:
+		sprite.play("walk")
+	else:
+		sprite.play("idle")
+
+func _on_fireball_cooldown_timeout():
+	can_shoot = true
+
+func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
+	if god_mode:
+		return
+	camera.trigger_shake(12.0, 0.3)
+	player_hurt.play()
+	current_health -= amount
+	var knockback := (global_position - source_position).normalized() * 500.0
+	velocity = knockback
+
+	if current_health <= 0:
+		die()
+
+func heal(amount:int):
+
+	current_health += amount
+	current_health = clamp(current_health,0,max_health)
+	health_changed.emit(current_health,max_health)
+
+func add_bonus_heart() -> bool:
+
+	if bonus_heart_unlocked:
+		return false
+
+	bonus_heart_unlocked = true
+
+	max_health += 25
+	current_health += 25
+
+	health_changed.emit(current_health, max_health)
+
+	return true
+
+func die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	camera.trigger_shake(20.0, 0.8)
+	MusicManager.play_game_over()
+
+	set_process(false)
+	set_process_input(false)
+
+	await get_tree().create_timer(0.5).timeout
+	SceneManager.change_scene("retry_menu")
+
+=== Scripts/player_lives.gd ===
+
+extends Control
+
+@onready var hearts_container: HBoxContainer = $HeartsContainer
+
+@onready var heart_textures: Array[Texture2D] = [
+	preload("res://Assets/sprite.png"),         # Full Heart
+	preload("res://Assets/sprite_empty.png")    # Empty Heart
+]
+
+const HEALTH_PER_HEART := 25
+
+func _ready() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+
+	if player and player.has_signal("health_changed"):
+		player.health_changed.connect(_on_player_health_changed)
+
+		# Update immediately when the scene starts
+		_on_player_health_changed(player.current_health, player.max_health)
+	else:
+		push_error("Player or 'health_changed' signal not found!")
+
+func _on_player_health_changed(current_health: int, max_health: int) -> void:
+
+	var total_hearts := int(ceil(float(max_health) / HEALTH_PER_HEART))
+	var filled_hearts := int(ceil(float(current_health) / HEALTH_PER_HEART))
+
+	# Add extra hearts if needed
+	while hearts_container.get_child_count() < total_hearts:
+
+		var template: TextureRect = hearts_container.get_child(0)
+		var new_heart: TextureRect = template.duplicate()
+
+		new_heart.texture = heart_textures[1]
+
+		hearts_container.add_child(new_heart)
+
+	# Remove extra hearts
+	while hearts_container.get_child_count() > total_hearts:
+
+		var heart := hearts_container.get_child(hearts_container.get_child_count() - 1)
+
+		hearts_container.remove_child(heart)
+
+		heart.queue_free()
+
+	# Update heart textures
+	for i in range(hearts_container.get_child_count()):
+
+		var heart: TextureRect = hearts_container.get_child(i)
+
+		if i < filled_hearts:
+			heart.texture = heart_textures[0]
+		else:
+			heart.texture = heart_textures[1]
+
+=== Scripts/portal_effect.gd ===
+
+extends CanvasLayer
+
+# === PORTAL EFFECT ===
+@onready var effect_rect: ColorRect = $EffectRect
+@onready var shader_material: ShaderMaterial = effect_rect.material
+@onready var teleport_sound: AudioStreamPlayer = $TeleportSound  # NEW NODE REFERENCE
+
+signal portal_warp_complete
+
+func _ready():
+	if shader_material == null:
+		push_error("CRITICAL ERROR: EffectRect has no ShaderMaterial assigned!")
+		
+	visible = false
+
+func trigger_portal():
+	if shader_material == null:
+		print("ERROR: Cannot trigger portal effect, material is null.")
+		return
+
+	visible = true
+	shader_material.set_shader_parameter("progress", 0.0)
+	
+	# === PLAY THE SOUND LATE IN THE ANIMATION ===
+	# We use a separate timer to play the sound 0.2 seconds before the visual ends
+	await get_tree().create_timer(0.8).timeout
+	if teleport_sound:
+		teleport_sound.play()
+	
+	var tween = create_tween()
+	tween.tween_property(shader_material, "shader_parameter/progress", 1.0, 1.5)
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_IN_OUT)
+	
+	await tween.finished
+	
+	visible = false
+	portal_warp_complete.emit()
+
+=== Scripts/portal.gd ===
+
+extends Area2D
+
+@export var target_portal: NodePath
+@export var portal_effect: CanvasLayer # DRAG PortalEffect here in the Inspector
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+
+var can_teleport := true
+var destination: Area2D = null
+
+func _ready():
+	body_entered.connect(_on_body_entered)
+	if sprite.sprite_frames.has_animation("idle"):
+		sprite.play("idle")
+
+func _on_body_entered(body):
+	if !body.is_in_group("player"):
+		return
+	if !can_teleport:
+		return
+
+	var dest = get_node_or_null(target_portal)
+	if dest == null:
+		push_error("Target Portal not assigned!")
+		return
+
+	# Store destination and disable teleports
+	destination = dest
+	can_teleport = false
+	destination.can_teleport = false
+	
+	# Freeze the player
+	body.set_process(false)
+	body.set_physics_process(false)
+	
+	# Play source portal animation
+	sprite.play("teleport")
+	
+	# === TRIGGER THE EFFECT ===
+	if portal_effect:
+		print("Portal: Triggering effect...")
+		portal_effect.portal_warp_complete.connect(_on_warp_finished, CONNECT_ONE_SHOT)
+		portal_effect.trigger_portal() # Start the shader animation
+	else:
+		print("ERROR: portal_effect is null! Did you drag it into the Inspector?")
+		await get_tree().create_timer(1.0).timeout
+		_finish_teleport(body)
+
+func _on_warp_finished():
+	print("Portal: Received finish signal!")
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null:
+		return
+	_finish_teleport(player)
+
+func _finish_teleport(body):
+	# 1. Teleport the player
+	body.global_position = destination.global_position + Vector2(0, -32)
+	if "velocity" in body:
+		body.velocity = Vector2.ZERO
+
+	# 2. Unfreeze player
+	body.set_process(true)
+	body.set_physics_process(true)
+
+	# 3. Play destination portal animation
+	if destination:
+		destination.sprite.play("teleport")
+
+	# 4. Return both portals to idle
+	await get_tree().create_timer(0.8).timeout
+	if is_instance_valid(self) and sprite.sprite_frames.has_animation("idle"):
+		sprite.play("idle")
+	if is_instance_valid(destination) and destination.sprite.sprite_frames.has_animation("idle"):
+		destination.sprite.play("idle")
+
+	# 5. Cooldown Reset
+	await get_tree().create_timer(0.5).timeout
+	can_teleport = true
+	if destination and is_instance_valid(destination):
+		destination.can_teleport = true
+
+=== Scripts/retry.gd ===
+
+extends Control
+
+@onready var retry_button: Button = $Panel/Retry
+@onready var main_menu_button: Button = $"Panel/Main Menu"
+
+func _ready():
+	retry_button.pressed.connect(retry_level)
+	main_menu_button.pressed.connect(go_to_main_menu)
+
+func retry_level():
+	MusicManager.play_button_click()
+	SceneManager.change_scene(SceneManager.current_level)
+
+func go_to_main_menu():
+	MusicManager.play_button_click()
+	get_tree().change_scene_to_packed(SceneManager.scenes["main_menu"])
+	
+
+=== Scripts/rotating_drum.gd ===
+
+extends StaticBody2D
+
+func _on_detector_body_entered(body: Node2D) -> void:
+	if body.is_in_group("player") and body.has_method("take_damage"):
+		body.take_damage(25, global_position);
+
+=== Scripts/scene_manager.gd ===
+
+extends Node
+
+# ALWAYS SET THE LAST LEVEL PLS !!! IMPORTANT
+var last_level : int = 3
+
+# Dic of scenes
+var scene_paths: Dictionary = {
+	"main_menu": "res://Scenes/main_menu.tscn",
+	"level_select": "res://Scenes/LevelSelect.tscn",
+	"level_1": "res://Scenes/level_1.tscn",
+	"level_2": "res://Scenes/level_2.tscn",
+	"level_3" : "res://Scenes/level_3.tscn",
+	"retry_menu": "res://Scenes/retry.tscn",
+	"fireball_scene": "res://Scenes/fireball.tscn",
+	"credits": "res://Scenes/credits.tscn",
+	"floating_text": "res://Scenes/FloatingText.tscn",
+	"cheat_command" : "res://Scenes/cheat_command.tscn",
+	"shop_menu" : "res://Scenes/Shop.tscn"
+}
+# Loaded Scenes Dic
+var scenes: Dictionary = {}
+var current_level: String = ""
+
+# Signal to PBar
+signal preload_progress_updated(per: float)
+signal all_scenes_ready()
+
+func _ready() -> void:
+	pass
+
+func start_global_preload() -> void:
+	var total_scenes: float = scene_paths.size()
+	var current_index: float = 0.0
+	
+	for scene_key in scene_paths:
+		var path = scene_paths[scene_key]
+		
+		if ResourceLoader.exists(path):
+			scenes[scene_key] = load(path)
+		else:
+			push_error("Scene not found: %s" % path)
+			
+		current_index += 1.0
+		
+		# Calculate progress
+		var total_per = (current_index / total_scenes) * 100.0
+		preload_progress_updated.emit(total_per)
+		
+		# UPdate frame 
+		await get_tree().process_frame
+
+	# Everything is loaded
+	all_scenes_ready.emit()
+
+func get_scene(scene_name: String) -> PackedScene:
+	if scenes.has(scene_name):
+		return scenes[scene_name]
+	push_error("Scene '%s' not registered in SceneManager!" % scene_name)
+	return null
+
+func change_scene(scene_name: String) -> void:
+	var scene = get_scene(scene_name)
+
+	if scene:
+		if scene_name.begins_with("level_") and scene_name != "level_select":
+			current_level = scene_name
+
+		get_tree().change_scene_to_packed(scene)
+
+=== Scripts/shardsoul.gd ===
+
+extends CharacterBody2D
+
+# === CONFIG ===
+@export var max_health := 6
+@export var move_speed := 150.0
+@export var sprint_multiplier := 3.0
+@export var knockback_strength := 400.0
+@export var detection_range := 1000.0
+@export var attack_range := 400.0
+
+# === PATROL BOUNDARIES ===
+@export var patrol_x_min := 19000.0
+@export var patrol_x_max := 22200.0
+
+# === STATE ===
+var health := max_health
+var is_dead := false
+var is_aggro := false
+var facing_right := true
+var is_recoiling := false
+var is_attacking := false # Used to freeze movement during animations
+
+# Patrol state
+var moving_right := true
+
+# === NODES ===
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var health_bar: ProgressBar = $ProgressBar
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var hitbox: Area2D = $HitBox
+@onready var timer: Timer = $AttackCooldown
+@onready var death_sound: AudioStreamPlayer = $DeathSound
+
+func _ready():
+	add_to_group("enemies")
+	
+	update_health_bar()
+	sprite.play("walk")
+	
+	# Connect Signals
+	hitbox.body_entered.connect(_on_HitBox_body_entered)
+	sprite.animation_finished.connect(_on_animation_finished)
+
+func _physics_process(delta: float) -> void:
+	if is_dead:
+		return
+
+	if is_recoiling:
+		move_and_slide()
+		return
+
+	# Gravity
+	if not is_on_floor():
+		velocity.y += 980 * delta
+
+	# Find Player
+	var player := get_closest_player()
+	
+	# Chase or Patrol
+	if player:
+		var distance = global_position.distance_to(player.global_position)
+		if distance < detection_range:
+			is_aggro = true
+			chase_player(player)
+		else:
+			is_aggro = false
+			patrol()
+	else:
+		is_aggro = false
+		patrol()
+
+	move_and_slide()
+	update_animation()
+
+# === PATROL LOGIC ===
+func patrol() -> void:
+	# Don't move if currently in attack animation
+	if is_attacking:
+		return
+		
+	# Determine direction based on current X position
+	if global_position.x >= patrol_x_max:
+		moving_right = false
+	elif global_position.x <= patrol_x_min:
+		moving_right = true
+		
+	# Move
+	var direction = 1 if moving_right else -1
+	velocity.x = direction * move_speed
+	facing_right = direction > 0
+	
+	# Flip sprite visually
+	sprite.flip_h = not facing_right
+
+# === CHASE & MOVEMENT ===
+func chase_player(player: Node2D) -> void:
+	var direction_vec := (player.global_position - global_position).normalized()
+	facing_right = direction_vec.x > 0
+	sprite.flip_h = not facing_right
+
+	var distance = global_position.distance_to(player.global_position)
+	
+	# Attack if close (stops movement)
+	if distance < attack_range and not is_attacking:
+		sprite.play("attack")
+		is_attacking = true
+		velocity.x = 0
+		return
+
+	# Sprint logic
+	var speed = move_speed
+	if distance < detection_range / 2:
+		speed *= sprint_multiplier
+
+	velocity.x = direction_vec.x * speed
+
+# === ANIMATION ===
+func update_animation():
+	if is_dead or is_attacking:
+		return
+		
+	if is_aggro:
+		if sprite.animation != "walk":
+			sprite.play("walk")
+	else:
+		if sprite.animation != "walk":
+			sprite.play("walk")
+
+# === DAMAGE (Copied verbatim from your reference) ===
+func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
+	if is_dead:
+		return
+
+	health -= amount
+	health = max(health, 0)
+	update_health_bar()
+
+	# Knockback away from source
+	if source_position != Vector2.ZERO:
+		var knockback_dir := (global_position - source_position).normalized()
+		velocity = knockback_dir * knockback_strength
+
+	# Cancel attack if hit
+	if is_attacking:
+		is_attacking = false
+		sprite.stop()
+
+	if health <= 0:
+		die()
+
+func update_health_bar() -> void:
+	health_bar.value = float(health) / float(max_health) * 100.0
+
+# === DEATH (Fixed for crash) ===
+func die() -> void:
+	is_dead = true
+	velocity = Vector2.ZERO
+	sprite.play("death")
+	death_sound.play()
+	
+	collision_shape.call_deferred("set_disabled", true)
+	hitbox.call_deferred("set_monitoring", false)
+	hitbox.call_deferred("set_monitorable", false)
+	
+	await sprite.animation_finished
+	queue_free()
+
+# === ATTACK (Copied verbatim from your reference) ===
+func _on_HitBox_body_entered(body: Node) -> void:
+	if is_dead or is_recoiling:
+		return
+
+	if body.is_in_group("player") and body.has_method("take_damage"):
+		sprite.play("attack")
+		body.take_damage(50, global_position) # Note: Reference uses 25 damage
+
+		var recoil_direction = (global_position - body.global_position).normalized()
+		velocity = recoil_direction * knockback_strength
+		is_recoiling = true
+		await get_tree().create_timer(0.3).timeout
+		if is_instance_valid(self) and not is_dead:
+			is_recoiling = false
+
+# === GET PLAYER ===
+func get_closest_player() -> Node2D:
+	var players = get_tree().get_nodes_in_group("player")
+	if players.is_empty():
+		return null
+
+	var closest: Node2D = players[0]
+	var closest_dist := global_position.distance_to(closest.global_position)
+
+	for p in players:
+		var dist = global_position.distance_to(p.global_position)
+		if dist < closest_dist:
+			closest = p
+			closest_dist = dist
+	return closest
+
+# === ANIMATION FINISHED ===
+func _on_animation_finished() -> void:
+	# This allows the enemy to move again after the attack animation finishes
+	if is_attacking:
+		is_attacking = false
+		if is_aggro:
+			sprite.play("walk")
+
+=== Scripts/shop.gd ===
+
+extends CanvasLayer
+
+@onready var coin_label: Label = $Coin/CoinDisplayLabel
+@onready var sprite: AnimatedSprite2D = $Coin/Texture
+@onready var item_grid: GridContainer  = $UI/Seperator/Bottom/HBox
+@export var all_items: Array[ItemData] = []
+
+func _ready():
+	sprite.play("default")
+	update_ui()
+	remove_items();
+	load_category("Sword")
+	
+func remove_items():
+	for child in item_grid.get_children():
+		child.queue_free()
+
+func update_ui():
+	coin_label.text = str(Globals.player_coins);
+
+# Hide Shop Menu And Free Memory 
+func _on_close_button_pressed() -> void:
+	self.visible = false;
+	queue_free();
+
+func load_category(category_filter: String):
+	
+	# Clear grid
+	remove_items();
+	
+	# Sami ~ Load the scenes
+	var item_scene = preload("res://Scenes/Shop_item.tscn")
+	var bg_scene = preload("uid://btthfvjd8d7bn");
+	
+	# Loop through data and only spawn matching items
+	for item_data in all_items:
+		if item_data.category == category_filter:
+			
+			# Sami ~ Init both bg and item
+			var bg_init: Node = bg_scene.instantiate();
+			var item_init: Node = item_scene.instantiate();
+			
+			# Sami ~ Then add bg to grid
+			item_grid.add_child(bg_init);
+			
+			# Sami ~ Then add item to bg
+			bg_init.add_child(item_init);
+			
+			# Sami Then add data
+			item_init.setup(item_data);
+			
+			 # Tiny delay prevents lag
+			await get_tree().create_timer(0.05).timeout
+
+
+func _on_swords_pressed() -> void:
+	load_category("sword")
+
+
+func _on_axe_pressed() -> void:
+	load_category("axe")
+
+
+func _on_hoe_pressed() -> void:
+	load_category("hoe")
+
+
+func _on_pick_axe_pressed() -> void:
+	load_category("pick axe")
+
+
+func _on_shovel_pressed() -> void:
+	load_category("shovel")
+
+=== Scripts/shop_item.gd ===
+
+extends Control
+
+@onready var item_sprite: TextureRect = $ItemSprite
+@onready var item_name_label: Label = $ItemInfo/ItemName
+@onready var item_price_label: Label = $ItemPrice/Text
+@onready var buy_button: TextureButton = $BuyButton
+
+var current_item_data: ItemData
+
+func setup(item_data: ItemData):
+	current_item_data = item_data
+	
+	# === THE ULTIMATE SAFE FIX ===
+	# Use call_deferred to assign the texture on the next frame safely.
+	call_deferred("_assign_texture", item_data)
+
+func _assign_texture(item_data: ItemData):
+	# This function runs safely 1 frame later, when the node is 100% alive.
+	item_sprite.texture = item_data.sprite_texture
+	item_name_label.text = item_data.item_name
+	item_price_label.text = str(item_data.price) + " coins"
+
+func _on_buy_button_pressed() -> void:
+	print("Attempting to buy: ", current_item_data.item_name)
+
+=== Scripts/slime.gd ===
+
+extends CharacterBody2D
+
+@export var max_health := 3
+@export var move_speed := 130
+@export var sprint_multiplier := 3.0
+@export var move_distance := 1000
+@export var knockback_strength := 200
+@export var max_fall_speed := 400
+@export var gravity := 900
+@export var hit_cooldown := 0.5
+@export var aggro_range := 800
+
+@onready var camera = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+
+var health := max_health
+var is_dead := false
+var facing_right := true
+var starting_position := Vector2.ZERO
+var can_hit := true
+var knockback_timer := 0.0
+var knockback_duration := 0.2
+var is_knocked_back := false
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var health_bar: ProgressBar = $HealthBar
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var hitbox: Area2D = $Hitbox
+
+func _ready():
+	starting_position = global_position
+	add_to_group("enemies")
+	update_health_bar()
+	sprite.play("default")
+	hitbox.body_entered.connect(_on_hitbox_body_entered)
+
+func _physics_process(delta: float) -> void:
+	if is_dead:
+		return
+
+	if is_knocked_back:
+		apply_gravity(delta)
+		knockback_timer -= delta
+		if knockback_timer <= 0:
+			is_knocked_back = false
+	else:
+		var player = get_closest_player()
+		if player and global_position.distance_to(player.global_position) <= aggro_range:
+			chase_player(player)
+		else:
+			patrol()
+
+		apply_gravity(delta)
+
+	move_and_slide()
+	sprite.flip_h = not facing_right
+
+func apply_gravity(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y += gravity * delta
+		velocity.y = min(velocity.y, max_fall_speed)
+	else:
+		velocity.y = 0
+
+func patrol() -> void:
+	var distance_from_start := global_position.x - starting_position.x
+
+	if facing_right and distance_from_start >= move_distance / 2.0:
+		flip_direction()
+	elif not facing_right and distance_from_start <= -move_distance / 2.0:
+		flip_direction()
+
+	velocity.x = (1 if facing_right else -1) * move_speed
+
+	if not sprite.is_playing() or sprite.animation != "default":
+		sprite.play("default")
+
+func chase_player(player: Node2D) -> void:
+	var direction = sign(player.global_position.x - global_position.x)
+	facing_right = direction > 0
+	velocity.x = direction * move_speed * sprint_multiplier
+
+	if not sprite.is_playing() or sprite.animation != "sprint":
+		sprite.play("sprint")
+
+func flip_direction() -> void:
+	facing_right = not facing_right
+
+func get_closest_player() -> Node2D:
+	var players = get_tree().get_nodes_in_group("player")
+	if players.is_empty():
+		return null
+
+	var closest = players[0]
+	var closest_dist = global_position.distance_to(closest.global_position)
+	for p in players:
+		var d = global_position.distance_to(p.global_position)
+		if d < closest_dist:
+			closest = p
+			closest_dist = d
+	return closest
+
+func _on_hitbox_body_entered(body: Node) -> void:
+	if is_dead or not can_hit:
+		return
+
+	if body.is_in_group("player") and body.has_method("take_damage"):
+		can_hit = false
+		body.take_damage(25, global_position)
+		camera.trigger_shake(8.0, 0.2)
+		start_hit_cooldown()
+
+func start_hit_cooldown() -> void:
+	await get_tree().create_timer(hit_cooldown).timeout
+	if is_instance_valid(self):
+		can_hit = true
+
+func take_damage(amount: int, knockback_dir := Vector2.ZERO) -> void:
+	if is_dead:
+		return
+
+	health -= amount
+	health = max(health, 0)
+	update_health_bar()
+
+	if knockback_dir != Vector2.ZERO:
+		velocity = knockback_dir.normalized() * knockback_strength
+		velocity.y = min(velocity.y, -50)  # Prevent extreme downward spikes
+		is_knocked_back = true
+		knockback_timer = knockback_duration
+
+	if health <= 0:
+		die()
+
+func update_health_bar() -> void:
+	health_bar.value = float(health) / float(max_health) * 100.0
+
+@onready var death_sound: AudioStreamPlayer = $DeathSound
+
+func die() -> void:
+	is_dead = true
+	health_bar.visible = false
+	collision_shape.call_deferred("set_disabled", true)
+	camera.trigger_shake(6.0, 0.2)
+	death_sound.play()
+	await death_sound.finished
+	queue_free()
+
+=== Scripts/spider.gd ===
+
+extends CharacterBody2D
+
+@export var speed: float = 80.0
+@export var max_health: int = 25
+@export var detection_range: float = 500.0
+
+var current_health: int
+var player: Node2D
+
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var hitbox: CollisionShape2D = $Hitbox/CollisionShape2D
+
+func _ready():
+	current_health = max_health
+	var players = get_tree().get_nodes_in_group("player")
+	if players.size() > 0:
+		player = players[0]
+
+func _physics_process(delta):
+	if not player or not is_instance_valid(player):
+		velocity = Vector2.ZERO
+		sprite.play("idle")
+		return
+
+	var distance_to_player = global_position.distance_to(player.global_position)
+	if distance_to_player > detection_range:
+		velocity = Vector2.ZERO
+		sprite.play("idle")
+		return
+
+	# Move toward player
+	var direction = (player.global_position - global_position).normalized()
+	velocity = direction * speed
+	move_and_slide()
+
+	# Flip sprite
+	sprite.flip_h = velocity.x < 0
+
+	# Animate
+	if not is_on_floor():
+		sprite.play("jump")
+	elif velocity.length() > 10:
+		sprite.play("walk")
+	else:
+		sprite.play("idle")
+
+func take_damage(amount: int):
+	current_health -= amount
+	if current_health <= 0:
+		die()
+
+func die():
+	# Optional: add particles, sound, etc.
+	queue_free()
+
+func _on_hitbox_area_exited(area: Area2D) -> void:
+	pass # Replace with function body.
+
+=== Scripts/sword.gd ===
+
+extends Node2D
+
+# =====================================================
+# SETTINGS
+# =====================================================
+
+@export var damage: int = 1
+@export var swing_duration: float = 0.18
+@export var swing_angle: float = 120.0
+@export var base_angle: float = -45.0
+
+# =====================================================
+# NODES
+# =====================================================
+
+@onready var pivot: Node2D = $Pivot
+@onready var hitbox: Area2D = $Pivot/Hitbox
+@onready var swing_sound: AudioStreamPlayer = $SwingSound
+
+# =====================================================
+# STATE
+# =====================================================
+
+var is_swinging := false
+var enemy_hit := false
+var facing_right := true
+
+# =====================================================
+# READY
+# =====================================================
+
+func _ready():
+
+	pivot.rotation_degrees = base_angle
+
+	hitbox.monitoring = false
+	hitbox.monitorable = false
+
+	hitbox.body_entered.connect(_on_hitbox_body_entered)
+
+# =====================================================
+# SWING
+# =====================================================
+
+func swing(is_facing_right: bool):
+
+	if is_swinging:
+		return
+
+	is_swinging = true
+	enemy_hit = false
+	facing_right = is_facing_right
+
+	hitbox.monitoring = true
+	hitbox.monitorable = true
+
+	if swing_sound:
+		swing_sound.play()
+
+	var start_angle: float
+	var end_angle: float
+
+	if facing_right:
+		start_angle = base_angle - swing_angle / 2.0
+		end_angle = base_angle + swing_angle / 2.0
+	else:
+		start_angle = 180.0 - base_angle + swing_angle / 2.0
+		end_angle = 180.0 - base_angle - swing_angle / 2.0
+
+	pivot.rotation_degrees = start_angle
+
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_OUT)
+
+	tween.tween_property(
+		pivot,
+		"rotation_degrees",
+		end_angle,
+		swing_duration
+	)
+
+	await tween.finished
+
+	if facing_right:
+		pivot.rotation_degrees = base_angle
+	else:
+		pivot.rotation_degrees = 180.0 - base_angle
+
+	hitbox.monitoring = false
+	hitbox.monitorable = false
+
+	is_swinging = false
+
+# =====================================================
+# HITBOX
+# =====================================================
+
+func _on_hitbox_body_entered(body: Node2D):
+
+	if enemy_hit:
+		return
+
+	if body.is_in_group("enemies") and body.has_method("take_damage"):
+		enemy_hit = true
+		body.take_damage(damage, global_position)
+
+=== Scripts/tutorial_popup.gd ===
+
+extends CanvasLayer
+
+@onready var tutorial_text: Label = $PopupPanel/TutorialText
+@onready var close_button: Button = $PopupPanel/CloseButton
+@onready var auto_close_timer: Timer = $PopupPanel/AutoCloseTimer
+
+@warning_ignore("unused_signal")
+signal tutorial_closed
+
+func _ready():
+	# Connect close button
+	close_button.pressed.connect(_on_close_pressed)
+
+	# Connect timer signal
+	auto_close_timer.timeout.connect(_on_close_pressed)
+
+func show_tutorial(text: String):
+	tutorial_text.text = text
+	visible = true
+	get_tree().paused = false
+
+	# Start timer for auto-close
+	auto_close_timer.wait_time = 4.0
+	auto_close_timer.one_shot = true
+	auto_close_timer.start()
+
+func _on_close_pressed():
+	MusicManager.play_button_click()
+	await get_tree().create_timer(0.35, true).timeout
+	get_tree().paused = false
+	visible = false

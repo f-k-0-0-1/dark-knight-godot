@@ -6,7 +6,7 @@ signal health_changed(new_health: int, max_health: int)
 @onready var zoom_button: Button = $HUD/ZoomButton
 
 @onready var coin_counter_label: Label = $HUD/CoinCounter
-@onready var weapon: Node2D = $WeaponHolder/Hammer; # logic for hammer
+@onready var weapon: Node2D;
 @onready var weapon_holder = $WeaponHolder;
 
 var dash_locked := false
@@ -80,7 +80,7 @@ func _ready():
 
 
 func _on_weapon_equipped(weapon_name: String):
-	sword.equip_weapon(weapon_name)
+	weapon.equip_weapon(weapon_name)
 
 
 func _update_coin_ui(new_total: int):
