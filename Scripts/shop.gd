@@ -1,55 +1,56 @@
 extends CanvasLayer
 
-@onready var coin_label: Label = $Panel/CoinDisplayLabel
-@onready var sprite: AnimatedSprite2D = $Panel/AnimatedSprite2D
+@onready var coin_label: Label = $Coin/CoinDisplayLabel
+@onready var sprite: AnimatedSprite2D = $Coin/Texture
 @onready var item_grid: GridContainer  = $UI/Seperator/Bottom/HBox
 @export var all_items: Array[ItemData] = []
 
 func _ready():
 	sprite.play("default")
 	update_ui()
-	load_items()
+	remove_items();
 	load_category("Sword")
 	
-func load_items():
-	# 1. Clear any old items out of the grid
+func remove_items():
 	for child in item_grid.get_children():
 		child.queue_free()
-	
-	# 2. Load the ShopItem scene we made in Part 3
-	var item_scene = preload("res://Scenes/shop_item.tscn")
-	
-	# 3. Loop through the data and spawn a card for each one
-	for item_data in all_items:
-		var new_item_card = item_scene.instantiate()
-		
-		# Call the "setup" function we wrote in Part 3
-		new_item_card.setup(item_data)
-		
-		# Add it to the grid
-		item_grid.add_child(new_item_card)
 
 func update_ui():
-	coin_label.text = str(Globals.player_coins)
+	coin_label.text = str(Globals.player_coins);
+
 # Hide Shop Menu And Free Memory 
 func _on_close_button_pressed() -> void:
 	self.visible = false;
 	queue_free();
 
 func load_category(category_filter: String):
-	# Clear grid
-	for child in item_grid.get_children():
-		child.queue_free()
 	
-	var item_scene = preload("res://Scenes/shop_item.tscn")
+	# Clear grid
+	remove_items();
+	
+	# Sami ~ Load the scenes
+	var item_scene = preload("res://Scenes/Shop_item.tscn")
+	var bg_scene = preload("uid://btthfvjd8d7bn");
 	
 	# Loop through data and only spawn matching items
 	for item_data in all_items:
 		if item_data.category == category_filter:
-			var new_item_card = item_scene.instantiate()
-			new_item_card.setup(item_data)
-			item_grid.add_child(new_item_card)
-			await get_tree().create_timer(0.05).timeout # Tiny delay prevents lag
+			
+			# Sami ~ Init both bg and itme 
+			var bg_init: Node = bg_scene.instantiate();
+			var item_init: Node = item_scene.instantiate();
+			
+			# Sami ~ Then add bg to grid
+			item_grid.add_child(bg_init);
+			
+			# Sami ~ Then add item to bg
+			bg_init.add_child(item_init);
+			
+			# Sami Then add data
+			item_init.setup(item_data);
+			
+			 # Tiny delay prevents lag
+			await get_tree().create_timer(0.05).timeout
 
 
 func _on_swords_pressed() -> void:

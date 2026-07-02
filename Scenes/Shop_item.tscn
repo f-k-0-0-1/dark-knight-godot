@@ -1,46 +1,197 @@
-[gd_scene format=3 uid="uid://eq1mngsr6pnt"]
+[gd_scene format=3 uid="uid://dlvxtmt85fs8r"]
 
-[ext_resource type="Script" uid="uid://qqkgomgpywey" path="res://Scripts/shop_item.gd" id="1_hsgix"]
-[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png" id="2_b8rhe"]
+[ext_resource type="Script" uid="uid://qqkgomgpywey" path="res://Scripts/shop_item.gd" id="1_7wnaf"]
+[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png" id="2_i6hie"]
+[ext_resource type="Texture2D" uid="uid://cue1xhxougauy" path="res://Assets/Store/shop_label.png" id="3_pnudm"]
+[ext_resource type="Texture2D" uid="uid://bjv2uugxqpx2f" path="res://Assets/coin_Sheet.png" id="4_u8l38"]
+[ext_resource type="Texture2D" uid="uid://d2sxwd2d7x073" path="res://Assets/Store/shop_item_buy.png" id="5_5mgw6"]
+[ext_resource type="Texture2D" uid="uid://c0eat3nt6ewoq" path="res://Assets/Store/shop_item_buy_clicked.png" id="6_c0tgv"]
+[ext_resource type="Texture2D" uid="uid://cnip37qry3cm8" path="res://Assets/Store/shop_item_buy_hover.png" id="7_yrsdw"]
+[ext_resource type="Texture2D" uid="uid://c0yan0trpg1hq" path="res://Assets/Store/shop_item_buy_disabled.png" id="8_tpudo"]
 
-[node name="ShopItem" type="Control" unique_id=222652382]
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ro81"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tvfaq"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d5t61"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y7ov5"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6tx2d"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ciunf"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3oad8"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uc8wc"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ddtph"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(128, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkmau"]
+atlas = ExtResource("4_u8l38")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hsv0u"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ro81")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tvfaq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d5t61")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y7ov5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6tx2d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ciunf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3oad8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uc8wc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ddtph")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkmau")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="ShopItem" type="Control" unique_id=1738783797]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_left = 0.07
+anchor_top = 0.120000005
+anchor_right = 0.9250001
+anchor_bottom = 0.92800003
+offset_right = -1.5258789e-05
+offset_bottom = -1.5258789e-05
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-script = ExtResource("1_hsgix")
+script = ExtResource("1_7wnaf")
 
-[node name="ItemSprite" type="TextureRect" parent="." unique_id=893329278]
-layout_mode = 0
-offset_right = 1092.0
-offset_bottom = 1092.0
+[node name="ItemSprite" type="TextureRect" parent="." unique_id=690794910]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.21100001
+anchor_top = 0.20300001
+anchor_right = 0.78900003
+anchor_bottom = 0.67800003
+offset_left = -0.08100128
+offset_top = -4.0060005
+offset_right = 451.081
+offset_bottom = 433.37738
 scale = Vector2(0.18, 0.18)
-texture = ExtResource("2_b8rhe")
+texture = ExtResource("2_i6hie")
 expand_mode = 1
 
-[node name="ItemName" type="Label" parent="." unique_id=1465529461]
-layout_mode = 0
-offset_left = 73.0
-offset_top = 8.0
-offset_right = 122.0
-offset_bottom = 31.0
-text = "Sword"
-
-[node name="ItemPrice" type="Label" parent="." unique_id=1405107260]
-layout_mode = 0
-offset_left = 32.0
-offset_top = 115.0
-offset_right = 72.0
-offset_bottom = 138.0
-text = "100"
-
-[node name="BuyButton" type="Button" parent="." unique_id=1925525528]
+[node name="ItemInfo" type="TextureRect" parent="." unique_id=140769236]
+texture_filter = 1
 layout_mode = 1
-offset_left = 81.0
-offset_top = 171.0
-offset_right = 121.0
-offset_bottom = 202.0
-text = "Buy"
+anchors_preset = -1
+anchor_left = 0.51000005
+anchor_top = 0.126
+anchor_right = 0.51000005
+anchor_bottom = 0.126
+offset_left = -55.210007
+offset_top = -13.452002
+offset_right = 53.858047
+offset_bottom = 19.268414
+texture = ExtResource("3_pnudm")
+expand_mode = 1
+
+[node name="ItemName" type="Label" parent="ItemInfo" unique_id=608064748]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.26700002
+anchor_top = 0.453
+anchor_right = 0.26700002
+anchor_bottom = 0.46300003
+offset_left = -19.88089
+offset_top = -10.101925
+offset_right = 72.11911
+offset_bottom = 12.57087
+theme_override_colors/font_color = Color(0.8627146, 0.9882658, 0.47824827, 1)
+theme_override_colors/font_shadow_color = Color(0.08987564, 0.18806745, 0.0039063096, 1)
+theme_override_font_sizes/font_size = 8
+text = "SWORD"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ItemPrice" type="HBoxContainer" parent="." unique_id=1825719616]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.17600001
+anchor_top = 0.646
+anchor_right = 0.88400006
+anchor_bottom = 0.74300003
+offset_left = 54.904
+offset_top = -3.492012
+offset_right = -52.164017
+offset_bottom = -3.9192963
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.1999975, 1.1999975)
+metadata/_edit_group_ = true
+
+[node name="Text" type="Label" parent="ItemPrice" unique_id=915972430]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8588083, 0.9843595, 0.47824827, 1)
+theme_override_colors/font_shadow_color = Color(0.101609826, 0.19589533, 0.0039063096, 1)
+theme_override_font_sizes/font_size = 8
+text = "100"
+vertical_alignment = 1
+
+[node name="texture" type="AnimatedSprite2D" parent="ItemPrice/Text" unique_id=1936554323]
+z_index = 1
+position = Vector2(-9.843376, 7.083346)
+sprite_frames = SubResource("SpriteFrames_hsv0u")
+autoplay = "default"
+
+[node name="BuyButton" type="TextureButton" parent="." unique_id=1573913959]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 154.0
+offset_right = 154.0
+offset_bottom = 191.0
+texture_normal = ExtResource("5_5mgw6")
+texture_pressed = ExtResource("6_c0tgv")
+texture_hover = ExtResource("7_yrsdw")
+texture_disabled = ExtResource("8_tpudo")
+texture_focused = ExtResource("5_5mgw6")
+ignore_texture_size = true
+stretch_mode = 0
+
+[connection signal="pressed" from="BuyButton" to="." method="_on_buy_button_pressed"]

@@ -29,10 +29,8 @@
 [ext_resource type="Texture2D" uid="uid://blwuex0oyph6o" path="res://Assets/Store/store_close_button.png" id="17_3ro81"]
 [ext_resource type="Texture2D" uid="uid://bvnr25sin0gr0" path="res://Assets/Store/store_close_button_clicked.png" id="18_tvfaq"]
 [ext_resource type="Texture2D" uid="uid://ca4mwfvx47ln5" path="res://Assets/Store/store_close_button_hover.png" id="19_d5t61"]
-[ext_resource type="PackedScene" uid="uid://btthfvjd8d7bn" path="res://Scenes/Shop_item_bg.tscn" id="22_dcoym"]
 [ext_resource type="Texture2D" uid="uid://bjv2uugxqpx2f" path="res://Assets/coin_Sheet.png" id="23_3ro81"]
 [ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png" id="23_tvfaq"]
-[ext_resource type="PackedScene" uid="uid://eq1mngsr6pnt" path="res://Scenes/shop_item.tscn" id="25_y7ov5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dcoym"]
 shader = ExtResource("1_k8g64")
@@ -366,13 +364,13 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 0
 horizontal_scroll_mode = 3
-vertical_scroll_mode = 0
+vertical_scroll_mode = 3
 
 [node name="HBox" type="GridContainer" parent="UI/Seperator/Bottom" unique_id=791195653]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-columns = 7
+columns = 4
 
 [node name="Start" type="VSeparator" parent="UI/Seperator/Bottom/HBox" unique_id=1541523493]
 custom_minimum_size = Vector2(20, 0)
@@ -380,123 +378,33 @@ layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
 
-[node name="Item" parent="UI/Seperator/Bottom/HBox" unique_id=1188531429 instance=ExtResource("22_dcoym")]
-layout_mode = 2
-
-[node name="ShopItem" parent="UI/Seperator/Bottom/HBox/Item" unique_id=222652382 instance=ExtResource("25_y7ov5")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 11.0
-offset_top = 28.0
-offset_right = 191.0
-offset_bottom = 265.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="Item2" parent="UI/Seperator/Bottom/HBox" unique_id=1611421283 instance=ExtResource("22_dcoym")]
-layout_mode = 2
-
-[node name="ShopItem" parent="UI/Seperator/Bottom/HBox/Item2" unique_id=1263088679 instance=ExtResource("25_y7ov5")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 12.0
-offset_top = 28.0
-offset_right = 192.0
-offset_bottom = 265.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="Item3" parent="UI/Seperator/Bottom/HBox" unique_id=63226006 instance=ExtResource("22_dcoym")]
-layout_mode = 2
-
-[node name="ShopItem" parent="UI/Seperator/Bottom/HBox/Item3" unique_id=2099015705 instance=ExtResource("25_y7ov5")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 14.0
-offset_top = 28.0
-offset_right = 194.0
-offset_bottom = 265.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="Item4" parent="UI/Seperator/Bottom/HBox" unique_id=1253761162 instance=ExtResource("22_dcoym")]
-layout_mode = 2
-
-[node name="ShopItem" parent="UI/Seperator/Bottom/HBox/Item4" unique_id=1576926967 instance=ExtResource("25_y7ov5")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 14.0
-offset_top = 28.0
-offset_right = 194.0
-offset_bottom = 265.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="Item5" parent="UI/Seperator/Bottom/HBox" unique_id=2133293044 instance=ExtResource("22_dcoym")]
-layout_mode = 2
-
-[node name="ShopItem" parent="UI/Seperator/Bottom/HBox/Item5" unique_id=2146692952 instance=ExtResource("25_y7ov5")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 14.0
-offset_top = 28.0
-offset_right = 194.0
-offset_bottom = 265.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="Item6" parent="UI/Seperator/Bottom/HBox" unique_id=757325205 instance=ExtResource("22_dcoym")]
-layout_mode = 2
-
-[node name="ShopItem" parent="UI/Seperator/Bottom/HBox/Item6" unique_id=1737733690 instance=ExtResource("25_y7ov5")]
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 14.0
-offset_top = 28.0
-offset_right = 194.0
-offset_bottom = 265.0
-grow_horizontal = 1
-grow_vertical = 1
-
 [node name="End" type="VSeparator" parent="UI/Seperator/Bottom/HBox" unique_id=717316113]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxEmpty_8yhm2")
 
-[node name="Panel" type="Panel" parent="." unique_id=1268203142]
+[node name="Coin" type="Panel" parent="." unique_id=1268203142]
 anchors_preset = -1
 anchor_left = 0.86200005
 anchor_top = 0.019000001
 anchor_right = 0.99100006
 anchor_bottom = 0.105000004
 offset_left = -0.024047852
-offset_top = -3.3120012
-offset_right = -89.032104
-offset_bottom = -33.04
+offset_top = -5.3120017
+offset_right = -89.43213
+offset_bottom = -34.24
 grow_horizontal = 0
 scale = Vector2(2.5, 2.5)
 theme_override_styles/panel = SubResource("StyleBoxFlat_3ro81")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Panel" unique_id=548442931]
+[node name="Texture" type="AnimatedSprite2D" parent="Coin" unique_id=548442931]
 z_index = 1
 position = Vector2(14.800003, 12.800002)
 scale = Vector2(1.2, 1.2)
 sprite_frames = SubResource("SpriteFrames_d5t61")
 
-[node name="CoinDisplayLabel" type="Label" parent="Panel" unique_id=1357349875]
+[node name="CoinDisplayLabel" type="Label" parent="Coin" unique_id=1357349875]
 z_index = 1
 texture_filter = 1
 layout_direction = 3
