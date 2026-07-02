@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cdr04l1p0hhxn"]
 
 [ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_fjw8p"]
-[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png" id="2_qm2o7"]
+[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Weapons/Diamond Sword-1.png (1).png" id="2_qm2o7"]
 
 [resource]
 script = ExtResource("1_fjw8p")

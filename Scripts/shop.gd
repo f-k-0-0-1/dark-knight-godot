@@ -5,18 +5,27 @@ extends CanvasLayer
 @onready var item_grid: GridContainer  = $UI/Seperator/Bottom/HBox
 @export var all_items: Array[ItemData] = []
 
+var current_category: String = "sword"
+
 func _ready():
 	sprite.play("default")
-	update_ui()
+	
+	Globals.coins_updated.connect(update_ui)
+	Globals.inventory_updated.connect(_refresh_shop)
+	
+	update_ui(Globals.player_coins)
 	remove_items();
-	load_category("Sword")
+	load_category("sword")
+	
+func _refresh_shop():
+	load_category(current_category)
 	
 func remove_items():
 	for child in item_grid.get_children():
 		child.queue_free()
 
-func update_ui():
-	coin_label.text = str(Globals.player_coins);
+func update_ui(new_total: int):
+	coin_label.text = str(new_total);
 
 # Hide Shop Menu And Free Memory 
 func _on_close_button_pressed() -> void:
@@ -24,7 +33,7 @@ func _on_close_button_pressed() -> void:
 	queue_free();
 
 func load_category(category_filter: String):
-	
+	current_category = category_filter
 	# Clear grid
 	remove_items();
 	

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://o6aoiqm42bgh" path="res://Scripts/sword.gd" id="1_goa0h"]
 [ext_resource type="AudioStream" uid="uid://8b5f2wytcw1o" path="res://Audio/sfx/sword_swing_sfx.mp3" id="2_6wdhb"]
-[ext_resource type="Texture2D" uid="uid://cdl4lfj3cnovu" path="res://Assets/Mincraft Weapon Pack {1}/Wooden sword-1.png.png" id="2_d6wag"]
+[ext_resource type="Texture2D" uid="uid://cdl4lfj3cnovu" path="res://Assets/Weapons/Wooden sword-1.png.png" id="2_d6wag"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_d6wag"]
 radius = 143.44164

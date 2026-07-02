@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0i2jbmjnth52"
-path="res://.godot/imported/Iron pickaxe-1.png.png-b2934e6bd4083f5f459a4c65c1793423.ctex"
+uid="uid://x65aardhgid4"
+path="res://.godot/imported/Netherite Hoe-1.png.png-972aea4c6a1d0b4b0ac2a3646e72db0e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Iron pickaxe-1.png.png"
-dest_files=["res://.godot/imported/Iron pickaxe-1.png.png-b2934e6bd4083f5f459a4c65c1793423.ctex"]
+source_file="res://Assets/Weapons/Netherite Hoe-1.png.png"
+dest_files=["res://.godot/imported/Netherite Hoe-1.png.png-972aea4c6a1d0b4b0ac2a3646e72db0e.ctex"]
 
 [params]
 

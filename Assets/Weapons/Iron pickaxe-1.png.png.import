@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx0qqyrwe82f7"
-path="res://.godot/imported/Stone sword-1.png.png-5f631884ddb811e80f56e0399f0120c8.ctex"
+uid="uid://0i2jbmjnth52"
+path="res://.godot/imported/Iron pickaxe-1.png.png-a8ed97a2869cb3ff571b8d5eaf0800a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Stone sword-1.png.png"
-dest_files=["res://.godot/imported/Stone sword-1.png.png-5f631884ddb811e80f56e0399f0120c8.ctex"]
+source_file="res://Assets/Weapons/Iron pickaxe-1.png.png"
+dest_files=["res://.godot/imported/Iron pickaxe-1.png.png-a8ed97a2869cb3ff571b8d5eaf0800a5.ctex"]
 
 [params]
 

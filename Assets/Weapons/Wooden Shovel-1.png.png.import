@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hcx6ujprsbu1"
-path="res://.godot/imported/Stone Pickaxe-1.png.png-c16c03caa233ab0695149081041cc7de.ctex"
+uid="uid://c4ka66qqia07d"
+path="res://.godot/imported/Wooden Shovel-1.png.png-64de22610b64313f17623e6970a168d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Stone Pickaxe-1.png.png"
-dest_files=["res://.godot/imported/Stone Pickaxe-1.png.png-c16c03caa233ab0695149081041cc7de.ctex"]
+source_file="res://Assets/Weapons/Wooden Shovel-1.png.png"
+dest_files=["res://.godot/imported/Wooden Shovel-1.png.png-64de22610b64313f17623e6970a168d3.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxldm7rggwf1x"
-path="res://.godot/imported/Gold Shovel-1.png.png-3edad385444f0fa1cecd289c0e742ef4.ctex"
+uid="uid://dx0wcue31rkuj"
+path="res://.godot/imported/Diamond Axe-1.png.png-f43aa3690aa82854ba04ecb98394a98b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Gold Shovel-1.png.png"
-dest_files=["res://.godot/imported/Gold Shovel-1.png.png-3edad385444f0fa1cecd289c0e742ef4.ctex"]
+source_file="res://Assets/Weapons/Diamond Axe-1.png.png"
+dest_files=["res://.godot/imported/Diamond Axe-1.png.png-f43aa3690aa82854ba04ecb98394a98b.ctex"]
 
 [params]
 

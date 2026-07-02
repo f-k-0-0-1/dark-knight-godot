@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxvuvv1jm4dq2"
-path="res://.godot/imported/Wooden Axe-1.png.png-56983e33ab9cdd8c07a0e1276b1d2d17.ctex"
+uid="uid://cwfe7nwuafejn"
+path="res://.godot/imported/Stone shovel-1.png.png-dc7cc19e8b60dbac881ccfb2b4e1ffc5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Wooden Axe-1.png.png"
-dest_files=["res://.godot/imported/Wooden Axe-1.png.png-56983e33ab9cdd8c07a0e1276b1d2d17.ctex"]
+source_file="res://Assets/Weapons/Stone shovel-1.png.png"
+dest_files=["res://.godot/imported/Stone shovel-1.png.png-dc7cc19e8b60dbac881ccfb2b4e1ffc5.ctex"]
 
 [params]
 
