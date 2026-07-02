@@ -3,22 +3,58 @@ extends Control
 @onready var item_sprite: TextureRect = $ItemSprite
 @onready var item_name_label: Label = $ItemInfo/ItemName
 @onready var item_price_label: Label = $ItemPrice/Text
-@onready var buy_button: TextureButton = $BuyButton
+@onready var buy_button: Button = $BuyButton
 
 var current_item_data: ItemData
 
 func setup(item_data: ItemData):
 	current_item_data = item_data
-	
-	# === THE ULTIMATE SAFE FIX ===
-	# Use call_deferred to assign the texture on the next frame safely.
+
 	call_deferred("_assign_texture", item_data)
 
 func _assign_texture(item_data: ItemData):
-	# This function runs safely 1 frame later, when the node is 100% alive.
+
 	item_sprite.texture = item_data.sprite_texture
 	item_name_label.text = item_data.item_name
 	item_price_label.text = str(item_data.price) + " coins"
+	buy_button.pressed.connect(_on_buy_pressed)
 
-func _on_buy_button_pressed() -> void:
-	print("Attempting to buy: ", current_item_data.item_name)
+	_update_button_state()
+	
+func _update_button_state():
+	if current_item_data.item_name in Globals.owned_items:
+		buy_button.text = "EQUIP"
+		buy_button.disabled = false
+	else:
+		buy_button.text = "BUY (" + str(current_item_data.price) + ")"
+		buy_button.disabled = false
+
+func _on_buy_pressed():
+	var item_name = current_item_data.item_name
+	var price = current_item_data.price
+	
+	# CASE 1: Player already owns the item -> Equip it
+	if item_name in Globals.owned_items:
+		Globals.equipped_item_name = item_name
+		Globals.weapon_equipped.emit(item_name)
+		print("Equipped: ", item_name)
+		return
+	
+	# CASE 2: Player doesn't own it -> Check wallet
+	if Globals.player_coins >= price:
+
+		Globals.add_coins(-price)
+
+		Globals.owned_items.append(item_name)
+
+		Globals.equipped_item_name = item_name
+
+		Globals.save_inventory()
+
+		Globals.inventory_updated.emit()
+
+		Globals.weapon_equipped.emit(item_name)
+
+		print("Purchased and equipped: ", item_name)
+
+		_update_button_state()

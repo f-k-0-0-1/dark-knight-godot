@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tiejt0gt7jtu"
-path="res://.godot/imported/Netherite Axe-1.png.png-4d35fb47a89adf8eee06c5a405e8836a.ctex"
+uid="uid://dhonvvn5mjn4t"
+path="res://.godot/imported/Gold Axe-1.png.png-4f5ac5c8a62e3ab4bfb1e1efb825d195.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Netherite Axe-1.png.png"
-dest_files=["res://.godot/imported/Netherite Axe-1.png.png-4d35fb47a89adf8eee06c5a405e8836a.ctex"]
+source_file="res://Assets/Weapons/Gold Axe-1.png.png"
+dest_files=["res://.godot/imported/Gold Axe-1.png.png-4f5ac5c8a62e3ab4bfb1e1efb825d195.ctex"]
 
 [params]
 

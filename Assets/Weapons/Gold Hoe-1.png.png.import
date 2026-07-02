@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://coiu4ydwusmsx"
-path="res://.godot/imported/Stone axe-1.png.png-7400313ef86dd228fd7351fd424b61a3.ctex"
+uid="uid://dus46py8rb6nn"
+path="res://.godot/imported/Gold Hoe-1.png.png-c22eec97d20a75fc94c33ffc4b27698e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Stone axe-1.png.png"
-dest_files=["res://.godot/imported/Stone axe-1.png.png-7400313ef86dd228fd7351fd424b61a3.ctex"]
+source_file="res://Assets/Weapons/Gold Hoe-1.png.png"
+dest_files=["res://.godot/imported/Gold Hoe-1.png.png-c22eec97d20a75fc94c33ffc4b27698e.ctex"]
 
 [params]
 

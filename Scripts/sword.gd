@@ -1,33 +1,29 @@
 extends Node2D
 
-# =====================================================
-# SETTINGS
-# =====================================================
-
 @export var damage: int = 1
 @export var swing_duration: float = 0.18
 @export var swing_angle: float = 120.0
 @export var base_angle: float = -45.0
 
-# =====================================================
-# NODES
-# =====================================================
-
 @onready var pivot: Node2D = $Pivot
 @onready var hitbox: Area2D = $Pivot/Hitbox
 @onready var swing_sound: AudioStreamPlayer = $SwingSound
+@onready var sprite: Sprite2D = $Pivot/Sprite
 
-# =====================================================
-# STATE
-# =====================================================
+
+const WEAPON_TEXTURES := {
+	"Wood Sword": preload("res://Assets/Weapons/Wooden sword-1.png.png"),
+	"Stone Sword": preload("res://Assets/Weapons/Stone sword-1.png.png"),
+	"Iron Sword": preload("res://Assets/Weapons/Iron Sword-1.png.png"),
+	"Gold Sword": preload("res://Assets/Weapons/Gold Sword-1.png.png"),
+	"Diamond Sword": preload("res://Assets/Weapons/Diamond Sword-1.png (1).png"),
+	"Netherite Sword": preload("res://Assets/Weapons/Netherite Sword-1.png.png")
+}
 
 var is_swinging := false
 var enemy_hit := false
 var facing_right := true
 
-# =====================================================
-# READY
-# =====================================================
 
 func _ready():
 
@@ -38,9 +34,13 @@ func _ready():
 
 	hitbox.body_entered.connect(_on_hitbox_body_entered)
 
-# =====================================================
-# SWING
-# =====================================================
+func equip_weapon(weapon_name: String):
+
+	if WEAPON_TEXTURES.has(weapon_name):
+		sprite.texture = WEAPON_TEXTURES[weapon_name]
+		print("Equipped:", weapon_name)
+	else:
+		push_warning("Weapon not found: " + weapon_name)
 
 func swing(is_facing_right: bool):
 
@@ -92,9 +92,6 @@ func swing(is_facing_right: bool):
 
 	is_swinging = false
 
-# =====================================================
-# HITBOX
-# =====================================================
 
 func _on_hitbox_body_entered(body: Node2D):
 

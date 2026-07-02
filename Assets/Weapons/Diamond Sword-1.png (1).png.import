@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4bbmjc6rgpug"
-path="res://.godot/imported/Wooden Pickaxe-1.png.png-39caa50e6d0fdd647012cd25e6f9d20a.ctex"
+uid="uid://bnrcxwa2637qb"
+path="res://.godot/imported/Diamond Sword-1.png (1).png-b80ef7b48b27e8ad039ece7e31ecef8e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Wooden Pickaxe-1.png.png"
-dest_files=["res://.godot/imported/Wooden Pickaxe-1.png.png-39caa50e6d0fdd647012cd25e6f9d20a.ctex"]
+source_file="res://Assets/Weapons/Diamond Sword-1.png (1).png"
+dest_files=["res://.godot/imported/Diamond Sword-1.png (1).png-b80ef7b48b27e8ad039ece7e31ecef8e.ctex"]
 
 [params]
 

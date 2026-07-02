@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdrlrb6qpappf"
-path="res://.godot/imported/Gold Pickaxe-1.png.png-4c01efb81b558304b372178fe974a7f1.ctex"
+uid="uid://hcx6ujprsbu1"
+path="res://.godot/imported/Stone Pickaxe-1.png.png-1332f8b2169b94e1bbe10bd36c665a40.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Gold Pickaxe-1.png.png"
-dest_files=["res://.godot/imported/Gold Pickaxe-1.png.png-4c01efb81b558304b372178fe974a7f1.ctex"]
+source_file="res://Assets/Weapons/Stone Pickaxe-1.png.png"
+dest_files=["res://.godot/imported/Stone Pickaxe-1.png.png-1332f8b2169b94e1bbe10bd36c665a40.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b2jgf2n1c3832"
-path="res://.godot/imported/Stone hoe-1.png.png-eb08c9523044d0ed80a53897e0827d15.ctex"
+uid="uid://dj70rrm2jwm0s"
+path="res://.godot/imported/Diamond Shovel-1.png (1).png-25b49da1affc5189d914d6f41e017f69.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Stone hoe-1.png.png"
-dest_files=["res://.godot/imported/Stone hoe-1.png.png-eb08c9523044d0ed80a53897e0827d15.ctex"]
+source_file="res://Assets/Weapons/Diamond Shovel-1.png (1).png"
+dest_files=["res://.godot/imported/Diamond Shovel-1.png (1).png-25b49da1affc5189d914d6f41e017f69.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cp5xwff1or10i"
-path="res://.godot/imported/Netherite Pickaxe-1.png.png-0f7f3f42f37d2ea85e7f8f5654884514.ctex"
+path="res://.godot/imported/Netherite Pickaxe-1.png.png-6b86a82c4c84481408b59080d2525d0c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Netherite Pickaxe-1.png.png"
-dest_files=["res://.godot/imported/Netherite Pickaxe-1.png.png-0f7f3f42f37d2ea85e7f8f5654884514.ctex"]
+source_file="res://Assets/Weapons/Netherite Pickaxe-1.png.png"
+dest_files=["res://.godot/imported/Netherite Pickaxe-1.png.png-6b86a82c4c84481408b59080d2525d0c.ctex"]
 
 [params]
 

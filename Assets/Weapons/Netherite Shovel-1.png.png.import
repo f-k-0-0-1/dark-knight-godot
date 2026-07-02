@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cry7gq3kl1gk1"
-path="res://.godot/imported/Iron Shovel-1.png (1).png-b943112e12429140ca019b63777c488a.ctex"
+uid="uid://vcrwfspkp0bp"
+path="res://.godot/imported/Netherite Shovel-1.png.png-7d5a0f11cc6d96730ffde5844d05bf82.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Iron Shovel-1.png (1).png"
-dest_files=["res://.godot/imported/Iron Shovel-1.png (1).png-b943112e12429140ca019b63777c488a.ctex"]
+source_file="res://Assets/Weapons/Netherite Shovel-1.png.png"
+dest_files=["res://.godot/imported/Netherite Shovel-1.png.png-7d5a0f11cc6d96730ffde5844d05bf82.ctex"]
 
 [params]
 

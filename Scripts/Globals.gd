@@ -7,6 +7,12 @@ var TELE_DIS: float;
 var PLAYER_TRANS_START: Vector2;
 var commandsInfo: String;
 
+# === PLAYER INVENTORY ===
+var owned_items: Array = []          # Stores the names of bought items (e.g. "Iron Sword")
+var equipped_item_name: String = ""          # The name of the currently equipped weapon
+signal inventory_updated                     # Signal to refresh UI if needed
+signal weapon_equipped(new_weapon_name: String) # Signal to tell the Player to swap swords
+
 var player_coins: int = 0
 signal coins_updated(new_total: int)
 
@@ -15,6 +21,7 @@ signal level_coins_updated(new_total: int)
 
 func _ready() -> void:
 	load_coins()
+	load_inventory()
 	MAX_ARG_SIZE = 2;
 	MIN_ARG_SIZE = 2;
 	TELE_DIS = 1200.00;
@@ -64,3 +71,38 @@ func load_coins():
 		player_coins = config.get_value("player_data", "coins", 0)
 	else:
 		player_coins = 0
+	coins_updated.emit(player_coins)
+	
+func add_coins(amount: int):
+	player_coins += amount
+	coins_updated.emit(player_coins)
+	save_coins()
+
+func save_inventory():
+	var config = ConfigFile.new()
+	var file_path = "user://inventory_data.ini"
+	
+	config.load(file_path)
+	
+	# Save owned items as a comma-separated string (Godot can't save Arrays directly)
+	var items_string = ";".join(owned_items)
+	config.set_value("inventory", "owned_items", items_string)
+	config.set_value("inventory", "equipped", equipped_item_name)
+	
+	config.save(file_path)
+	print("Inventory saved.")
+
+func load_inventory():
+	var config = ConfigFile.new()
+	var file_path = "user://inventory_data.ini"
+	
+	if config.load(file_path) == OK:
+		# Load and split the string back into an Array
+		var items_string = config.get_value("inventory", "owned_items", "")
+		if items_string != "":
+			owned_items = items_string.split(";")
+		else:
+			owned_items = []
+		
+		equipped_item_name = config.get_value("inventory", "equipped", "")
+		print("Inventory loaded.")

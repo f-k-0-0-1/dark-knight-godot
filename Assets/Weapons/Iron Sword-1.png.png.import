@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dus46py8rb6nn"
-path="res://.godot/imported/Gold Hoe-1.png.png-4d8740981c90208e86cd535616f214c8.ctex"
+uid="uid://be0dyf51vs62d"
+path="res://.godot/imported/Iron Sword-1.png.png-b7c211c5c7d3f2731f42ec507854be7d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Gold Hoe-1.png.png"
-dest_files=["res://.godot/imported/Gold Hoe-1.png.png-4d8740981c90208e86cd535616f214c8.ctex"]
+source_file="res://Assets/Weapons/Iron Sword-1.png.png"
+dest_files=["res://.godot/imported/Iron Sword-1.png.png-b7c211c5c7d3f2731f42ec507854be7d.ctex"]
 
 [params]
 

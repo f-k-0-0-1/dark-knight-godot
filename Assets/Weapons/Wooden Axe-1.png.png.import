@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dx0wcue31rkuj"
-path="res://.godot/imported/Diamond Axe-1.png.png-de9713fcdbcea4aee143bf24f8f98899.ctex"
+uid="uid://cxvuvv1jm4dq2"
+path="res://.godot/imported/Wooden Axe-1.png.png-91b2a617cf8fa430d7a5eb1bd2161100.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Diamond Axe-1.png.png"
-dest_files=["res://.godot/imported/Diamond Axe-1.png.png-de9713fcdbcea4aee143bf24f8f98899.ctex"]
+source_file="res://Assets/Weapons/Wooden Axe-1.png.png"
+dest_files=["res://.godot/imported/Wooden Axe-1.png.png-91b2a617cf8fa430d7a5eb1bd2161100.ctex"]
 
 [params]
 
