@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnrcxwa2637qb"
-path="res://.godot/imported/Diamond Sword-1.png (1).png-8569492693ef64596e75ab76667bf7c8.ctex"
+uid="uid://cxk17mg6pimd2"
+path="res://.godot/imported/Diamond Hoe-1.png.png-365b88d73331a1bb685e5285f0805a2a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png"
-dest_files=["res://.godot/imported/Diamond Sword-1.png (1).png-8569492693ef64596e75ab76667bf7c8.ctex"]
+source_file="res://Assets/Weapons/Diamond Hoe-1.png.png"
+dest_files=["res://.godot/imported/Diamond Hoe-1.png.png-365b88d73331a1bb685e5285f0805a2a.ctex"]
 
 [params]
 

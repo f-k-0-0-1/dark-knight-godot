@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dghglyuiw2w6w"
-path="res://.godot/imported/Iron Hoe-1.png.png-f8ad7ca0441235cf0d509de642a77251.ctex"
+uid="uid://dxldm7rggwf1x"
+path="res://.godot/imported/Gold Shovel-1.png.png-60ed22fba165240f518e492d4f2ab014.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Iron Hoe-1.png.png"
-dest_files=["res://.godot/imported/Iron Hoe-1.png.png-f8ad7ca0441235cf0d509de642a77251.ctex"]
+source_file="res://Assets/Weapons/Gold Shovel-1.png.png"
+dest_files=["res://.godot/imported/Gold Shovel-1.png.png-60ed22fba165240f518e492d4f2ab014.ctex"]
 
 [params]
 

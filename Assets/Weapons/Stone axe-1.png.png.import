@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba2f8kbj3c68y"
-path="res://.godot/imported/Iron Axe-1.png.png-a7694de0fabb9d29aaa741404142dcea.ctex"
+uid="uid://coiu4ydwusmsx"
+path="res://.godot/imported/Stone axe-1.png.png-7924954ebb05b108794da48c2a3b8786.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Mincraft Weapon Pack {1}/Iron Axe-1.png.png"
-dest_files=["res://.godot/imported/Iron Axe-1.png.png-a7694de0fabb9d29aaa741404142dcea.ctex"]
+source_file="res://Assets/Weapons/Stone axe-1.png.png"
+dest_files=["res://.godot/imported/Stone axe-1.png.png-7924954ebb05b108794da48c2a3b8786.ctex"]
 
 [params]
 

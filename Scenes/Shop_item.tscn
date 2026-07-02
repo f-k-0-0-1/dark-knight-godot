@@ -1,13 +1,9 @@
 [gd_scene format=3 uid="uid://dlvxtmt85fs8r"]
 
 [ext_resource type="Script" uid="uid://qqkgomgpywey" path="res://Scripts/shop_item.gd" id="1_7wnaf"]
-[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png" id="2_i6hie"]
+[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Weapons/Diamond Sword-1.png (1).png" id="2_i6hie"]
 [ext_resource type="Texture2D" uid="uid://cue1xhxougauy" path="res://Assets/Store/shop_label.png" id="3_pnudm"]
 [ext_resource type="Texture2D" uid="uid://bjv2uugxqpx2f" path="res://Assets/coin_Sheet.png" id="4_u8l38"]
-[ext_resource type="Texture2D" uid="uid://d2sxwd2d7x073" path="res://Assets/Store/shop_item_buy.png" id="5_5mgw6"]
-[ext_resource type="Texture2D" uid="uid://c0eat3nt6ewoq" path="res://Assets/Store/shop_item_buy_clicked.png" id="6_c0tgv"]
-[ext_resource type="Texture2D" uid="uid://cnip37qry3cm8" path="res://Assets/Store/shop_item_buy_hover.png" id="7_yrsdw"]
-[ext_resource type="Texture2D" uid="uid://c0yan0trpg1hq" path="res://Assets/Store/shop_item_buy_disabled.png" id="8_tpudo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3ro81"]
 atlas = ExtResource("4_u8l38")
@@ -180,18 +176,11 @@ position = Vector2(-9.843376, 7.083346)
 sprite_frames = SubResource("SpriteFrames_hsv0u")
 autoplay = "default"
 
-[node name="BuyButton" type="TextureButton" parent="." unique_id=1573913959]
+[node name="BuyButton" type="Button" parent="." unique_id=1944546912]
 layout_mode = 1
 offset_left = 28.0
 offset_top = 154.0
 offset_right = 154.0
 offset_bottom = 191.0
-texture_normal = ExtResource("5_5mgw6")
-texture_pressed = ExtResource("6_c0tgv")
-texture_hover = ExtResource("7_yrsdw")
-texture_disabled = ExtResource("8_tpudo")
-texture_focused = ExtResource("5_5mgw6")
-ignore_texture_size = true
-stretch_mode = 0
 
 [connection signal="pressed" from="BuyButton" to="." method="_on_buy_button_pressed"]

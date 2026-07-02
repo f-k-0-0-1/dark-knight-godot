@@ -65,14 +65,24 @@ var cheat_command := false
 func _ready():
 	Globals.level_coins_updated.connect(_update_coin_ui)
 	_update_coin_ui(Globals.level_coins)
-	fireball_scene = SceneManager.scenes.get("fireball_scene")
-	health_changed.emit(current_health, max_health)
-	if zoom_button:
-		zoom_button.pressed.connect(_on_zoom_button_pressed)
-		# Set initial text
-		zoom_button.text = "2.0x"
 	Globals.reset_level_coins()
 	
+	fireball_scene = SceneManager.scenes.get("fireball_scene")
+	health_changed.emit(current_health, max_health)
+	
+	if zoom_button:
+		zoom_button.pressed.connect(_on_zoom_button_pressed)
+		zoom_button.text = "2.0x"
+		
+	Globals.weapon_equipped.connect(_on_weapon_equipped)
+	if Globals.equipped_item_name != "":
+		_on_weapon_equipped(Globals.equipped_item_name)
+
+
+func _on_weapon_equipped(weapon_name: String):
+	sword.equip_weapon(weapon_name)
+
+
 func _update_coin_ui(new_total: int):
 	if coin_counter_label:
 		coin_counter_label.text = str(new_total)

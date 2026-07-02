@@ -12,14 +12,14 @@
 [ext_resource type="Resource" uid="uid://dgsy6kvvutmpf" path="res://ShopItems/Netherite_Sword.tres" id="6_y1oyf"]
 [ext_resource type="Texture2D" uid="uid://1mum8rc4erfj" path="res://Assets/Store/top_menu/top_menu_btn_2_hover.png" id="7_ccd4q"]
 [ext_resource type="Resource" uid="uid://bmjpwo580pevb" path="res://ShopItems/Stone_Sword.tres" id="7_p51c2"]
-[ext_resource type="Texture2D" uid="uid://dx0wcue31rkuj" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Axe-1.png.png" id="8_d5t61"]
+[ext_resource type="Texture2D" uid="uid://dx0wcue31rkuj" path="res://Assets/Weapons/Diamond Axe-1.png.png" id="8_d5t61"]
 [ext_resource type="Texture2D" uid="uid://bs241fi0oficg" path="res://Assets/Store/top_menu/top_menu_btn_3_normal.png" id="8_dael7"]
 [ext_resource type="Resource" uid="uid://b5gf5vgh3h6rt" path="res://ShopItems/Wooden_Sword.tres" id="8_dcc43"]
 [ext_resource type="Texture2D" uid="uid://b337ingog55ab" path="res://Assets/Store/top_menu/top_menu_btn_3_clicked.png" id="9_gufdo"]
-[ext_resource type="Texture2D" uid="uid://cxk17mg6pimd2" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Hoe-1.png.png" id="9_y7ov5"]
-[ext_resource type="Texture2D" uid="uid://b7vyqk1sgvuyx" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Pickaxe-1.png.png" id="10_6tx2d"]
+[ext_resource type="Texture2D" uid="uid://cxk17mg6pimd2" path="res://Assets/Weapons/Diamond Hoe-1.png.png" id="9_y7ov5"]
+[ext_resource type="Texture2D" uid="uid://b7vyqk1sgvuyx" path="res://Assets/Weapons/Diamond Pickaxe-1.png.png" id="10_6tx2d"]
 [ext_resource type="Texture2D" uid="uid://cogojmvqcasx1" path="res://Assets/Store/top_menu/top_menu_btn_3_hover.png" id="10_ox0pj"]
-[ext_resource type="Texture2D" uid="uid://dj70rrm2jwm0s" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Shovel-1.png (1).png" id="11_ciunf"]
+[ext_resource type="Texture2D" uid="uid://dj70rrm2jwm0s" path="res://Assets/Weapons/Diamond Shovel-1.png (1).png" id="11_ciunf"]
 [ext_resource type="Texture2D" uid="uid://dfnho7oag36mh" path="res://Assets/Store/top_menu/top_menu_btn_4_normal.png" id="11_wvogg"]
 [ext_resource type="Texture2D" uid="uid://k3xqqeygvu3i" path="res://Assets/Store/top_menu/top_menu_btn_4_clicked.png" id="12_estnu"]
 [ext_resource type="Texture2D" uid="uid://85nawrhj1tty" path="res://Assets/Store/top_menu/top_menu_btn_4_hover.png" id="13_mk6g2"]
@@ -30,7 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://bvnr25sin0gr0" path="res://Assets/Store/store_close_button_clicked.png" id="18_tvfaq"]
 [ext_resource type="Texture2D" uid="uid://ca4mwfvx47ln5" path="res://Assets/Store/store_close_button_hover.png" id="19_d5t61"]
 [ext_resource type="Texture2D" uid="uid://bjv2uugxqpx2f" path="res://Assets/coin_Sheet.png" id="23_3ro81"]
-[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Mincraft Weapon Pack {1}/Diamond Sword-1.png (1).png" id="23_tvfaq"]
+[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Weapons/Diamond Sword-1.png (1).png" id="23_tvfaq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dcoym"]
 shader = ExtResource("1_k8g64")
@@ -370,7 +370,7 @@ vertical_scroll_mode = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-columns = 4
+columns = 6
 
 [node name="Start" type="VSeparator" parent="UI/Seperator/Bottom/HBox" unique_id=1541523493]
 custom_minimum_size = Vector2(20, 0)
@@ -394,7 +394,8 @@ offset_left = -0.024047852
 offset_top = -5.3120017
 offset_right = -89.43213
 offset_bottom = -34.24
-grow_horizontal = 0
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(2.5, 2.5)
 theme_override_styles/panel = SubResource("StyleBoxFlat_3ro81")
 
@@ -411,7 +412,7 @@ layout_direction = 3
 layout_mode = 0
 offset_left = 3.1999817
 offset_top = 1.1999997
-offset_right = 31.199982
+offset_right = 28.399933
 offset_bottom = 24.199999
 text = "00"
 horizontal_alignment = 1
