@@ -1,4 +1,4 @@
-extends Node
+extends Node;
 
 # Globlas Vars
 var MAX_ARG_SIZE: int;
