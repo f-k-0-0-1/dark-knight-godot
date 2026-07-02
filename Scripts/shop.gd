@@ -45,7 +45,7 @@ func load_category(category_filter: String):
 	for item_data in all_items:
 		if item_data.category == category_filter:
 			
-			# Sami ~ Init both bg and itme 
+			# Sami ~ Init both bg and item
 			var bg_init: Node = bg_scene.instantiate();
 			var item_init: Node = item_scene.instantiate();
 			

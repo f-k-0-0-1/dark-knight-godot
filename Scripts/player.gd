@@ -6,8 +6,8 @@ signal health_changed(new_health: int, max_health: int)
 @onready var zoom_button: Button = $HUD/ZoomButton
 
 @onready var coin_counter_label: Label = $HUD/CoinCounter
-@onready var sword: Node2D = $SwordHolder/Sword
-@onready var sword_holder = $SwordHolder
+@onready var weapon: Node2D;
+@onready var weapon_holder = $WeaponHolder;
 
 var dash_locked := false
 @export var speed: float = 650.0
@@ -80,7 +80,7 @@ func _ready():
 
 
 func _on_weapon_equipped(weapon_name: String):
-	sword.equip_weapon(weapon_name)
+	weapon.equip_weapon(weapon_name)
 
 
 func _update_coin_ui(new_total: int):
@@ -97,8 +97,8 @@ func _input(event):
 		return
 		
 	if event.is_action_pressed("sword_attack"):
-		if sword and sword.has_method("swing"):
-			sword.swing(facing_right)
+		if weapon and weapon.has_method("swing"):
+			weapon.swing(facing_right);
 			
 	if event.is_action_pressed("cheat_command"):
 		cheat_command = !cheat_command 
@@ -158,9 +158,9 @@ func handle_movement_input():
 		sprite.flip_h = !facing_right
 
 	if facing_right:
-		sword_holder.position = Vector2(20, -5)
+		weapon_holder.position = Vector2(20, -5);
 	else:
-		sword_holder.position = Vector2(-20, -5)
+		weapon_holder.position = Vector2(-20, -5);
 		
 	var move_speed := speed
 	

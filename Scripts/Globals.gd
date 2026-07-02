@@ -10,10 +10,9 @@ var commandsInfo: String;
 # === PLAYER INVENTORY ===
 var owned_items: Array = []          # Stores the names of bought items (e.g. "Iron Sword")
 var equipped_item_name: String = ""          # The name of the currently equipped weapon
-
 @warning_ignore("unused_signal")
-signal inventory_updated     
-@warning_ignore("unused_signal")                # Signal to refresh UI if needed
+signal inventory_updated                     # Signal to refresh UI if needed
+
 signal weapon_equipped(new_weapon_name: String) # Signal to tell the Player to swap swords
 
 var player_coins: int = 0

@@ -5,8 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://cdl4lfj3cnovu" path="res://Assets/Weapons/Wooden sword-1.png.png" id="2_d6wag"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_d6wag"]
-radius = 32.32489
-height = 921.2589
+radius = 143.44164
+height = 303.04575
 
 [node name="Sword" type="Node2D" unique_id=1465021790]
 scale = Vector2(0.35, 0.35)
