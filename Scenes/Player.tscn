@@ -47,7 +47,6 @@
 [ext_resource type="Texture2D" uid="uid://b7x18o17a5bsm" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00002.png" id="71_tih4q"]
 [ext_resource type="Texture2D" uid="uid://boeyl63vds0ll" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00003.png" id="72_2yy7l"]
 [ext_resource type="Texture2D" uid="uid://big3k20ahhovl" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00004.png" id="73_8gwyq"]
-[ext_resource type="PackedScene" uid="uid://cgg1gy8u8qthd" path="res://Scenes/sword.tscn" id="73_l3y8b"]
 [ext_resource type="Texture2D" uid="uid://o21rda5gyxfb" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00005.png" id="74_nxdfc"]
 [ext_resource type="Texture2D" uid="uid://733hf886jnwu" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00006.png" id="75_s57pu"]
 [ext_resource type="Texture2D" uid="uid://dvd58e4xvsui6" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00007.png" id="76_if58w"]
@@ -519,11 +518,7 @@ script = ExtResource("69_6f3s4")
 [node name="FirePoint" type="Marker2D" parent="." unique_id=1372658391]
 position = Vector2(0, -38)
 
-[node name="SwordHolder" type="Marker2D" parent="." unique_id=197118218]
-
-[node name="Sword" parent="SwordHolder" unique_id=1465021790 instance=ExtResource("73_l3y8b")]
-rotation = 2.0943952
-scale = Vector2(0.35000002, 0.35000002)
+[node name="WeaponHolder" type="Marker2D" parent="." unique_id=197118218]
 
 [node name="TutorialPopupLayer" parent="." unique_id=2077236878 instance=ExtResource("68_au5ve")]
 

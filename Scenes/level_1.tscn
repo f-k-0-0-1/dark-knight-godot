@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cpsebg2lxc8ax" path="res://Scenes/coin.tscn" id="9_uy8f0"]
 [ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="9_wrinw"]
 [ext_resource type="PackedScene" uid="uid://dbcbj47qgh1ry" path="res://Scenes/collectable_lives.tscn" id="10_chwpn"]
+[ext_resource type="Texture2D" uid="uid://cupx643fuqyad" path="res://Assets/Inventory_face.png" id="13_6r07y"]
 
 [sub_resource type="Environment" id="Environment_chwpn"]
 background_mode = 3
@@ -127,3 +128,20 @@ visible = false
 
 [node name="SceneManager" type="Node" parent="." unique_id=665663732]
 script = ExtResource("6_q2r7y")
+
+[node name="Inventory" type="CanvasLayer" parent="." unique_id=1422039180]
+
+[node name="TextureRect" type="TextureRect" parent="Inventory" unique_id=800024110]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -257.0
+offset_top = -142.0
+offset_right = 246.2627
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("13_6r07y")
+expand_mode = 1
