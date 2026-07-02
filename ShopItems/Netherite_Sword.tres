@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dgsy6kvvutmpf"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_we5rt"]
+[ext_resource type="Texture2D" uid="uid://dl2yt77nonukx" path="res://Assets/Mincraft Weapon Pack {1}/Netherite Sword-1.png.png" id="2_paus4"]
+
+[resource]
+script = ExtResource("1_we5rt")
+item_name = "Neterite Sword"
+category = "sword"
+price = 500
+sprite_texture = ExtResource("2_paus4")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"

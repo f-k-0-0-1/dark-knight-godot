@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://cgg1gy8u8qthd"]
+
+[ext_resource type="Script" uid="uid://o6aoiqm42bgh" path="res://Scripts/sword.gd" id="1_goa0h"]
+[ext_resource type="AudioStream" uid="uid://8b5f2wytcw1o" path="res://Audio/sfx/sword_swing_sfx.mp3" id="2_6wdhb"]
+[ext_resource type="Texture2D" uid="uid://cdl4lfj3cnovu" path="res://Assets/Mincraft Weapon Pack {1}/Wooden sword-1.png.png" id="2_d6wag"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_d6wag"]
+radius = 32.32489
+height = 921.2589
+
+[node name="Sword" type="Node2D" unique_id=1465021790]
+scale = Vector2(0.35, 0.35)
+script = ExtResource("1_goa0h")
+
+[node name="Pivot" type="Node2D" parent="." unique_id=1674424873]
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="Sprite" type="Sprite2D" parent="Pivot" unique_id=975344716]
+position = Vector2(-231.42859, -231.4286)
+texture = ExtResource("2_d6wag")
+
+[node name="Hitbox" type="Area2D" parent="Pivot" unique_id=1999610485]
+scale = Vector2(1.0000001, 1.0000001)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pivot/Hitbox" unique_id=486445993]
+position = Vector2(-245.71425, -245.71425)
+rotation = -0.7853982
+shape = SubResource("CapsuleShape2D_d6wag")
+
+[node name="SwingSound" type="AudioStreamPlayer" parent="." unique_id=936977188]
+stream = ExtResource("2_6wdhb")
+volume_db = 10.0
