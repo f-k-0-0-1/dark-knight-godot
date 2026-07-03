@@ -1,12 +1,16 @@
 [gd_scene format=3 uid="uid://bbkkkhscmydh7"]
 
 [ext_resource type="Script" uid="uid://b3mhmd8p2x0up" path="res://Scripts/credits.gd" id="1_ccxjc"]
-[ext_resource type="Texture2D" uid="uid://ou02f8dc0nfg" path="res://Assets/Backgrounds/credits.png" id="2_gryuy"]
+[ext_resource type="Texture2D" uid="uid://bpmqhl0sif2m" path="res://Assets/Backgrounds/credit_updated.png" id="2_gryuy"]
+[ext_resource type="StyleBox" uid="uid://cf2yhx7jv3238" path="res://Shaders/credits_back_button_textures.tres" id="3_ccovl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ccovl"]
 texture = ExtResource("2_gryuy")
 
-[node name="MainMenu" type="Control" unique_id=865419032]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gryuy"]
+blend_mode = 1
+
+[node name="Credits" type="Control" unique_id=865419032]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,69 +30,15 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_ccovl")
 
 [node name="back" type="Button" parent="Panel" unique_id=1175881537]
+material = SubResource("CanvasItemMaterial_gryuy")
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.43
-anchor_top = 0.822
-anchor_right = 0.568
-anchor_bottom = 1.0
-offset_left = 8.639984
-offset_top = -4.656006
-offset_right = 6.6640015
-offset_bottom = -71.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = 15.0
+offset_top = 14.0
+offset_right = 95.0
+offset_bottom = 51.0
 theme_override_colors/font_color = Color(0, 0.7411765, 0.28235295, 1)
 theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = ExtResource("3_ccovl")
+theme_override_styles/pressed = ExtResource("3_ccovl")
+theme_override_styles/hover = ExtResource("3_ccovl")
 text = "BACK"
-
-[node name="bottomLeftText" type="RichTextLabel" parent="Panel" unique_id=565433621]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.42800003
-anchor_bottom = 1.0
-offset_top = -3.0
-offset_right = -0.056030273
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 6
-size_flags_stretch_ratio = 0.29
-text = "    CONTROLS:
-    LEFT: A
-    RIGHT: D
-    JUMP: W, SPACEBAR
-    ABILITY; F, ENTER
-    GOD MODE: G
-    SPRINT: SHIFT
-    MENU: ESC
- "
-fit_content = true
-vertical_alignment = 2
-
-[node name="centerText" type="RichTextLabel" parent="Panel" unique_id=67175413]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.26700002
-anchor_right = 1.0
-anchor_bottom = 0.749
-offset_top = -9.016006
-offset_bottom = 15.64798
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.29
-text = "🎬 Roll the tape, folks, it's credit time!
-THE MASTERMIND
-Faiq Hasan Khan – (Everything!)
-
-BIG THANKS TO
-☕ Caffeine
-
-🤝 Moral Support
-🎮 And YOU, the Player!
-Game Over? Nah, just Level Up! 🚀"
-fit_content = true
-horizontal_alignment = 1
-vertical_alignment = 1
