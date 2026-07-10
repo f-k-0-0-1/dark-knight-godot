@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dgsy6kvvutmpf"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_we5rt"]
+[ext_resource type="Texture2D" uid="uid://tiejt0gt7jtu" path="res://Assets/Weapons/Netherite Axe-1.png.png" id="2_4j84f"]
+
+[resource]
+script = ExtResource("1_we5rt")
+item_name = "Netherite Axe"
+category = "axe"
+price = 500
+damage = 80
+sprite_texture = ExtResource("2_4j84f")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"

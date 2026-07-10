@@ -1,12 +1,13 @@
 [gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cdr04l1p0hhxn"]
 
 [ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_fjw8p"]
-[ext_resource type="Texture2D" uid="uid://bnrcxwa2637qb" path="res://Assets/Weapons/Diamond Sword-1.png (1).png" id="2_qm2o7"]
+[ext_resource type="Texture2D" uid="uid://dj70rrm2jwm0s" path="res://Assets/Weapons/Diamond Shovel-1.png (1).png" id="2_mdpdq"]
 
 [resource]
 script = ExtResource("1_fjw8p")
-item_name = "Diamond Sword"
-category = "sword"
+item_name = "Diamond Shovel"
+category = "shovel"
 price = 400
-sprite_texture = ExtResource("2_qm2o7")
+damage = 40
+sprite_texture = ExtResource("2_mdpdq")
 metadata/_custom_type_script = "uid://be6iw76p3dy2k"

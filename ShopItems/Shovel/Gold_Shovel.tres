@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cvlovuxrwatpc"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_0w0oo"]
+[ext_resource type="Texture2D" uid="uid://dxldm7rggwf1x" path="res://Assets/Weapons/Gold Shovel-1.png.png" id="2_1aq3f"]
+
+[resource]
+script = ExtResource("1_0w0oo")
+item_name = "Gold Shovel"
+category = "shovel"
+price = 200
+damage = 35
+sprite_texture = ExtResource("2_1aq3f")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"

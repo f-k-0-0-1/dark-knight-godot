@@ -1,12 +1,13 @@
 [gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dgsy6kvvutmpf"]
 
 [ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_we5rt"]
-[ext_resource type="Texture2D" uid="uid://dl2yt77nonukx" path="res://Assets/Weapons/Netherite Sword-1.png.png" id="2_paus4"]
+[ext_resource type="Texture2D" uid="uid://vcrwfspkp0bp" path="res://Assets/Weapons/Netherite Shovel-1.png.png" id="2_fvdvc"]
 
 [resource]
 script = ExtResource("1_we5rt")
-item_name = "Netherite Sword"
-category = "sword"
+item_name = "Netherite Shovel"
+category = "shovel"
 price = 500
-sprite_texture = ExtResource("2_paus4")
+damage = 80
+sprite_texture = ExtResource("2_fvdvc")
 metadata/_custom_type_script = "uid://be6iw76p3dy2k"

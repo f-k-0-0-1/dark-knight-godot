@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dgsy6kvvutmpf"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_we5rt"]
+[ext_resource type="Texture2D" uid="uid://x65aardhgid4" path="res://Assets/Weapons/Netherite Hoe-1.png.png" id="2_0i0jq"]
+
+[resource]
+script = ExtResource("1_we5rt")
+item_name = "Netherite Hoe"
+category = "hoe"
+price = 500
+damage = 80
+sprite_texture = ExtResource("2_0i0jq")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"

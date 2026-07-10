@@ -76,11 +76,15 @@ func _ready():
 		
 	Globals.weapon_equipped.connect(_on_weapon_equipped)
 	if Globals.equipped_item_name != "":
-		_on_weapon_equipped(Globals.equipped_item_name)
+		var saved_item = Globals.get_item_data_by_name(Globals.equipped_item_name)
+		if saved_item != null:
+			_on_weapon_equipped(saved_item)
+		else:
+			print("Player: saved equipped item not found: ", Globals.equipped_item_name)
 
 
-func _on_weapon_equipped(weapon_name: String):
-	sword.equip_weapon(weapon_name)
+func _on_weapon_equipped(item_data: ItemData):
+	sword.equip_weapon(item_data)
 
 
 func _update_coin_ui(new_total: int):

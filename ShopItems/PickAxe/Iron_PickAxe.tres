@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://bjegnf4sctdov"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_2m13l"]
+[ext_resource type="Texture2D" uid="uid://0i2jbmjnth52" path="res://Assets/Weapons/Iron pickaxe-1.png.png" id="2_fjchr"]
+
+[resource]
+script = ExtResource("1_2m13l")
+item_name = "Iron  PickAxe"
+category = "pickaxe"
+price = 150
+damage = 25
+sprite_texture = ExtResource("2_fjchr")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"

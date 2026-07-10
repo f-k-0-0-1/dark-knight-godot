@@ -8,5 +8,6 @@ script = ExtResource("1_2m13l")
 item_name = "Iron Sword"
 category = "sword"
 price = 150
+damage = 25
 sprite_texture = ExtResource("2_bctvd")
 metadata/_custom_type_script = "uid://be6iw76p3dy2k"

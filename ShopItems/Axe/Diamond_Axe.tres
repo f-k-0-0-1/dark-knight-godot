@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cdr04l1p0hhxn"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_fjw8p"]
+[ext_resource type="Texture2D" uid="uid://dx0wcue31rkuj" path="res://Assets/Weapons/Diamond Axe-1.png.png" id="2_c1g8t"]
+
+[resource]
+script = ExtResource("1_fjw8p")
+item_name = "Diamond Axe"
+category = "axe"
+price = 400
+damage = 40
+sprite_texture = ExtResource("2_c1g8t")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"

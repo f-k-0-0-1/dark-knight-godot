@@ -3,18 +3,11 @@
 [ext_resource type="Script" uid="uid://cflvr6ura7p3y" path="res://Scripts/shop.gd" id="1_dcoym"]
 [ext_resource type="Texture2D" uid="uid://cabfb6xgwsr7j" path="res://Assets/Store/store_bg.png" id="1_e5ji4"]
 [ext_resource type="Shader" uid="uid://bo2yjehime3xk" path="res://Shaders/blurr.gdshader" id="1_k8g64"]
-[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="2_6tx2d"]
-[ext_resource type="Resource" uid="uid://cdr04l1p0hhxn" path="res://ShopItems/Diamond_Sword.tres" id="3_7vga4"]
-[ext_resource type="Resource" uid="uid://cvlovuxrwatpc" path="res://ShopItems/Gold_Sword.tres" id="4_7qqw5"]
 [ext_resource type="Texture2D" uid="uid://txi51ampdvnd" path="res://Assets/Store/top_menu/top_menu_btn_2_normal.png" id="5_2aaoe"]
-[ext_resource type="Resource" uid="uid://bjegnf4sctdov" path="res://ShopItems/Iron_Sword.tres" id="5_ie0fp"]
 [ext_resource type="Texture2D" uid="uid://k0vunm45rhpi" path="res://Assets/Store/top_menu/top_menu_btn_2_clicked.png" id="6_ct2yw"]
-[ext_resource type="Resource" uid="uid://dgsy6kvvutmpf" path="res://ShopItems/Netherite_Sword.tres" id="6_y1oyf"]
 [ext_resource type="Texture2D" uid="uid://1mum8rc4erfj" path="res://Assets/Store/top_menu/top_menu_btn_2_hover.png" id="7_ccd4q"]
-[ext_resource type="Resource" uid="uid://bmjpwo580pevb" path="res://ShopItems/Stone_Sword.tres" id="7_p51c2"]
 [ext_resource type="Texture2D" uid="uid://dx0wcue31rkuj" path="res://Assets/Weapons/Diamond Axe-1.png.png" id="8_d5t61"]
 [ext_resource type="Texture2D" uid="uid://bs241fi0oficg" path="res://Assets/Store/top_menu/top_menu_btn_3_normal.png" id="8_dael7"]
-[ext_resource type="Resource" uid="uid://b5gf5vgh3h6rt" path="res://ShopItems/Wooden_Sword.tres" id="8_dcc43"]
 [ext_resource type="Texture2D" uid="uid://b337ingog55ab" path="res://Assets/Store/top_menu/top_menu_btn_3_clicked.png" id="9_gufdo"]
 [ext_resource type="Texture2D" uid="uid://cxk17mg6pimd2" path="res://Assets/Weapons/Diamond Hoe-1.png.png" id="9_y7ov5"]
 [ext_resource type="Texture2D" uid="uid://b7vyqk1sgvuyx" path="res://Assets/Weapons/Diamond Pickaxe-1.png.png" id="10_6tx2d"]
@@ -136,7 +129,6 @@ animations = [{
 
 [node name="Shop" type="CanvasLayer" unique_id=425098900]
 script = ExtResource("1_dcoym")
-all_items = Array[ExtResource("2_6tx2d")]([ExtResource("3_7vga4"), ExtResource("4_7qqw5"), ExtResource("5_ie0fp"), ExtResource("6_y1oyf"), ExtResource("7_p51c2"), ExtResource("8_dcc43")])
 
 [node name="BG" type="Panel" parent="." unique_id=2109564939]
 material = SubResource("ShaderMaterial_dcoym")

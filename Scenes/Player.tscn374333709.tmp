@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://m1r7afhf8aax"]
 
 [ext_resource type="Script" uid="uid://bcpi7jhd7dwh3" path="res://Scripts/player.gd" id="1_6f3s4"]
-[ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="2_l3y8b"]
 [ext_resource type="Texture2D" uid="uid://b5pgosn7hwav5" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00000.png" id="17_lrj6g"]
 [ext_resource type="Texture2D" uid="uid://cqjso8te4fshr" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00001.png" id="18_ytcev"]
 [ext_resource type="Texture2D" uid="uid://dadu0xus6luha" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00002.png" id="19_kk0t0"]
@@ -382,10 +381,315 @@ corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
+[sub_resource type="GDScript" id="GDScript_6f3s4"]
+script/source = "extends Node
+class_name PlayerMovement
+
+@export var speed: float = 650.0
+@export var sprint_multiplier: float = 5.0
+@export var jump_velocity: float = -1150.0
+@export var gravity: float = 1500.0
+@export var max_jumps: int = 2
+
+var velocity := Vector2.ZERO
+var facing_right := true
+var jump_count := 0
+var is_sprinting := false
+var was_on_floor := false
+
+# References (set by Player.gd)
+var player: CharacterBody2D
+var animated_sprite: AnimatedSprite2D
+
+func _physics_process(delta: float) -> void:
+	if not player or player.is_dead:
+		return
+	
+	# Apply gravity
+	if not player.is_on_floor():
+		velocity.y += gravity * delta
+	
+	# Handle input
+	handle_movement_input()
+	
+	# Move the player
+	player.velocity = velocity
+	player.move_and_slide()
+	
+	# Handle landing reset
+	if player.is_on_floor() and not was_on_floor:
+		jump_count = 0
+	was_on_floor = player.is_on_floor()
+	
+	# Update animation based on movement
+	update_animation()
+
+func handle_movement_input() -> void:
+	var input_direction := Input.get_axis(\"move_left\", \"move_right\")
+	
+	if input_direction != 0:
+		facing_right = input_direction > 0
+		animated_sprite.flip_h = not facing_right
+	
+	is_sprinting = Input.is_action_pressed(\"ui_shift\")
+	var move_speed = speed * (sprint_multiplier if is_sprinting else 1.0)
+	
+	velocity.x = input_direction * move_speed
+	
+	# Jumping
+	if Input.is_action_just_pressed(\"jump\") and jump_count < max_jumps:
+		velocity.y = jump_velocity
+		jump_count += 1
+		# Emit signal to play jump sound
+		player.jump_performed.emit(jump_count)
+
+func update_animation() -> void:
+	if animated_sprite and not player.is_shooting:
+		if not player.is_on_floor():
+			animated_sprite.play(\"jump\")
+		elif abs(velocity.x) > 0:
+			animated_sprite.play(\"run\" if is_sprinting else \"walk\")
+		else:
+			animated_sprite.play(\"idle\")
+"
+
+[sub_resource type="GDScript" id="GDScript_l3y8b"]
+script/source = "extends Node
+class_name PlayerCombat
+
+@export var fireball_scene: PackedScene
+@export var lightning_ball_scene: PackedScene
+@export var fireball_cooldown: float = 0.5
+@export var shoot_anim_duration: float = 0.2
+@export var lightning_ability_duration: float = 3.0
+@export var lightning_ability_cooldown: float = 10.0
+
+var can_shoot := true
+var is_shooting := false
+var can_use_lightning := true
+var is_lightning_active := false
+var cooldown_remaining := 0.0
+
+# References
+var player: CharacterBody2D
+var fire_point: Marker2D
+var sword: Node2D
+var camera: Camera2D
+
+func _ready() -> void:
+	# Player reference is assigned after this component is created.
+	# Use lazy setup later if needed.
+	return
+
+func _process(delta: float) -> void:
+	if player == null:
+		return
+	
+	if cooldown_remaining > 0:
+		cooldown_remaining -= delta
+		update_cooldown_ui()
+
+func _input(event: InputEvent) -> void:
+	if player == null or player.is_dead:
+		return
+	
+	if event.is_action_pressed(\"fireball\"):
+		shoot_fireball()
+	
+	if event.is_action_pressed(\"lightning_ability\"):
+		activate_lightning_ball()
+	
+	if event.is_action_pressed(\"sword_attack\"):
+		if sword and sword.has_method(\"swing\"):
+			sword.swing(player.movement.facing_right)
+
+func shoot_fireball() -> void:
+	if player == null or not can_shoot or fireball_scene == null or is_shooting or player.movement.is_sprinting:
+		return
+	
+	var fireball = fireball_scene.instantiate()
+	var direction = Vector2.RIGHT if player.movement.facing_right else Vector2.LEFT
+	fireball.direction = direction
+	fireball.global_position = fire_point.global_position
+	get_tree().current_scene.add_child(fireball)
+	
+	# Play shoot animation
+	is_shooting = true
+	can_shoot = false
+	player.play_animation(\"dash\")
+	
+	if camera:
+		camera.trigger_shake(5.0, 0.15)
+	
+	# Cooldowns
+	await player.get_tree().create_timer(shoot_anim_duration).timeout
+	is_shooting = false
+	
+	await player.get_tree().create_timer(fireball_cooldown).timeout
+	can_shoot = true
+
+func activate_lightning_ball() -> void:
+	if player == null or not can_use_lightning or lightning_ball_scene == null:
+		return
+	
+	can_use_lightning = false
+	is_lightning_active = true
+	cooldown_remaining = lightning_ability_cooldown
+	
+	var ball = lightning_ball_scene.instantiate()
+	var offset = 50 if player.movement.facing_right else -50
+	ball.global_position = player.global_position + Vector2(offset, 0)
+	get_tree().current_scene.add_child(ball)
+	
+	# Cleanup after duration
+	await player.get_tree().create_timer(lightning_ability_duration).timeout
+	if is_instance_valid(ball):
+		ball.queue_free()
+	is_lightning_active = false
+	
+	# Cooldown
+	await player.get_tree().create_timer(lightning_ability_cooldown).timeout
+	can_use_lightning = true
+
+func update_cooldown_ui() -> void:
+	if player == null:
+		return
+
+	var cooldown_bar = player.get_node_or_null(\"HUD/AbilityCooldownBar\")
+	if cooldown_bar:
+		cooldown_bar.value = lightning_ability_cooldown - cooldown_remaining
+"
+
+[sub_resource type="GDScript" id="GDScript_ujsok"]
+script/source = "extends Node
+class_name PlayerHealth
+
+signal health_changed(new_health: int, max_health: int)
+signal player_died
+
+@export var max_health: int = 100
+@export var heal_amount: int = 25
+
+var current_health: int
+var is_dead := false
+var god_mode := false
+var bonus_heart_unlocked := false
+
+# References
+var player: CharacterBody2D
+var camera: Camera2D
+
+func _ready() -> void:
+	current_health = max_health
+
+func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
+	if god_mode or is_dead:
+		return
+	
+	current_health -= amount
+	current_health = max(current_health, 0)
+	health_changed.emit(current_health, max_health)
+	
+	if camera:
+		camera.trigger_shake(12.0, 0.3)
+	
+	# Knockback
+	if source_position != Vector2.ZERO and player != null and player.movement != null:
+		var knockback = (player.global_position - source_position).normalized() * 500.0
+		player.movement.velocity = knockback
+	
+	if current_health <= 0:
+		die()
+
+func heal(amount: int) -> void:
+	if is_dead:
+		return
+	
+	current_health += amount
+	current_health = min(current_health, max_health)
+	health_changed.emit(current_health, max_health)
+
+func add_bonus_heart() -> bool:
+	if bonus_heart_unlocked or is_dead:
+		return false
+	
+	bonus_heart_unlocked = true
+	max_health += 25
+	current_health += 25
+	health_changed.emit(current_health, max_health)
+	return true
+
+func die() -> void:
+	if is_dead:
+		return
+	
+	is_dead = true
+	player_died.emit()
+	
+	if camera:
+		camera.trigger_shake(20.0, 0.8)
+	
+	MusicManager.play_game_over()
+	if player != null:
+		player.set_process(false)
+		player.set_process_input(false)
+	
+	var tree = player != null ? player.get_tree() : get_tree()
+	await tree.create_timer(0.5).timeout
+	SceneManager.change_scene(\"retry_menu\")
+"
+
+[sub_resource type="GDScript" id="GDScript_txwsf"]
+script/source = "extends Node
+class_name PlayerUI
+
+@onready var health_bar: ProgressBar = get_parent().get_node_or_null(\"HUD/HealthBar\")
+@onready var coin_label: Label = get_parent().get_node_or_null(\"HUD/CoinCounter\")
+@onready var hearts_container: HBoxContainer = get_parent().get_node_or_null(\"HUD/HeartsContainer\")
+
+const HEALTH_PER_HEART := 25
+var heart_textures: Array[Texture2D] = [
+	preload(\"res://Assets/sprite.png\"),
+	preload(\"res://Assets/sprite_empty.png\")
+]
+
+func update_health(current: int, max: int) -> void:
+	if health_bar:
+		health_bar.value = float(current) / float(max) * 100.0
+	
+	# Update hearts
+	if hearts_container:
+		update_hearts(current, max)
+
+func update_hearts(current: int, max: int) -> void:
+	var total_hearts := int(ceil(float(max) / HEALTH_PER_HEART))
+	var filled_hearts := int(ceil(float(current) / HEALTH_PER_HEART))
+	
+	# Add or remove hearts
+	while hearts_container.get_child_count() < total_hearts:
+		var template = hearts_container.get_child(0)
+		var new_heart = template.duplicate()
+		new_heart.texture = heart_textures[1]
+		hearts_container.add_child(new_heart)
+	
+	while hearts_container.get_child_count() > total_hearts:
+		var heart = hearts_container.get_child(hearts_container.get_child_count() - 1)
+		hearts_container.remove_child(heart)
+		heart.queue_free()
+	
+	# Update textures
+	for i in range(hearts_container.get_child_count()):
+		var heart = hearts_container.get_child(i)
+		heart.texture = heart_textures[0] if i < filled_hearts else heart_textures[1]
+
+func update_coins(amount: int) -> void:
+	if coin_label:
+		coin_label.text = str(amount)
+"
+
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("1_6f3s4")
-lightning_ball_scene = ExtResource("2_l3y8b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2121547936]
 position = Vector2(0, -59)
@@ -537,3 +841,17 @@ stream = ExtResource("70_ed4yo")
 
 [node name="PlayerHurt" type="AudioStreamPlayer" parent="." unique_id=1108856263]
 stream = ExtResource("71_fsa4a")
+
+[node name="Movement" type="Node" parent="." unique_id=2020997461]
+script = SubResource("GDScript_6f3s4")
+
+[node name="Combat" type="Node" parent="." unique_id=6929966]
+script = SubResource("GDScript_l3y8b")
+
+[node name="Health" type="Node" parent="." unique_id=463859381]
+script = SubResource("GDScript_ujsok")
+max_health = null
+heal_amount = null
+
+[node name="UI" type="Node" parent="." unique_id=2027876258]
+script = SubResource("GDScript_txwsf")

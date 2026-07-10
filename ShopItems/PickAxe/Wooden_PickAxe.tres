@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://b5gf5vgh3h6rt"]
+
+[ext_resource type="Script" uid="uid://be6iw76p3dy2k" path="res://Scripts/ItemData.gd" id="1_cehma"]
+[ext_resource type="Texture2D" uid="uid://d4bbmjc6rgpug" path="res://Assets/Weapons/Wooden Pickaxe-1.png.png" id="2_dcsfd"]
+
+[resource]
+script = ExtResource("1_cehma")
+item_name = "Wooden  PickAxe"
+category = "pickaxe"
+price = 50
+damage = 10
+sprite_texture = ExtResource("2_dcsfd")
+metadata/_custom_type_script = "uid://be6iw76p3dy2k"
