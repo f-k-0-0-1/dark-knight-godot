@@ -64,6 +64,7 @@ var global_item_list: Array[ItemData] = [
 ]
 
 # === UPDATED SIGNALS ===
+@warning_ignore("unused_signal")
 signal inventory_updated
 signal weapon_equipped(item_data: ItemData) 
 

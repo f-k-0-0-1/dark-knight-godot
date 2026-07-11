@@ -385,6 +385,7 @@ corner_radius_bottom_left = 30
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("1_6f3s4")
+sprint_speed = 1560.0
 lightning_ball_scene = ExtResource("2_l3y8b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2121547936]
