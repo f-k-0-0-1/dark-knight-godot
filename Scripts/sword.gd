@@ -11,7 +11,7 @@ signal swing_finished
 
 # === CONSTANTS ===
 # FIX FOR ERROR 1: This must be declared at the top!
-const SLASH_SCENE = preload("res://Scenes/Slash.tscn")
+const SLASH_SCENE = preload("res://Scenes/Slash.tscn");
 
 # === NODES ===
 @onready var pivot: Node2D = $Pivot
