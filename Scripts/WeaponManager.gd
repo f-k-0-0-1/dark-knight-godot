@@ -32,12 +32,12 @@ var weapon_textures = {
 	"Netherite_Hoe": preload("res://Assets/Weapons/Netherite Hoe-1.png.png"),
 	
 	# === PICKAXES ===
-	"Wood_Pickaxe": preload("res://Assets/Weapons/Wooden Pickaxe-1.png.png"),
-	"Stone_Pickaxe": preload("res://Assets/Weapons/Stone Pickaxe-1.png.png"),
-	"Iron_Pickaxe": preload("res://Assets/Weapons/Iron pickaxe-1.png.png"),
-	"Gold_Pickaxe": preload("res://Assets/Weapons/Gold Pickaxe-1.png.png"),
-	"Diamond_Pickaxe": preload("res://Assets/Weapons/Diamond Pickaxe-1.png.png"),
-	"Netherite_Pickaxe": preload("res://Assets/Weapons/Netherite Pickaxe-1.png.png"),
+	"Wood_PickAxe": preload("res://Assets/Weapons/Wooden Pickaxe-1.png.png"),
+	"Stone_PickAxe": preload("res://Assets/Weapons/Stone Pickaxe-1.png.png"),
+	"Iron_PickAxe": preload("res://Assets/Weapons/Iron pickaxe-1.png.png"),
+	"Gold_PickAxe": preload("res://Assets/Weapons/Gold Pickaxe-1.png.png"),
+	"Diamond_PickAxe": preload("res://Assets/Weapons/Diamond Pickaxe-1.png.png"),
+	"Netherite_PickAxe": preload("res://Assets/Weapons/Netherite Pickaxe-1.png.png"),
 	
 	# === SHOVELS ===
 	"Wood_Shovel": preload("res://Assets/Weapons/Wooden Shovel-1.png.png"),
