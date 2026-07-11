@@ -7,6 +7,7 @@ extends CharacterBody2D
 @export var knockback_strength := 400.0
 @export var detection_range := 1000.0
 @export var attack_range := 400.0
+@export var attack_cooldown := 1.0
 
 # === PATROL BOUNDARIES ===
 @export var patrol_x_min := 19000.0
@@ -19,6 +20,7 @@ var is_aggro := false
 var facing_right := true
 var is_recoiling := false
 var is_attacking := false # Used to freeze movement during animations
+var can_attack := true
 
 # Patrol state
 var moving_right := true
@@ -39,6 +41,7 @@ func _ready():
 	
 	# Connect Signals
 	hitbox.body_entered.connect(_on_HitBox_body_entered)
+	hitbox.body_exited.connect(_on_HitBox_body_exited)
 	sprite.animation_finished.connect(_on_animation_finished)
 
 func _physics_process(delta: float) -> void:
@@ -167,19 +170,25 @@ func die() -> void:
 
 # === ATTACK (Copied verbatim from your reference) ===
 func _on_HitBox_body_entered(body: Node) -> void:
-	if is_dead or is_recoiling:
+	if is_dead or is_recoiling or not can_attack:
 		return
 
 	if body.is_in_group("player") and body.has_method("take_damage"):
+		can_attack = false
 		sprite.play("attack")
 		body.take_damage(50, global_position) # Note: Reference uses 25 damage
 
 		var recoil_direction = (global_position - body.global_position).normalized()
 		velocity = recoil_direction * knockback_strength
 		is_recoiling = true
-		await get_tree().create_timer(0.3).timeout
+		await get_tree().create_timer(attack_cooldown).timeout
 		if is_instance_valid(self) and not is_dead:
+			can_attack = true
 			is_recoiling = false
+
+func _on_HitBox_body_exited(body: Node) -> void:
+	if body.is_in_group("player"):
+		can_attack = true
 
 # === GET PLAYER ===
 func get_closest_player() -> Node2D:

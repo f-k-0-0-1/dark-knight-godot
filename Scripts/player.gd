@@ -61,6 +61,7 @@ var god_mode := false
 var can_use_lightning := true
 var is_lightning_active := false
 var cheat_command := false
+var is_sword_swinging := false
 
 func _ready():
 	Globals.level_coins_updated.connect(_update_coin_ui)
@@ -85,6 +86,11 @@ func _ready():
 
 func _on_weapon_equipped(item_data: ItemData):
 	sword.equip_weapon(item_data)
+	# Connect sword swing signals to lock/unlock player movement (only if not already connected)
+	if not sword.swing_started.is_connected(_on_sword_swing_started):
+		sword.swing_started.connect(_on_sword_swing_started)
+	if not sword.swing_finished.is_connected(_on_sword_swing_finished):
+		sword.swing_finished.connect(_on_sword_swing_finished)
 
 
 func _update_coin_ui(new_total: int):
@@ -95,6 +101,12 @@ func _on_zoom_button_pressed():
 	if camera:
 		var zoom_label = camera.toggle_zoom()
 		zoom_button.text = zoom_label
+
+func _on_sword_swing_started():
+	is_sword_swinging = true
+
+func _on_sword_swing_finished():
+	is_sword_swinging = false
 
 func _input(event):
 	if is_dead:
@@ -180,6 +192,11 @@ func handle_movement_input():
 	is_sprinting = !cheat_command and Input.is_action_pressed("ui_shift")
 	if is_sprinting:
 		move_speed *= sprint_multiplier
+
+	# Lock horizontal movement during sword swing
+	if is_sword_swinging:
+		velocity.x = 0
+		return
 
 	if !cheat_command and god_mode :
 		velocity = Vector2.ZERO

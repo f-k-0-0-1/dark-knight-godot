@@ -7,7 +7,7 @@ extends CharacterBody2D
 @export var knockback_strength := 200
 @export var max_fall_speed := 400
 @export var gravity := 900
-@export var hit_cooldown := 0.5
+@export var hit_cooldown := 0.75
 @export var aggro_range := 800
 
 @onready var camera = get_tree().get_first_node_in_group("player").get_node("Camera2D")
@@ -20,6 +20,9 @@ var can_hit := true
 var knockback_timer := 0.0
 var knockback_duration := 0.2
 var is_knocked_back := false
+var is_recoiling := false
+var recoil_timer := 0.0
+var recoil_duration := 0.5
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var health_bar: ProgressBar = $HealthBar
@@ -32,6 +35,7 @@ func _ready():
 	update_health_bar()
 	sprite.play("default")
 	hitbox.body_entered.connect(_on_hitbox_body_entered)
+	hitbox.body_exited.connect(_on_hitbox_body_exited)
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
@@ -42,6 +46,11 @@ func _physics_process(delta: float) -> void:
 		knockback_timer -= delta
 		if knockback_timer <= 0:
 			is_knocked_back = false
+	elif is_recoiling:
+		apply_gravity(delta)
+		recoil_timer -= delta
+		if recoil_timer <= 0:
+			is_recoiling = false
 	else:
 		var player = get_closest_player()
 		if player and global_position.distance_to(player.global_position) <= aggro_range:
@@ -105,9 +114,17 @@ func _on_hitbox_body_entered(body: Node) -> void:
 
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		can_hit = false
+		var recoil_direction = (global_position - body.global_position).normalized()
+		velocity = recoil_direction * knockback_strength
+		is_recoiling = true
+		recoil_timer = recoil_duration
 		body.take_damage(25, global_position)
 		camera.trigger_shake(8.0, 0.2)
 		start_hit_cooldown()
+
+func _on_hitbox_body_exited(body: Node) -> void:
+	if body.is_in_group("player"):
+		can_hit = true
 
 func start_hit_cooldown() -> void:
 	await get_tree().create_timer(hit_cooldown).timeout
