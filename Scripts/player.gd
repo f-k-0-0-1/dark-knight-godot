@@ -49,6 +49,7 @@ var dash_locked: bool= false;
 var is_shooting: bool = false;
 var is_sprinting: bool = false;
 var facing_right: bool = true;
+var is_sword_swinging := false
 var was_on_floor: bool = false;
 var cheat_command: bool = false;
 var jump_anim_played: bool = false;
@@ -200,6 +201,22 @@ func handle_movement_input() -> void:
 
 	if (facing_right):
 		sword_holder.position = Vector2(20, -5);
+	
+	# Lock horizontal movement during sword swing
+	if (is_sword_swinging):
+		velocity.x = 0;
+		return;
+
+	if (!cheat_command and god_mode):
+		velocity = Vector2.ZERO;
+		if Input.is_action_pressed("move_right"):
+			velocity.x += move_speed;
+		if Input.is_action_pressed("move_left"):
+			velocity.x -= move_speed;
+		if Input.is_action_pressed("move_up"):
+			velocity.y -= move_speed;
+		if Input.is_action_pressed("move_down"):
+			velocity.y += move_speed;
 	else:
 		sword_holder.position = Vector2(-20, -5);
 
@@ -454,6 +471,12 @@ func _on_dash_anim_finished() -> void:
 # Signal Function For Weapon Equipped		
 func _on_weapon_equipped(item_data: ItemData) -> void:
 	sword.equip_weapon(item_data);
+	
+	# Connect sword swing signals to lock/unlock player movement
+	if (not sword.swing_started.is_connected(_on_sword_swing_started)):
+		sword.swing_started.connect(_on_sword_swing_started);
+	if (not sword.swing_finished.is_connected(_on_sword_swing_finished)):
+		sword.swing_finished.connect(_on_sword_swing_finished);
 
 # Signal Function for Lightning Timer End
 func _on_lightning_ability_end() -> void:
@@ -479,3 +502,11 @@ func _on_shoot_anim_end() -> void:
 # Signal Function for FireBall Cooldown
 func _on_fireball_cooldown_timeout() -> void:
 	can_shoot = true;
+
+# Signal Function for Sword Swing
+func _on_sword_swing_started() -> void:
+	is_sword_swinging = true;
+
+# Signal Function for Sword Swing Finished
+func _on_sword_swing_finished() -> void:
+	is_sword_swinging = false;

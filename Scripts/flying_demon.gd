@@ -7,6 +7,7 @@ extends CharacterBody2D
 @export var knockback_strength := 400.0
 @export var detection_range := 800.0
 @export var attack_range := 50.0
+@export var attack_cooldown := 1.0
 
 @onready var camera = get_tree().get_first_node_in_group("player").get_node("Camera2D")
 
@@ -16,6 +17,7 @@ var is_dead := false
 var is_aggro := false
 var facing_right := true
 var is_recoiling := false
+var can_attack := true
 
 # === NODES ===
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -29,6 +31,7 @@ func _ready():
 	update_health_bar()
 	sprite.play("idle")
 	hitbox.body_entered.connect(_on_HitBox_body_entered)
+	hitbox.body_exited.connect(_on_HitBox_body_exited)
 
 func _physics_process(_delta: float) -> void:
 	if is_dead:
@@ -118,19 +121,25 @@ func die() -> void:
 
 # === ATTACK ===
 func _on_HitBox_body_entered(body: Node) -> void:
-	if is_dead or is_recoiling:
+	if is_dead or is_recoiling or not can_attack:
 		return
 
 	if body.is_in_group("player") and body.has_method("take_damage"):
+		can_attack = false
 		sprite.play("attack")
 		body.take_damage(25, global_position)
 		camera.trigger_shake(8.0, 0.2)
 		var recoil_direction = (global_position - body.global_position).normalized()
 		velocity = recoil_direction * knockback_strength
 		is_recoiling = true
-		await get_tree().create_timer(0.3).timeout
+		await get_tree().create_timer(attack_cooldown).timeout
 		if is_instance_valid(self) and not is_dead:
+			can_attack = true
 			is_recoiling = false
+
+func _on_HitBox_body_exited(body: Node) -> void:
+	if body.is_in_group("player"):
+		can_attack = true
 
 # === GET PLAYER ===
 func get_closest_player() -> Node2D:
