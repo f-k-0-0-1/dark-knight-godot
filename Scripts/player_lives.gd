@@ -11,12 +11,13 @@ const HEALTH_PER_HEART := 25
 
 func _ready() -> void:
 	var player = get_tree().get_first_node_in_group("player")
+	var pvar = $"../../Variables";
 
 	if player and player.has_signal("health_changed"):
 		player.health_changed.connect(_on_player_health_changed)
 
 		# Update immediately when the scene starts
-		_on_player_health_changed(player.current_health, player.max_health)
+		_on_player_health_changed(pvar.current_health, pvar.max_health)
 	else:
 		push_error("Player or 'health_changed' signal not found!")
 

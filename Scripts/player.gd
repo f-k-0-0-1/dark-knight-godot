@@ -1,157 +1,86 @@
 extends CharacterBody2D
 
+# Scrpits
+@onready var psig = $Signals;
+@onready var pvar = $Variables;
+
 # Signals
+@warning_ignore("unused_signal")
 signal health_changed(new_health: int, max_health: int)
-
-# Lazy Load Variables 
-@onready var heart_ui = $".";
-@onready var sword: Node2D = $SwordHolder/Sword;
-@onready var camera: Camera2D = $Camera2D;
-@onready var timer_label: Label = $HUD/TimerLabel;
-@onready var level_timer: Timer = $HUD/LevelTimer;
-@onready var zoom_button: Button = $HUD/ZoomButton;
-@onready var fire_point: Marker2D = $FirePoint;
-@onready var sword_holder: Marker2D = $SwordHolder;
-@onready var coin_counter_label: Label = $HUD/CoinCounter;
-@onready var ability_cooldown_bar: ProgressBar = $HUD/AbilityCooldownBar;
-@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D;
-
-# Audio Players Lazy Load
-@onready var jump_sound: AudioStreamPlayer = $JumpSound;
-@onready var player_hurt: AudioStreamPlayer = $PlayerHurt;
-@onready var double_jump_sound: AudioStreamPlayer = $DoubleJumpSound;
-
-# Variables Exported to the Inspector 
-@export var speed: float = 650.0;
-@export var gravity: float = 1500.0;
-@export var max_health: int = 100;
-@export var jump_velocity: float = -1150.0;
-@export var sprint_speed: float = speed * 2.4;
-@export var fireball_cooldown: float = 0.5;
-@export var shoot_anim_duration: float = 0.2;
-@export var lightning_ball_scene: PackedScene;
-@export var lightning_ability_duration: float = 3.0;
-@export var lightning_ability_cooldown: float = 10.0;
-
-# Constants 
-const MAX_JUMPS: int= 2;
-
-# Variables when Node init
-var fireball_scene: PackedScene;
-var lightning_ball_instance: Area2D;
-var cheat_command_scene: Node = null;
-
-# Booleans
-var god_mode: bool= false;
-var is_dead: bool = false;
-var can_shoot: bool = true;
-var dash_locked: bool= false;
-var is_shooting: bool = false;
-var is_sprinting: bool = false;
-var facing_right: bool = true;
-var is_sword_swinging := false
-var was_on_floor: bool = false;
-var cheat_command: bool = false;
-var jump_anim_played: bool = false;
-var can_use_lightning: bool = true;
-var is_lightning_active: bool = false;
-var bonus_heart_unlocked: bool = false;
-
-# Decimals
-var jump_count: int= 0;
-var move_speed: float = speed;
-var time_elapsed: float = 0.0
-var cooldown_remaining: float = 0.0;
-var current_health: int = max_health;
-var old_health: int = current_health;
-
-# Scope Variables 
-var ball: Area2D;
-var fireball: Node;
-var offset: Vector2;
-var knockback: Vector2;
-var start_timer_: Timer;
-var cleanup_timer: Timer; 
-var saved_item: ItemData;
-var input_direction: float;
-var input_direction_A: float;
-var time_for_3_stars: float
-var time_for_2_stars: float;
-var time_for_1_star: float;
 
 # Init Stuff Here
 func _ready() -> void:
 	# Init FireBall Scene
-	fireball_scene = SceneManager.scenes.get("fireball_scene");
+	pvar.fireball_scene = SceneManager.scenes.get("fireball_scene");
 	
 	# Init Signals connection
-	Globals.level_coins_updated.connect(_update_coin_ui);
-	Globals.weapon_equipped.connect(_on_weapon_equipped)
+	Globals.level_coins_updated.connect(psig._update_coin_ui);
+	Globals.weapon_equipped.connect(psig._on_weapon_equipped)
 	
 	# Init Conis
-	_update_coin_ui(Globals.level_coins);
+	psig._update_coin_ui(Globals.level_coins);
 	Globals.reset_level_coins();
 	
 	# Set Default Health via Signal
-	health_changed.emit(current_health, max_health);
+	health_changed.emit(pvar.current_health, pvar.max_health);
 	
 	# Init Zoom Button
-	if (zoom_button):
-		zoom_button.pressed.connect(_on_zoom_button_pressed);
-		zoom_button.text = "2.0x";
+	if (pvar.zoom_button):
+		pvar.zoom_button.pressed.connect(psig._on_zoom_button_pressed);
+		pvar.zoom_button.text = "2.0x";
 	
 	# Init Equipped Item
 	if (!Globals.equipped_item_name.is_empty()):
-		saved_item = Globals.get_item_data_by_name(Globals.equipped_item_name);
+		pvar.saved_item = Globals.get_item_data_by_name(Globals.equipped_item_name);
 		
 		# Send Signal if weapon equipped
-		if (saved_item != null):
-			_on_weapon_equipped(saved_item);
+		if (pvar.saved_item != null):
+			pvar.psig._on_weapon_equipped(pvar.saved_item);
 		else:
 			print("Player: saved equipped item not found: ", Globals.equipped_item_name);
 
 # Handle Input Events Here
 func _input(event) -> void:
-	if (is_dead):
+	if (pvar.is_dead):
 		return;
 		
-	if (!cheat_command and event.is_action_pressed("fireball")):
+	if (!pvar.cheat_command and event.is_action_pressed("fireball")):
 		shoot_fireball();
 
-	if (!cheat_command and event.is_action_pressed("lightning_ability")):
+	if (!pvar.cheat_command and event.is_action_pressed("lightning_ability")):
 		activate_lightning_ball();
 	
-	if (!cheat_command and event.is_action_pressed("sword_attack")):
-		if (sword and sword.has_method("swing")):
-			sword.swing(facing_right);
+	if (!pvar.cheat_command and event.is_action_pressed("sword_attack")):
+		if (pvar.sword and pvar.sword.has_method("swing")):
+			pvar.sword.swing(pvar.facing_right);
 			
 	if (event.is_action_pressed("cheat_command")):
-		cheat_command = !cheat_command;
+		pvar.cheat_command = !pvar.cheat_command;
 		
-	if (!cheat_command and event.is_action_pressed("god_mode_toggle")):
-		god_mode = !god_mode;
+	if (!pvar.cheat_command and event.is_action_pressed("god_mode_toggle")):
+		pvar.god_mode = !pvar.god_mode;
 		velocity = Vector2.ZERO;
 
-	if !cheat_command and event.is_action_pressed("fireball"):
+	if !pvar.cheat_command and event.is_action_pressed("fireball"):
 		shoot_fireball();
 
-	if (!cheat_command and event.is_action_pressed("lightning_ability")):
+	if (!pvar.cheat_command and event.is_action_pressed("lightning_ability")):
 		activate_lightning_ball();
 
-	if (cheat_command and cheat_command_scene != null and  event.is_action_pressed("Enter")):
-		cheat_command_scene.run_command();
+	if (pvar.cheat_command and pvar.cheat_command_scene != null and  event.is_action_pressed("Enter")):
+		pvar.cheat_command_scene.run_command();
 		
-	if (!cheat_command and Input.is_action_pressed("ui_shift")):
-		is_sprinting = true;
-		move_speed = sprint_speed;
+	if (!pvar.cheat_command and Input.is_action_pressed("ui_shift")):
+		pvar.is_sprinting = true;
+		pvar.move_speed = pvar.sprint_speed;
 		
-	if (!cheat_command and Input.is_action_just_released("ui_shift")):
-		is_sprinting = false;
-		move_speed = speed
+	if (!pvar.cheat_command and Input.is_action_just_released("ui_shift")):
+		pvar.is_sprinting = false;
+		pvar.move_speed = pvar.speed
 
 # Handle Physics Here
 func _physics_process(delta) -> void:
-	if (not god_mode): apply_gravity(delta);
+	if (not pvar.god_mode): apply_gravity(delta);
 		
 	handle_movement_input();
 	move_and_slide();
@@ -159,286 +88,286 @@ func _physics_process(delta) -> void:
 	handle_animation();
 	update_lightning_ball_position();
 	
-	if (cooldown_remaining > 0):
-		cooldown_remaining -= delta;
-		ability_cooldown_bar.value = lightning_ability_cooldown - cooldown_remaining;
+	if (pvar.cooldown_remaining > 0):
+		pvar.cooldown_remaining -= delta;
+		pvar.ability_cooldown_bar.value = pvar.lightning_ability_cooldown - pvar.cooldown_remaining;
 
-	if (cooldown_remaining <= 0):
-		cooldown_remaining = 0;
-		ability_cooldown_bar.value = lightning_ability_cooldown;
+	if (pvar.cooldown_remaining <= 0):
+		pvar.cooldown_remaining = 0;
+		pvar.ability_cooldown_bar.value = pvar.lightning_ability_cooldown;
 
 # Every Frame Logic Here
 func _process(_delta: float) -> void:
 	# Keep Track of the Player Health
-	if (current_health != old_health):
-		health_changed.emit(current_health, max_health);
+	if (pvar.current_health != pvar.old_health):
+		health_changed.emit(pvar.current_health, pvar.max_health);
 	
 	# Update the level timer text
-	if (not level_timer.is_stopped()):
-		time_elapsed += _delta;
-		timer_label.text = str(snapped(time_elapsed, 0.1)) + "s";
+	if (not pvar.level_timer.is_stopped()):
+		pvar.time_elapsed += _delta;
+		pvar.timer_label.text = str(snapped(pvar.time_elapsed, 0.1)) + "s";
 	
 	# Logic for cheat command 
-	if (cheat_command and cheat_command_scene == null):
-		cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
-		add_child(cheat_command_scene);
+	if (pvar.cheat_command and pvar.cheat_command_scene == null):
+		pvar.cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
+		add_child(pvar.cheat_command_scene);
 	
-	elif (cheat_command and cheat_command_scene != null):
-		cheat_command_scene.visible = true;
+	elif (pvar.cheat_command and pvar.cheat_command_scene != null):
+		pvar.cheat_command_scene.visible = true;
 	
-	else: if (!cheat_command and cheat_command_scene != null):
-			cheat_command_scene.visible = false;
+	else: if (!pvar.cheat_command and pvar.cheat_command_scene != null):
+			pvar.cheat_command_scene.visible = false;
 
 # Function Handles PLayer Movement
 func handle_movement_input() -> void:
 
-	input_direction_A = Input.get_axis("move_left", "move_right");
+	pvar.input_direction_A = Input.get_axis("move_left", "move_right");
 
-	if (input_direction_A != 0):
-		facing_right = input_direction_A > 0;
+	if (pvar.input_direction_A != 0):
+		pvar.facing_right = pvar.input_direction_A > 0;
 
-	sprite.flip_h = !facing_right;
+	pvar.sprite.flip_h = !pvar.facing_right;
 
-	if (facing_right):
-		sword_holder.position = Vector2(20, -5);
+	if (pvar.facing_right):
+		pvar.sword_holder.position = Vector2(20, -5);
 	
 	# Lock horizontal movement during sword swing
-	if (is_sword_swinging):
+	if (pvar.is_sword_swinging):
 		velocity.x = 0;
 		return;
 
-	if (!cheat_command and god_mode):
+	if (!pvar.cheat_command and pvar.god_mode):
 		velocity = Vector2.ZERO;
 		if Input.is_action_pressed("move_right"):
-			velocity.x += move_speed;
+			velocity.x += pvar.move_speed;
 		if Input.is_action_pressed("move_left"):
-			velocity.x -= move_speed;
+			velocity.x -= pvar.move_speed;
 		if Input.is_action_pressed("move_up"):
-			velocity.y -= move_speed;
+			velocity.y -= pvar.move_speed;
 		if Input.is_action_pressed("move_down"):
-			velocity.y += move_speed;
+			velocity.y += pvar.move_speed;
 	else:
-		sword_holder.position = Vector2(-20, -5);
+		pvar.sword_holder.position = Vector2(-20, -5);
 
-	if (!cheat_command and god_mode):
+	if (!pvar.cheat_command and pvar.god_mode):
 		velocity = Vector2.ZERO;
 		if (Input.is_action_pressed("move_right")):
-			velocity.x += move_speed;
+			velocity.x += pvar.move_speed;
 		if (Input.is_action_pressed("move_left")):
-			velocity.x -= move_speed;
+			velocity.x -= pvar.move_speed;
 		if (Input.is_action_pressed("move_up")):
-			velocity.y -= move_speed;
+			velocity.y -= pvar.move_speed;
 		if (Input.is_action_pressed("move_down")):
-			velocity.y += move_speed;
+			velocity.y += pvar.move_speed;
 	else:
-		input_direction = 0.0;
-		if (!cheat_command and Input.is_action_pressed("move_left")):
-			input_direction -= 1;
-		if (!cheat_command and Input.is_action_pressed("move_right")):
-			input_direction += 1;
+		pvar.input_direction = 0.0;
+		if (!pvar.cheat_command and Input.is_action_pressed("move_left")):
+			pvar.input_direction -= 1;
+		if (!pvar.cheat_command and Input.is_action_pressed("move_right")):
+			pvar.input_direction += 1;
 
-		velocity.x = input_direction * move_speed;
+		velocity.x = pvar.input_direction * pvar.move_speed;
 
 		# Jump and Jump Sound Logic
-		if (!cheat_command and Input.is_action_just_pressed("jump") and jump_count < MAX_JUMPS):
-			velocity.y = jump_velocity;
-			jump_count += 1;
-			jump_anim_played = false;
-			if (jump_count == 1):
-				jump_sound.play();
+		if (!pvar.cheat_command and Input.is_action_just_pressed("jump") and pvar.jump_count < pvar.MAX_JUMPS):
+			velocity.y = pvar.jump_velocity;
+			pvar.jump_count += 1;
+			pvar.jump_anim_played = false;
+			if (pvar.jump_count == 1):
+				pvar.jump_sound.play();
 			else:
-				double_jump_sound.play();
+				pvar.double_jump_sound.play();
 
 # Function to Apply Gravity to PLayer
 func apply_gravity(delta) -> void:
 	if (not is_on_floor()):
-		velocity.y += gravity * delta;
+		velocity.y += pvar.gravity * delta;
 
 # Function to Handle Player Landing from Jump
 func handle_landing_reset() -> void:
-	if (is_on_floor() and not was_on_floor):
-		jump_count = 0;
-		jump_anim_played = false;
-	was_on_floor = is_on_floor();
+	if (is_on_floor() and not pvar.was_on_floor):
+		pvar.jump_count = 0;
+		pvar.jump_anim_played = false;
+	pvar.was_on_floor = is_on_floor();
 
 # Function Handel Player Fireball Shooting
 func shoot_fireball() -> void:
-	if (not can_shoot or fireball_scene == null or is_shooting):
+	if (not pvar.can_shoot or pvar.fireball_scene == null or pvar.is_shooting):
 		return;
 		
-	fireball = fireball_scene.instantiate();
-	fireball.direction = Vector2.RIGHT if facing_right else Vector2.LEFT;
-	fireball.global_position = fire_point.global_position;
-	get_tree().current_scene.add_child(fireball);
+	pvar.fireball = pvar.fireball_scene.instantiate();
+	pvar.fireball.direction = Vector2.RIGHT if pvar.facing_right else Vector2.LEFT;
+	pvar.fireball.global_position = pvar.fire_point.global_position;
+	get_tree().current_scene.add_child(pvar.fireball);
 
-	dash_locked = true;
-	sprite.play("dash");
-	sprite.frame = 0;
+	pvar.dash_locked = true;
+	pvar.sprite.play("dash");
+	pvar.sprite.frame = 0;
 	
 	# Safely disconnect before connecting again 
-	if (sprite.animation_finished.is_connected(_on_dash_anim_finished)):
-		sprite.animation_finished.disconnect(_on_dash_anim_finished);
-	sprite.animation_finished.connect(_on_dash_anim_finished, CONNECT_ONE_SHOT);
+	if (pvar.sprite.animation_finished.is_connected(psig._on_dash_anim_finished)):
+		pvar.sprite.animation_finished.disconnect(psig._on_dash_anim_finished);
+	pvar.sprite.animation_finished.connect(psig._on_dash_anim_finished, CONNECT_ONE_SHOT);
 	
-	is_shooting = true;
-	can_shoot = false;
+	pvar.is_shooting = true;
+	pvar.can_shoot = false;
 	
 	@warning_ignore("shadowed_variable")
-	if camera:
-		camera.trigger_shake(5.0, 0.15);
+	if pvar.camera:
+		pvar.camera.trigger_shake(5.0, 0.15);
 
-	start_timer(shoot_anim_duration, _on_shoot_anim_end);
-	start_timer(fireball_cooldown, _on_fireball_cooldown_timeout);
+	start_timer(pvar.shoot_anim_duration, psig._on_shoot_anim_end);
+	start_timer(pvar.fireball_cooldown, psig._on_fireball_cooldown_timeout);
 
 # Function Handle Player Lightning Ball
 func activate_lightning_ball() -> void:
-	if (not can_use_lightning or lightning_ball_scene == null):
+	if (not pvar.can_use_lightning or pvar.lightning_ball_scene == null):
 		return;
 
-	can_use_lightning = false;
-	is_lightning_active = true;
+	pvar.can_use_lightning = false;
+	pvar.is_lightning_active = true;
 	
-	cooldown_remaining = lightning_ability_cooldown;
-	ability_cooldown_bar.max_value = lightning_ability_cooldown;
-	ability_cooldown_bar.value = 0;
+	pvar.cooldown_remaining = pvar.lightning_ability_cooldown;
+	pvar.ability_cooldown_bar.max_value = pvar.lightning_ability_cooldown;
+	pvar.ability_cooldown_bar.value = 0;
 	
-	ball = lightning_ball_scene.instantiate() as Area2D;
-	ball.scale = Vector2(1.5, 1.5);
-	ball.global_position = global_position + Vector2(50 if facing_right else -50, 0);
+	pvar.ball = pvar.lightning_ball_scene.instantiate() as Area2D;
+	pvar.ball.scale = Vector2(1.5, 1.5);
+	pvar.ball.global_position = pvar.global_position + Vector2(50 if pvar.facing_right else -50, 0);
 	
-	if (ball.has_method("set_direction")):
-		ball.set_direction(Vector2(1, 0) if facing_right else Vector2(-1, 0));
+	if (pvar.ball.has_method("set_direction")):
+		pvar.ball.set_direction(Vector2(1, 0) if pvar.facing_right else Vector2(-1, 0));
 
-	if (ball.has_method("activate")):
-		ball.activate();
+	if (pvar.ball.has_method("activate")):
+		pvar.ball.activate();
 
-	get_tree().current_scene.add_child(ball);
+	get_tree().current_scene.add_child(pvar.ball);
 
 	# Start cleanup timer
-	cleanup_timer = Timer.new();
-	cleanup_timer.wait_time = lightning_ability_duration;
-	cleanup_timer.one_shot = true;
-	cleanup_timer.timeout.connect(func():
-		if (is_instance_valid(ball)):
-			if (ball.has_method("deactivate")):
-				ball.deactivate();
-			ball.queue_free();
-		is_lightning_active = false;
+	pvar.cleanup_timer = Timer.new();
+	pvar.cleanup_timer.wait_time = pvar.lightning_ability_duration;
+	pvar.cleanup_timer.one_shot = true;
+	pvar.cleanup_timer.timeout.connect(func():
+		if (is_instance_valid(pvar.ball)):
+			if (pvar.ball.has_method("deactivate")):
+				pvar.ball.deactivate();
+			pvar.ball.queue_free();
+		pvar.is_lightning_active = false;
 	);
-	add_child(cleanup_timer);
-	cleanup_timer.start();
+	add_child(pvar.cleanup_timer);
+	pvar.cleanup_timer.start();
 
-	start_timer(lightning_ability_cooldown, _on_lightning_cooldown_timeout);
+	start_timer(pvar.lightning_ability_cooldown, psig._on_lightning_cooldown_timeout);
 
-	start_timer(lightning_ability_duration, _on_lightning_ability_end);
+	start_timer(pvar.lightning_ability_duration, psig._on_lightning_ability_end);
 
 # Function to Update Lightning Ball Position
 func update_lightning_ball_position() -> void:
-	if (is_instance_valid(lightning_ball_instance) and lightning_ball_instance.visible):
-		offset = Vector2(50, 0) if facing_right else Vector2(-50, 0);
-		lightning_ball_instance.global_position = global_position + offset;
-		lightning_ball_instance.scale.x = abs(lightning_ball_instance.scale.x) if facing_right else -abs(lightning_ball_instance.scale.x)
+	if (is_instance_valid(pvar.lightning_ball_instance) and pvar.lightning_ball_instance.visible):
+		pvar.offset = Vector2(50, 0) if pvar.facing_right else Vector2(-50, 0);
+		pvar.lightning_ball_instance.global_position = pvar.global_position + pvar.offset;
+		pvar.lightning_ball_instance.scale.x = abs(pvar.lightning_ball_instance.scale.x) if pvar.facing_right else -abs(pvar.lightning_ball_instance.scale.x)
 		
-		if (lightning_ball_instance.has_method("set_direction")):
-			lightning_ball_instance.set_direction(Vector2(1,0) if facing_right else Vector2(-1,0));
+		if (pvar.lightning_ball_instance.has_method("set_direction")):
+			pvar.ightning_ball_instance.set_direction(Vector2(1,0) if pvar.facing_right else Vector2(-1,0));
 
 # Function to Handle Player Animaion
 func handle_animation() -> void:
-	if (is_shooting):
+	if (pvar.is_shooting):
 		return;
 
-	if (god_mode and velocity.length() > 0):
-		sprite.play("idle");
+	if (pvar.god_mode and velocity.length() > 0):
+		pvar.sprite.play("idle");
 	
 	elif (not is_on_floor()):
-		if (not jump_anim_played):
-			sprite.play("jump", false);
-			jump_anim_played = true;
+		if (not pvar.jump_anim_played):
+			pvar.sprite.play("jump", false);
+			pvar.jump_anim_played = true;
 	
 	elif (abs(velocity.x) > 0):
-		sprite.play("run" if is_sprinting else "walk");
+		pvar.sprite.play("run" if pvar.is_sprinting else "walk");
 	
 	else:
-		sprite.play("idle");
+		pvar.sprite.play("idle");
 
 # Function of a Timer
 func start_timer(duration: float, callback: Callable):
-	start_timer_ = Timer.new();
-	start_timer_.wait_time = duration;
-	start_timer_.one_shot = true;
-	start_timer_.timeout.connect(callback);
-	add_child(start_timer_);
-	start_timer_.start();
+	pvar.start_timer_ = Timer.new();
+	pvar.start_timer_.wait_time = duration;
+	pvar.start_timer_.one_shot = true;
+	pvar.start_timer_.timeout.connect(callback);
+	add_child(pvar.start_timer_);
+	pvar.start_timer_.start();
 
 # Function to be Called When Level Completed
 func stop_level_timer() -> void:
-	level_timer.stop();
+	pvar.level_timer.stop();
 
 # Function to get Current Time
 func get_current_time() -> float:
-	return time_elapsed;
+	return pvar.time_elapsed;
 
 # Function Handle Start Earn Time
 func get_stars_earned() -> int:
-	time_for_3_stars = 90.0;
-	time_for_2_stars = 105.0;
-	time_for_1_star  = 120.0;
+	pvar.time_for_3_stars = 90.0;
+	pvar.time_for_2_stars = 105.0;
+	pvar.time_for_1_star  = 120.0;
 	
-	if time_elapsed <= time_for_3_stars:
+	if pvar.time_elapsed <= pvar.time_for_3_stars:
 		return 3;
-	elif time_elapsed <= time_for_2_stars:
+	elif pvar.time_elapsed <= pvar.time_for_2_stars:
 		return 2;
-	elif time_elapsed <= time_for_1_star:
+	elif pvar.time_elapsed <= pvar.time_for_1_star:
 		return 1;
 	else:
 		return 0;
 
 # Function Handle Timer Reset
 func reset_level_timer() -> void:
-	time_elapsed = 0.0;
-	timer_label.text = "0.0s";
-	level_timer.start();
+	pvar.time_elapsed = 0.0;
+	pvar.timer_label.text = "0.0s";
+	pvar.level_timer.start();
 
 # Function Handle Player Damage
 func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
-	if (god_mode):
+	if (pvar.god_mode):
 		return;
-	camera.trigger_shake(12.0, 0.3);
-	player_hurt.play();
-	current_health -= amount;
-	knockback = (global_position - source_position).normalized() * 500.0;
-	velocity = knockback;
+	pvar.camera.trigger_shake(12.0, 0.3);
+	pvar.player_hurt.play();
+	pvar.current_health -= amount;
+	pvar.knockback = (global_position - source_position).normalized() * 500.0;
+	velocity = pvar.knockback;
 
-	if (current_health <= 0):
+	if (pvar.current_health <= 0):
 		die();
 
 # Function Handle Player Heal
 func heal(amount:int):
-	current_health += amount;
-	current_health = clamp(current_health, 0, max_health);
-	health_changed.emit(current_health, max_health);
+	pvar.current_health += amount;
+	pvar.current_health = clamp(pvar.current_health, 0, pvar.max_health);
+	health_changed.emit(pvar.current_health, pvar.max_health);
 
 # Function Handle Bonus Heart
 func add_bonus_heart() -> bool:
 
-	if (bonus_heart_unlocked):
+	if (pvar.bonus_heart_unlocked):
 		return false;
 
-	bonus_heart_unlocked = true;
+	pvar.bonus_heart_unlocked = true;
 
-	max_health += 25;
-	current_health += 25;
+	pvar.max_health += 25;
+	pvar.current_health += 25;
 
-	health_changed.emit(current_health, max_health);
+	health_changed.emit(pvar.current_health, pvar.max_health);
 
 	return true;
 
 # Function Handle Player Die
 func die() -> void:
-	if (is_dead):
+	if (pvar.is_dead):
 		return;
-	is_dead = true;
-	camera.trigger_shake(20.0, 0.8);
+	pvar.is_dead = true;
+	pvar.camera.trigger_shake(20.0, 0.8);
 	MusicManager.play_game_over();
 
 	set_process(false);
@@ -446,67 +375,3 @@ func die() -> void:
 
 	await get_tree().create_timer(0.5).timeout;
 	SceneManager.change_scene("retry_menu");
-	
-# Signal Function For Coin
-func _update_coin_ui(new_total: int) -> void:
-	if (coin_counter_label):
-		coin_counter_label.text = str(new_total);
-
-# Signal Function For Zoom
-func _on_zoom_button_pressed() -> void:
-	if camera:
-		var zoom_label = camera.toggle_zoom();
-		zoom_button.text = zoom_label;
-
-# Signal Function for Dash Animation Finished
-func _on_dash_anim_finished() -> void:
-	dash_locked = false;  # Unlock the animation
-	
-	# Immediately switch back to a valid animation state based on movement
-	if (abs(velocity.x) > 10.0):
-		sprite.play("walk");
-	else:
-		sprite.play("idle");
-
-# Signal Function For Weapon Equipped		
-func _on_weapon_equipped(item_data: ItemData) -> void:
-	sword.equip_weapon(item_data);
-	
-	# Connect sword swing signals to lock/unlock player movement
-	if (not sword.swing_started.is_connected(_on_sword_swing_started)):
-		sword.swing_started.connect(_on_sword_swing_started);
-	if (not sword.swing_finished.is_connected(_on_sword_swing_finished)):
-		sword.swing_finished.connect(_on_sword_swing_finished);
-
-# Signal Function for Lightning Timer End
-func _on_lightning_ability_end() -> void:
-	is_lightning_active = false;
-	
-	if (is_instance_valid(lightning_ball_instance)):
-		lightning_ball_instance.visible = false;
-		if (lightning_ball_instance.has_method("deactivate")):
-			lightning_ball_instance.deactivate();
-
-# Signal Function for Lightning CoolDown Timer
-func _on_lightning_cooldown_timeout() -> void:
-	can_use_lightning = true;
-
-# Signal Function for Shoot Animation End	
-func _on_shoot_anim_end() -> void:
-	is_shooting = false;
-	if (abs(velocity.x) > 10.0):
-		sprite.play("walk");
-	else:
-		sprite.play("idle");
-
-# Signal Function for FireBall Cooldown
-func _on_fireball_cooldown_timeout() -> void:
-	can_shoot = true;
-
-# Signal Function for Sword Swing
-func _on_sword_swing_started() -> void:
-	is_sword_swinging = true;
-
-# Signal Function for Sword Swing Finished
-func _on_sword_swing_finished() -> void:
-	is_sword_swinging = false;

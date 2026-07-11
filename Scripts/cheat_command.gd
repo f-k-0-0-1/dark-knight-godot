@@ -69,15 +69,15 @@ func run_command() -> void:
 			args_funcs[arg_index].call()
 		else:
 			if (arg_name) == "-":
-				log_error("Need Arguments: Type help -m for Help\n")
+				log_error("Need Arguments: Type help -m for Help\n");
 				command_box.text = "";
 				return;
 			# Handel Other
-			log_error("Invalid Arg: " + arg_name + "\n")
+			log_error("Invalid Arg: " + arg_name + "\n");
 			command_box.text= "";
 			return;
 	else:
-		log_error("Invalid Command!\n")
+		log_error("Invalid Command!\n");
 		command_box.text= "";
 		return;
 
