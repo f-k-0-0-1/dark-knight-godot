@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var max_health := 3
+@export var max_health := 150
 @export var move_speed := 130
 @export var sprint_multiplier := 3.0
 @export var move_distance := 1000
@@ -70,6 +70,14 @@ func apply_gravity(delta: float) -> void:
 	else:
 		velocity.y = 0
 
+func flash_on_hit():
+	var flash_tween = create_tween()
+	# Flash Red instead of White
+	flash_tween.tween_property(sprite, "modulate", Color.RED, 0.05)
+	
+	await get_tree().create_timer(0.1).timeout
+	sprite.modulate = Color.WHITE
+
 func patrol() -> void:
 	var distance_from_start := global_position.x - starting_position.x
 
@@ -118,7 +126,7 @@ func _on_hitbox_body_entered(body: Node) -> void:
 		velocity = recoil_direction * knockback_strength
 		is_recoiling = true
 		recoil_timer = recoil_duration
-		body.take_damage(25, global_position)
+		body.take_damage(35, global_position)
 		camera.trigger_shake(8.0, 0.2)
 		start_hit_cooldown()
 
@@ -134,7 +142,7 @@ func start_hit_cooldown() -> void:
 func take_damage(amount: int, knockback_dir := Vector2.ZERO) -> void:
 	if is_dead:
 		return
-
+	flash_on_hit()
 	health -= amount
 	health = max(health, 0)
 	update_health_bar()

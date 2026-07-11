@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var damage: int = 1
+@export var damage: int = 200
 @export var grow_duration: float = 0.3
 @export var full_scale: Vector2 = Vector2(1, 1)
 

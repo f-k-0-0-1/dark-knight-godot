@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 # === CONFIG ===
-@export var max_health := 6
+@export var max_health := 400
 @export var move_speed := 150.0
 @export var sprint_multiplier := 3.0
 @export var knockback_strength := 400.0

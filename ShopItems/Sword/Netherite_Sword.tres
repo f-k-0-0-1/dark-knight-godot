@@ -8,6 +8,6 @@ script = ExtResource("1_we5rt")
 item_name = "Netherite Sword"
 category = "sword"
 price = 500
-damage = 80
+damage = 120
 sprite_texture = ExtResource("2_paus4")
 metadata/_custom_type_script = "uid://be6iw76p3dy2k"
