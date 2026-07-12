@@ -102,6 +102,17 @@ func _ready() -> void:
 			name_label.text = player_name;
 			name_label.visible = true;
 		remove_from_group("player");
+		
+		# CRITICAL FIX: Disable all collision shapes recursively.
+		# This prevents remote players from physically pushing the local player 
+		# or triggering Area2D signals (like sword hits or coin pickups).
+		var collision_shapes: Array[Node] = find_children("*", "CollisionShape2D");
+		for shape in collision_shapes:
+			shape.set_deferred("disabled", true);
+			
+		# Prevent the remote player from lerping to (0,0) before the first network packet arrives
+		network_target_pos = global_position;
+		
 		if camera:
 			camera.enabled = false;
 			camera = null;
@@ -187,7 +198,15 @@ func _physics_process(delta) -> void:
 		return;
 
 	# Local Player Physics
-	if not god_mode:
+	if god_mode:
+		handle_movement_input();
+		move_and_slide();
+		if sprite:
+			if velocity.length() > 0:
+				sprite.play("walk");
+			else:
+				sprite.play("idle");
+	else:
 		apply_gravity(delta);
 		handle_movement_input();
 		move_and_slide();
@@ -210,12 +229,12 @@ func _physics_process(delta) -> void:
 		if cooldown_remaining <= 0 and not cooldown_active_phase:
 			cooldown_remaining = 0;
 			ability_cooldown_bar.value = cooldown_remaining;
-			
-		# Network Sync Tick
-		net_tick_timer += delta;
-		if net_tick_timer >= NET_TICK_RATE:
-			net_tick_timer = 0.0;
-			_send_network_state();
+
+	# Network Sync Tick (Runs for local player regardless of god_mode)
+	net_tick_timer += delta;
+	if net_tick_timer >= NET_TICK_RATE:
+		net_tick_timer = 0.0;
+		_send_network_state();
 
 func _process(_delta: float) -> void:
 	if not is_local:
@@ -265,7 +284,7 @@ func handle_movement_input() -> void:
 		else:
 			sword_holder.position = Vector2(-20, -5);
 
-	if is_sword_swinging:
+	if is_sword_swinging and not god_mode:
 		velocity.x = 0;
 		return;
 
