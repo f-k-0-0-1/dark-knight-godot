@@ -7,6 +7,10 @@ signal cloudflare_tunnel_ready(token: String)
 signal cloudflare_tunnel_failed(error_msg: String)
 signal player_joined(player_name: String)
 signal player_left(player_name: String)
+signal coin_sync_received(coin_id: String)
+signal enemy_sync_received(enemy_id: String)
+signal level_sync_received(scene_name: String)
+signal pickup_sync_received(item_id: String)
 
 # Configuration Constants
 const PORT_PRIMARY: int = 8080
@@ -19,6 +23,7 @@ var my_port: int = PORT_PRIMARY
 var target_ip: String = DEFAULT_IP
 var target_port: int = PORT_PRIMARY
 var playerName: String = ""
+var cloudflare_checked: bool = false
 
 # Pure GDScript WebSocket Engines
 var ws_server: TCPServer = TCPServer.new()
@@ -43,7 +48,7 @@ var player_scene: PackedScene = null
 
 func _ready() -> void:
 	playerName = "Player" + str(randi_range(1000, 9999))
-	_check_cloudflare_installed()
+	get_tree().node_added.connect(_on_scene_node_added)
 	
 	# Load Player Scene for Remote Spawning
 	if ResourceLoader.exists(PLAYER_SCENE_PATH):
@@ -82,6 +87,14 @@ func _check_cloudflare_installed() -> void:
 		print("[Network] '", cloudflare_executable, "' detected. Cloudflare tunneling available.")
 
 func _start_host() -> void:
+	if ws_server.is_listening():
+		is_host = true
+		print("[Network] Host already active. Listening on Port: ", my_port)
+		return
+
+	# CRITICAL FIX: Clear all old peers, remote players, and sockets before binding a new host
+	disconnect_all()
+
 	var err: int = ws_server.listen(PORT_PRIMARY)
 	if err == OK:
 		is_host = true
@@ -195,6 +208,11 @@ func connectToCloudflareServer(token: String) -> void:
 	reconnect_client()
 
 func startCloudflareTunnel() -> void:
+	
+	if not cloudflare_checked:
+		_check_cloudflare_installed()
+		cloudflare_checked = true
+		
 	if not is_cloudflare_installed:
 		cloudflare_tunnel_failed.emit("Cloudflare ('" + cloudflare_executable + "') is not installed. Please install it to use online tunneling. Running localhost only.")
 		return
@@ -257,10 +275,18 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 				player_joined.emit(sender)
 				_spawn_remote_player(sender)
 				
-				# If we are the host, tell the new client about us
 				if is_host and from_peer != null:
 					var host_join: Dictionary = {"type": "join", "sender": playerName}
 					from_peer.send_text(JSON.stringify(host_join))
+					
+					 # Sync current level to the new client
+					if SceneManager.current_level != "":
+						var level_packet: Dictionary = {
+							"type": "level_sync",
+							"sender": playerName,
+							"scene": SceneManager.current_level
+						}
+						from_peer.send_text(JSON.stringify(level_packet))
 					
 			"leave":
 				print("[Network] Player left: ", sender)
@@ -279,6 +305,22 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 					connected_players[sender]["pos"] = Vector2(x, y)
 					connected_players[sender]["anim"] = anim
 					_update_remote_player(sender, Vector2(x, y), anim, flip)
+			"coin_sync":
+				var coin_id: String = data.get("id", "")
+				if coin_id != "":
+					coin_sync_received.emit(coin_id)
+			"enemy_sync":
+				var enemy_id: String = data.get("id", "")
+				if enemy_id != "":
+					enemy_sync_received.emit(enemy_id)
+			"level_sync":
+				var scene_name: String = data.get("scene", "")
+				if scene_name != "":
+					level_sync_received.emit(scene_name)
+			"pickup_sync":
+				var item_id: String = data.get("id", "")
+				if item_id != "":
+					pickup_sync_received.emit(item_id)
 			_:
 				variableSynced.emit(text)
 	else:
@@ -314,11 +356,14 @@ func _despawn_remote_player(p_name: String) -> void:
 
 func _update_remote_player(p_name: String, pos: Vector2, anim: String, flip: bool) -> void:
 	if remote_players.has(p_name):
-		var instance: CharacterBody2D = remote_players[p_name]
-		if is_instance_valid(instance):
+		if is_instance_valid(remote_players[p_name]):
+			var instance: CharacterBody2D = remote_players[p_name]
 			instance.network_target_pos = pos
 			instance.network_anim = anim
 			instance.network_flip_h = flip
+		else:
+			remote_players.erase(p_name)
+			connected_players.erase(p_name)
 
 func _process(delta: float) -> void:
 	# 1. Process Server
@@ -389,7 +434,15 @@ func _process(delta: float) -> void:
 			tunnel_resolved = true
 			cloudflare_tunnel_failed.emit("Timed out waiting for Cloudflare tunnel URL.")
 
+func _on_scene_node_added(node: Node) -> void:
+	# When a new scene loads, reparent all active remote players to the new scene root
+	if node == get_tree().current_scene:
+		for p_name in remote_players.keys():
+			if is_instance_valid(remote_players[p_name]):
+				var instance: Node = remote_players[p_name]
+				if instance.get_parent() != node:
+					instance.get_parent().remove_child(instance)
+					node.add_child(instance)
+
 func _exit_tree() -> void:
-	stopCloudflareTunnel()
-	if ws_server.is_listening():
-		ws_server.stop()
+	disconnect_all()

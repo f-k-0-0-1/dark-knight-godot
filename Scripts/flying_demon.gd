@@ -9,7 +9,9 @@ extends CharacterBody2D
 @export var attack_range := 50.0
 @export var attack_cooldown := 1.0
 
-@onready var camera = get_tree().get_first_node_in_group("player").get_node("Camera2D")
+var camera: Camera2D = null
+var sync_id: String = ""
+var is_syncing_death: bool = false;
 
 # === STATE ===
 var health := max_health
@@ -37,6 +39,19 @@ func _ready():
 	sprite.play("idle")
 	hitbox.body_entered.connect(_on_HitBox_body_entered)
 	hitbox.body_exited.connect(_on_HitBox_body_exited)
+	
+	sync_id = str(get_path())
+
+	# Safely resolve local player camera
+	var players: Array[Node] = get_tree().get_nodes_in_group("player")
+	for p in players:
+		if p is CharacterBody2D and p.is_local:
+			camera = p.get_node_or_null("Camera2D")
+			break
+			
+	if LIB_C != null:
+		if not LIB_C.enemy_sync_received.is_connected(_on_enemy_sync_received):
+			LIB_C.enemy_sync_received.connect(_on_enemy_sync_received)
 
 func _physics_process(_delta: float) -> void:
 	if is_dead:
@@ -101,40 +116,25 @@ func update_animation():
 func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	if is_dead or invulnerable:
 		return
-	
-	# 1. Lock the enemy (Hit Stun)
 	hurt_lock = true
 	invulnerable = true
-	
-	# --- CRITICAL FIX: Use call_deferred to disable the Hitbox ---
 	hitbox.call_deferred("set_monitoring", false)
 	hitbox.call_deferred("set_monitorable", false)
-	
-	# 2. Play hurt animation
 	sprite.play("hurt")
-	
 	health -= amount
 	health = max(health, 0)
 	update_health_bar()
-
-	# 3. KNOCKBACK (Push 2x further)
 	if source_position != Vector2.ZERO:
 		var knockback_dir := (global_position - source_position).normalized()
 		velocity = knockback_dir * knockback_strength * 2.0
-
 	if health <= 0:
 		die()
-		
-	# 4. Wait for the hit-stun duration (0.4s)
 	await get_tree().create_timer(0.4).timeout
-	
-	# 5. Unlock the enemy and re-enable the Hitbox
 	if not is_dead and is_instance_valid(self):
 		hurt_lock = false
 		hitbox.call_deferred("set_monitoring", true)
 		hitbox.call_deferred("set_monitorable", true)
-		
-		await get_tree().create_timer(0.2).timeout # Brief invulnerability window
+		await get_tree().create_timer(0.2).timeout
 		invulnerable = false
 
 func update_health_bar() -> void:
@@ -142,10 +142,21 @@ func update_health_bar() -> void:
 
 # === DEATH ===
 func die() -> void:
+	if is_dead:
+		return
 	is_dead = true
+
+	if LIB_C != null:
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "enemy_sync"
+		packet["sender"] = LIB_C.playerName
+		packet["id"] = sync_id
+		LIB_C.send_json_packet(packet)
+		
 	velocity = Vector2.ZERO
 	sprite.play("death")
-	camera.trigger_shake(8.0, 0.2)
+	if camera:
+		camera.trigger_shake(8.0, 0.2)
 	death_sound.play()
 	collision_shape.call_deferred("set_disabled", true)
 	await sprite.animation_finished
@@ -179,16 +190,22 @@ func _on_HitBox_body_exited(body: Node) -> void:
 
 # === GET PLAYER ===
 func get_closest_player() -> Node2D:
-	var players = get_tree().get_nodes_in_group("player")
+	var players: Array[Node] = get_tree().get_nodes_in_group("player")
 	if players.is_empty():
 		return null
-
-	var closest: Node2D = players[0]
-	var closest_dist := global_position.distance_to(closest.global_position)
+		
+	var closest: Node2D = null
+	var closest_dist: float = INF
 
 	for p in players:
-		var dist = global_position.distance_to(p.global_position)
-		if dist < closest_dist:
-			closest = p
-			closest_dist = dist
+		if p is CharacterBody2D and p.is_local:
+			var dist: float = global_position.distance_to(p.global_position)
+			if dist < closest_dist:
+				closest = p
+				closest_dist = dist			
 	return closest
+	
+func _on_enemy_sync_received(enemy_id: String) -> void:
+	if enemy_id == sync_id and not is_dead and not is_syncing_death:
+		is_syncing_death = true
+		take_damage(max_health, Vector2.ZERO)

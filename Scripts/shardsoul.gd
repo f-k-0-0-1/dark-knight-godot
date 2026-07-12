@@ -21,6 +21,8 @@ var facing_right := true
 var is_recoiling := false
 var is_attacking := false # Used to freeze movement during animations
 var can_attack := true
+var sync_id: String = ""
+var is_syncing_death: bool = false
 
 # Patrol state
 var moving_right := true
@@ -33,16 +35,19 @@ var moving_right := true
 @onready var timer: Timer = $AttackCooldown
 @onready var death_sound: AudioStreamPlayer = $DeathSound
 
-func _ready():
+func _ready() -> void:
 	add_to_group("enemies")
-	
 	update_health_bar()
 	sprite.play("walk")
+	sync_id = str(get_path())
 	
-	# Connect Signals
 	hitbox.body_entered.connect(_on_HitBox_body_entered)
 	hitbox.body_exited.connect(_on_HitBox_body_exited)
 	sprite.animation_finished.connect(_on_animation_finished)
+	
+	if LIB_C != null:
+		if not LIB_C.enemy_sync_received.is_connected(_on_enemy_sync_received):
+			LIB_C.enemy_sync_received.connect(_on_enemy_sync_received)
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
@@ -133,21 +138,15 @@ func update_animation():
 func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	if is_dead:
 		return
-
 	health -= amount
 	health = max(health, 0)
 	update_health_bar()
-
-	# Knockback away from source
 	if source_position != Vector2.ZERO:
 		var knockback_dir := (global_position - source_position).normalized()
 		velocity = knockback_dir * knockback_strength
-
-	# Cancel attack if hit
 	if is_attacking:
 		is_attacking = false
 		sprite.stop()
-
 	if health <= 0:
 		die()
 
@@ -156,15 +155,23 @@ func update_health_bar() -> void:
 
 # === DEATH (Fixed for crash) ===
 func die() -> void:
+	if is_dead:
+		return
 	is_dead = true
+
+	if LIB_C != null:
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "enemy_sync"
+		packet["sender"] = LIB_C.playerName
+		packet["id"] = sync_id
+		LIB_C.send_json_packet(packet)
+		
 	velocity = Vector2.ZERO
 	sprite.play("death")
 	death_sound.play()
-	
 	collision_shape.call_deferred("set_disabled", true)
 	hitbox.call_deferred("set_monitoring", false)
 	hitbox.call_deferred("set_monitorable", false)
-	
 	await sprite.animation_finished
 	queue_free()
 
@@ -190,20 +197,21 @@ func _on_HitBox_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		can_attack = true
 
-# === GET PLAYER ===
 func get_closest_player() -> Node2D:
-	var players = get_tree().get_nodes_in_group("player")
+	var players: Array[Node] = get_tree().get_nodes_in_group("player")
 	if players.is_empty():
 		return null
-
-	var closest: Node2D = players[0]
-	var closest_dist := global_position.distance_to(closest.global_position)
-
+		
+	var closest: Node2D = null
+	var closest_dist: float = INF
+	
 	for p in players:
-		var dist = global_position.distance_to(p.global_position)
-		if dist < closest_dist:
-			closest = p
-			closest_dist = dist
+		if p is CharacterBody2D and p.is_local:
+			var dist: float = global_position.distance_to(p.global_position)
+			if dist < closest_dist:
+				closest = p
+				closest_dist = dist
+				
 	return closest
 
 # === ANIMATION FINISHED ===
@@ -213,3 +221,8 @@ func _on_animation_finished() -> void:
 		is_attacking = false
 		if is_aggro:
 			sprite.play("walk")
+
+func _on_enemy_sync_received(enemy_id: String) -> void:
+	if enemy_id == sync_id and health > 0 and not is_syncing_death:
+		is_syncing_death = true
+		take_damage(max_health, Vector2.ZERO)

@@ -121,14 +121,9 @@ func handle_chat_cli_command(text: String) -> void:
 	var sub_cmd: String = parts[1]
 	
 	if (sub_cmd == "-s"):
-		if not LIB_C.is_cloudflare_installed:
-			info_box.text += "\n[System] 'cloudflared' is not installed. Please install it to play online. Starting local host instead."
-			LIB_C._start_host()
-		else:
-			info_box.text += "\n[System] Spawning local server and initiating Cloudflare tunnel..."
-			LIB_C.startCloudflareTunnel()
+		info_box.text += "\n[System] Verifying Cloudflare installation and starting tunnel..."
+		LIB_C.startCloudflareTunnel()
 		command_box.text = ""
-		
 	elif (sub_cmd == "-j"):
 		if (parts.size() < 3):
 			log_error("Missing dynamic connection token. Format: chat -j <token_or_ip>\n")

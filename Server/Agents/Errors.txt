@@ -1,0 +1,6 @@
+E 0:00:27:016   sync_node.gd:89 @ _start_host(): Condition "_sock->is_open()" is true. Returning: ERR_ALREADY_IN_USE
+  <C++ Source>  core/io/tcp_server.cpp:41 @ listen()
+  <Stack Trace> sync_node.gd:89 @ _start_host()
+				cheat_command.gd:126 @ handle_chat_cli_command()
+				cheat_command.gd:51 @ run_command()
+				player.gd:182 @ _input()

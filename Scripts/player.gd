@@ -405,14 +405,24 @@ func add_bonus_heart() -> bool:
 	return true;
 
 func die() -> void:
-	if is_dead: return;
-	is_dead = true;
-	if camera: camera.trigger_shake(20.0, 0.8);
-	MusicManager.play_game_over();
-	set_process(false);
-	set_process_input(false);
-	await get_tree().create_timer(0.5).timeout;
-	SceneManager.change_scene("retry_menu");
+	if is_dead: 
+		return
+	is_dead = true
+
+	if not is_local:
+		if sprite:
+			sprite.visible = false
+		queue_free()
+		return
+		
+	if camera: 
+		camera.trigger_shake(20.0, 0.8)
+		
+	MusicManager.play_game_over()
+	set_process(false)
+	set_process_input(false)
+	await get_tree().create_timer(0.5).timeout
+	SceneManager.change_scene("retry_menu")
 
 # Utilities and Helpers
 func handle_animation() -> void:

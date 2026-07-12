@@ -56,4 +56,8 @@ Cloudflare quick tunnels have been fully integrated to route raw gaming payloads
 3. Clipboard Integration: The host's extracted TryCloudflare URL is automatically copied to the system clipboard upon successful tunnel establishment, allowing rapid sharing [1].
 4. Client Simplicity: No third-party tunneling software, access keys, or client-side setups are required on Player 2's computer [1].
 5. Chat Lobby: Addeed Chat Lobby
+6. Cross-Platform Cloudflare Integration
+	-   Updated `sync_node.gd` to explicitly detect and resolve `cloudflared.exe` on Windows and `cloudflared` on Linux/macOS. The system now stores the resolved executable name and uses it consistently for both version checks and tunnel spawning.
+7. Unified Player Entity Architecture
+	-   Successfully transitioned from a separate `NetworkPlayer` scene to reusing the main `Player.tscn` with an `is_local` flag. This ensures remote players share identical collision shapes, sprites, and animations while having their camera, HUD, audio, and input processing safely disabled.
 ===================================================================
