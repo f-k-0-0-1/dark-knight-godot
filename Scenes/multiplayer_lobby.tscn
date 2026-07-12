@@ -1,0 +1,165 @@
+[gd_scene format=3 uid="uid://cm0v6jf4ho2lp"]
+
+[ext_resource type="Texture2D" uid="uid://df1x1b3e8ig5p" path="res://Assets/Backgrounds/multiplayer_lobby_ui.png" id="1_8caof"]
+[ext_resource type="Script" uid="uid://bbdd2ae3bcpmy" path="res://Scripts/multiplayer_lobby.gd" id="1_a0yqj"]
+[ext_resource type="Texture2D" uid="uid://bjo5tawrdksvo" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00000.png" id="2_a0yqj"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8caof"]
+texture = ExtResource("1_8caof")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnydk"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubasi"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xrrnt"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxa2p"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f4qmh"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqp54"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hyoii"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bny5i"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mrmvs"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4g4m"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bxj8h"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="ImageTexture" id="ImageTexture_mxcfh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a0yqj"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mxcfh"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34kdt"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="MultiplayerLobby" type="CanvasLayer" unique_id=662087595]
+script = ExtResource("1_a0yqj")
+
+[node name="Panel" type="Panel" parent="." unique_id=1571559695]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_8caof")
+
+[node name="PlayerCard1" type="Control" parent="Panel" unique_id=158750763]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerName" type="Label" parent="Panel/PlayerCard1" unique_id=273563471]
+layout_mode = 0
+offset_left = 345.0
+offset_top = 308.0
+offset_right = 417.0
+offset_bottom = 331.0
+text = "PLAYER 1"
+
+[node name="player_sprite_1" type="Sprite2D" parent="Panel/PlayerCard1" unique_id=842349276]
+position = Vector2(253, 372)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_a0yqj")
+
+[node name="PlayerCard2" type="Control" parent="Panel" unique_id=999680006]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerName" type="Label" parent="Panel/PlayerCard2" unique_id=954675087]
+layout_mode = 0
+offset_left = 808.0
+offset_top = 308.0
+offset_right = 880.0
+offset_bottom = 331.0
+text = "PLAYER 2"
+
+[node name="player_sprite_2" type="Sprite2D" parent="Panel/PlayerCard2" unique_id=1538850841]
+position = Vector2(701, 372)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_a0yqj")
+
+[node name="StartButton" type="Button" parent="Panel" unique_id=2104864470]
+layout_mode = 0
+offset_left = 427.0
+offset_top = 522.0
+offset_right = 817.0
+offset_bottom = 589.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_qnydk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ubasi")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xrrnt")
+
+[node name="JoinButton" type="Button" parent="Panel" unique_id=733342364]
+layout_mode = 0
+offset_left = 529.0
+offset_top = 194.0
+offset_right = 646.0
+offset_bottom = 243.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_hxa2p")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_f4qmh")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xqp54")
+
+[node name="LinkInput" type="LineEdit" parent="Panel" unique_id=1578970654]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 193.0
+offset_right = 482.0
+offset_bottom = 245.0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_hyoii")
+placeholder_text = "  Paste Invite Link .........."
+expand_to_text_length = true
+
+[node name="LevelSelectDropdown" type="OptionButton" parent="Panel" unique_id=1987941556]
+layout_mode = 0
+offset_left = 710.0
+offset_top = 217.0
+offset_right = 938.0
+offset_bottom = 247.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_bny5i")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_mrmvs")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_k4g4m")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bxj8h")
+theme_override_icons/arrow = SubResource("ImageTexture_mxcfh")
+item_count = 5
+popup/item_0/text = "LEVEL 1"
+popup/item_0/id = 0
+popup/item_1/text = "LEVEL 2"
+popup/item_1/id = 1
+popup/item_2/text = "LEVEL 3"
+popup/item_2/id = 2
+popup/item_3/text = "LEVEL 4"
+popup/item_3/id = 3
+popup/item_3/disabled = true
+popup/item_4/text = "LEVEL 5"
+popup/item_4/id = 4
+popup/item_4/disabled = true
+
+[node name="ChatButton" type="Button" parent="Panel" unique_id=395433158]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 529.0
+offset_right = 359.0
+offset_bottom = 579.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_a0yqj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_mxcfh")
+theme_override_styles/hover = SubResource("StyleBoxFlat_34kdt")

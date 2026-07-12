@@ -54,32 +54,60 @@ func _ready() -> void:
 	_start_host()
 
 func _check_cloudflare_installed() -> void:
-	var os_name: String = OS.get_name()
 	var output: Array = []
-	var exit_code: int = -1
-	
-	# Platform-specific executable resolution
-	if os_name == "Windows":
-		cloudflare_executable = "cloudflared.exe"
-		# Check both with and without extension as Windows PATH behavior varies
-		exit_code = OS.execute(cloudflare_executable, ["--version"], output, true, false)
-		if exit_code == -1 or exit_code > 0:
-			cloudflare_executable = "cloudflared"
-			exit_code = OS.execute(cloudflare_executable, ["--version"], output, true, false)
-	elif os_name == "Linux" or os_name == "macOS":
-		cloudflare_executable = "cloudflared"
-		exit_code = OS.execute(cloudflare_executable, ["--version"], output, true, false)
-	else:
-		is_cloudflare_installed = false
-		print("[Network] Unsupported OS for Cloudflare detection: ", os_name)
-		return
-		
-	if exit_code == -1 or exit_code > 0:
-		is_cloudflare_installed = false
-		print("[Network] '", cloudflare_executable, "' not found in system PATH. Cloudflare tunneling disabled.")
-	else:
-		is_cloudflare_installed = true
-		print("[Network] '", cloudflare_executable, "' detected. Cloudflare tunneling available.")
+	var exit_code := -1
+
+	var candidates: Array[String] = []
+
+	match OS.get_name():
+		"Windows":
+			candidates = [
+				"cloudflared",
+				"cloudflared.exe",
+				"C:/Program Files/Cloudflare/cloudflared.exe",
+				"C:/Program Files (x86)/Cloudflare/cloudflared.exe",
+				OS.get_environment("USERPROFILE") + "/cloudflared.exe",
+				OS.get_environment("USERPROFILE") + "/Downloads/cloudflared.exe"
+			]
+
+		"Linux":
+			candidates = [
+				"cloudflared",
+				"/usr/bin/cloudflared",
+				"/usr/local/bin/cloudflared"
+			]
+
+		"macOS":
+			candidates = [
+				"cloudflared",
+				"/opt/homebrew/bin/cloudflared",
+				"/usr/local/bin/cloudflared"
+			]
+
+		_:
+			print("[Network] Unsupported OS: ", OS.get_name())
+			is_cloudflare_installed = false
+			return
+
+	for exe in candidates:
+		output.clear()
+
+		exit_code = OS.execute(exe, ["--version"], output, true)
+
+		if exit_code == 0:
+			cloudflare_executable = exe
+			is_cloudflare_installed = true
+
+			print("[Network] Cloudflared found:")
+			print("    Executable: ", exe)
+
+			if output.size() > 0:
+				print(output[0])
+
+			return
+
+	is_cloudflare_installed = false
+	print("[Network] Cloudflared not found.")
 
 func _start_host() -> void:
 	var err: int = ws_server.listen(PORT_PRIMARY)
