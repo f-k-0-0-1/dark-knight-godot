@@ -15,8 +15,11 @@ var commandsInfo: String = """
 6. level -n -> Bypass to Next Level\n
 7. clear -all ->  To Clear The Commands & Error Logs\n
 8. shop  - (use '-' for no args) -> To Open Shop Menu\n
-9. chat -s -> Add Server Ip\n
-10 chat -m -> Send Message \n
+9. chat -s -> Start Server\n
+10. chat -j -> Join Server \n
+11. chat -ui -> Open Chat UI \n
+12. chat -m -> Send Message \n
+13. chat -e -> Close or Exit Connection \n
 """
 
 # === CURRENCY SYSTEM ===

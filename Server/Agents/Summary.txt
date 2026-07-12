@@ -1,59 +1,59 @@
 ===================================================================
-		 PROJECT PROGRESS SUMMARY: HYBRID C-GODOT NETWORKING
+		 PROJECT PROGRESS SUMMARY: PURE GDSCRIPT WEBSOCKET NETWORKING
 ===================================================================
 
 STATUS: 
-- Localhost Chat Engine: OPERATIONAL
-- Multi-threaded C Binaries: COMPILATION RESOLVED / FUNCTIONAL
-- Multi-instance Auto-Detection: STABILIZED / OPERATIONAL
-- GDScript API Integration: SYNCHRONIZED / STABLE
+- Localhost Chat Engine: OPERATIONAL (Pure GDScript WebSockets)
+- Multi-instance Auto-Detection: OPERATIONAL (Dynamic Port Probing)
+- Cloudflare Online Tunneling: OPERATIONAL & FULLY INTEGRATED
+- GDScript API Integration: SYNCHRONIZED / TWO-WAY STABLE
 
 -------------------------------------------------------------------
 1. SYSTEM ARCHITECTURE OVERVIEW
 -------------------------------------------------------------------
-This project implements a custom hybrid networking pipeline. Instead of relying on Godot's high-level multiplayer API, it passes data directly through compiled C socket applications optimized to run entirely in system memory via standard outputs (I/O streaming).
+The networking pipeline has been completely refactored to run as a native GDScript implementation, replacing the compiled C socket binaries (peer.c and server.c) [1]. This architecture eliminates external compilation dependencies, platform execution warnings, and socket handshake drops [1].
 
-- SENDER (peer.c): A lightweight socket client that takes an IP, Port, and a dynamic text payload string as CLI arguments, connects to the target machine, drops the packet, and terminates instantly.
-- RECEIVER (server.c): A lightweight background socket listener that binds to a port, waits for a connection packet, outputs the payload to stdout, closes the connection, and prepares for the next loop.
+- SERVER (TCPServer): A native background listener that binds to your local port, accepts incoming TCP connections, upgrades them to WebSocket connections, and processes incoming data frames natively on the main thread [1].
+- CLIENT (WebSocketPeer): A native persistent WebSocket client that establishes a continuous, secure connection to the host address [1]. Sockets are kept alive throughout the game session, ensuring instantaneous delivery without socket handshake latency [1].
 
 -------------------------------------------------------------------
 2. RECENT STABILIZATION & REFACTORING UPDATE
 -------------------------------------------------------------------
 
-A. Styling and Vibe Unification
-- Refactored all C and GDScript source files to match Allman brace alignment rules, camelCase method/variable identifiers, and UPPER_SNAKE_CASE macros and constants.
+A. Pure GDScript WebSocket Migration
+- Removed all compiled C binaries, UNIX parent-child thread warnings, and taskkill requirements [1].
+- Integrated persistent, bi-directional client/server connections to avoid socket-handshake latency and eliminate packet drops [1].
 
-B. Windows and Linux C Compilation Stability
-- Integrated '<stdint.h>' inside 'peer.c' and 'server.c' to resolve cross-compilation errors under MinGW (gcc/x86_64-w64-mingw32-gcc) where 'uint16_t' was undeclared.
+B. Dynamic Port Probing & Auto-Detection
+- Retired the lock-file (`testing_pid.lock`) and subprocess PID-checking system (`isPidActive()`) [1].
+- Implemented a self-healing port-probing check: the application attempts to bind to port 8080 on startup [1]. If successful, it configures as Player 1 (Port 8080) [1]. If port 8080 is blocked, it binds to 8081 and configures as Player 2 (Port 8081) [1].
 
-C. Thread and Process Lifecycle Management
-- Implemented 'cleanOldBinaries()' to terminate leftover servers or peers during fresh startups (when starting as Player 1).
-- Resolved Unix ECHILD (Errno 10) parent-child thread warnings by implementing a platform-aware PID query 'isPidActive()', using 'kill -0' on POSIX systems instead of Godot's child-restricted 'OS.is_process_running()'.
-- Addressed process-killing loops on localhost by stopping Player 2 from invoking 'cleanOldBinaries()' when Player 1 is already active.
-- Added 'unblockLocalServer()' inside '_exit_tree()' to send a local dummy TCP connection on game exit, unblocking 'accept()' in 'server.c' and allowing the process to terminate cleanly and its Thread reference to join without leaks.
+C. Reverse-Lookup Cloudflare Log Parser
+- Overhauled the log-parsing logic inside `sync_node.gd` [1]. The parser finds `.trycloudflare.com` first, then searches backwards (`rfind`) to isolate the preceding `"https://"` [1]. This prevents website terms-of-service links from polluting your clipboard [1].
+- Expanded the tunnel-timer handshake window from 5 to 15 seconds to accommodate network latency, allowing real URLs to resolve successfully [1].
 
-D. Dynamic Port Binding and Routing
-- Modified 'server.c' to accept an optional command-line port argument. This allows GDScript to assign exact ports (Player 1 listens on 8080 and sends to 8081, Player 2 listens on 8081 and sends to 8080), avoiding bind conflicts, message loopbacks, or self-echoing chat instances.
-
-E. UI Integration and Compatibility
-- Re-established send button behavior in 'lobby.gd' by resolving double-connection errors via 'is_connected()' checks and providing a legacy snake_case method wrapper ('_send_message()') to support existing scene layouts.
+D. Tilde Console Toggle & Packet Deduplication
+- Integrated standard backtick/tilde (`~` / `KEY_QUOTELEFT` / `KEY_ASCIITILDE`) physical key event listeners directly inside `player.gd` [1]. Toggling console focus now calls `get_viewport().set_input_as_handled()` to prevent characters from bleeding into typing fields [1].
+- Implemented a time-based packet deduplicator in `sync_node.gd` that discards identical packet payloads received within a 200ms window, resolving double-printing over full-mesh connections [1].
 
 -------------------------------------------------------------------
 3. LOCAL TESTING MODE CONFIGURATION
 -------------------------------------------------------------------
 Local development operates across a coordinated port exchange:
 
-- WINDOW 1 (Player 1): Listens on 8080 <-- Sends targets to 8081
-- WINDOW 2 (Player 2): Listens on 8081 <-- Sends targets to 8080
+- WINDOW 1 (Player 1): Listens on 8080 <-- Sends targets to 8081 [1]
+- WINDOW 2 (Player 2): Listens on 8081 <-- Sends targets to 8080 [1]
 
-This creates a loopback channel allowing text exchange on a single machine without complex socket proxies.
+The dynamic port-probing system sets up this loopback channel automatically upon launching two game windows on a single machine [1].
 
 -------------------------------------------------------------------
-4. FUTURE ROADMAP: MOVING TO THE INTERNET (CloudFare)
+4. COMPLETED CLOUDFLARE ONLINE TUNNELING INTEGRATION
 -------------------------------------------------------------------
-When migrating to online tunnels (cloudfare, Pinggy, LocalXpose, zrok):
+Cloudflare quick tunnels have been fully integrated to route raw gaming payloads over the public internet using standard web protocols [1]:
 
-1. Expose Host: The player hosting (Player 1) runs a tunneling command to expose the internal listener port to a public endpoint.
-2. Dynamic Address Parameters: Player 2 inputs the dynamic public address and port provided by the hosting agent rather than using the hardcoded localhost loop.
-3. Export Configuration: Ensure C binaries under 'lib_c/*' are included in Godot non-resource filters to be bundled correctly with standalone application packages.
+1. Expose Host: Player 1 hosts the game and initiates the Cloudflare quick tunnel (`chat -s`), exposing local port 8080 via the secure Cloudflare edge [1].
+2. Dynamic WSS Routing: Player 2 inputs the generated trycloudflare subdomain (`chat -j <token>`) [1]. The client establishes a secure WebSocket (`wss://`) handshake over port 443 [1]. Cloudflare handles the HTTP Upgrade headers and proxies the WebSocket connection to the local listener [1].
+3. Clipboard Integration: The host's extracted TryCloudflare URL is automatically copied to the system clipboard upon successful tunnel establishment, allowing rapid sharing [1].
+4. Client Simplicity: No third-party tunneling software, access keys, or client-side setups are required on Player 2's computer [1].
+5. Chat Lobby: Addeed Chat Lobby
 ===================================================================

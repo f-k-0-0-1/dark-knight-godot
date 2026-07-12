@@ -43,6 +43,7 @@ var lightning_ball_instance: Area2D;
 var cheat_command_scene: Node = null;
 
 # Booleans
+var lobby: bool = false;
 var god_mode: bool = false;
 var is_dead: bool = false;
 var can_shoot: bool = true;
@@ -119,14 +120,28 @@ func _ready() -> void:
 		else:
 			print("Player: saved equipped item not found: ", Globals.equipped_item_name);
 
+# Helper function to check if the user is typing in a GUI input field
+func is_typing_in_input() -> bool:
+	var focus_owner = get_viewport().gui_get_focus_owner();
+	if (focus_owner != null):
+		if (focus_owner is LineEdit or focus_owner is TextEdit):
+			return true;
+	return false;
+
 # Handle Input Events Here
 func _input(event) -> void:
 	if (is_dead):
 		return;
 		
+	# Tilde console toggle must always execute regardless of input focus state
 	if (event.is_action_pressed("cheat_command") or (event is InputEventKey and event.pressed and (event.keycode == KEY_QUOTELEFT or event.keycode == KEY_ASCIITILDE))):
 		cheat_command = !cheat_command;
 		get_viewport().set_input_as_handled();
+		return;
+
+	# Freeze and ignore all other input actions if the user is typing in any text field
+	if (is_typing_in_input() and !event.is_action_pressed("Enter")):
+		return;
 		
 	if (!cheat_command and event.is_action_pressed("fireball")):
 		shoot_fireball();
@@ -134,19 +149,13 @@ func _input(event) -> void:
 	if (!cheat_command and event.is_action_pressed("lightning_ability")):
 		activate_lightning_ball();
 	
-	if (!cheat_command and event.is_action_pressed("sword_attack")):
+	if (!cheat_command and !lobby and event.is_action_pressed("sword_attack")):
 		if (sword and sword.has_method("swing")):
 			sword.swing(facing_right);
 			
 	if (!cheat_command and event.is_action_pressed("god_mode_toggle")):
 		god_mode = !god_mode;
 		velocity = Vector2.ZERO;
-
-	if (!cheat_command and event.is_action_pressed("fireball")):
-		shoot_fireball();
-
-	if (!cheat_command and event.is_action_pressed("lightning_ability")):
-		activate_lightning_ball();
 
 	if (cheat_command and cheat_command_scene != null and event.is_action_pressed("Enter")):
 		cheat_command_scene.run_command();
@@ -170,7 +179,7 @@ func _physics_process(delta) -> void:
 	handle_animation();
 	update_lightning_ball_position();
 	
-	# === COOLDOWN UI FIX: Handle Full UI Cycle ===
+	# COOLDOWN UI FIX: Handle Full UI Cycle ===
 	if (cooldown_remaining > 0):
 		cooldown_remaining -= delta
 		
@@ -189,7 +198,7 @@ func _physics_process(delta) -> void:
 
 	if (cooldown_remaining <= 0 and not cooldown_active_phase):
 		cooldown_remaining = 0
-		ability_cooldown_bar.value = lightning_ability_cooldown
+		ability_cooldown_bar.value = cooldown_remaining
 
 # Every Frame Logic Here
 func _process(_delta: float) -> void:
@@ -206,18 +215,37 @@ func _process(_delta: float) -> void:
 	if (cheat_command and cheat_command_scene == null):
 		cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
 		add_child(cheat_command_scene);
+		# Grab focus on creation to immediately stop player actions and capture keystrokes
+		var command_line = cheat_command_scene.get_node_or_null("VBox/command_Box/command");
+		if (command_line and command_line is LineEdit):
+			command_line.grab_focus();
 	
 	elif (cheat_command and cheat_command_scene != null):
 		cheat_command_scene.visible = true;
+		# Defensive: Verify focus is captured whenever cheat console state is active
+		var command_line = cheat_command_scene.get_node_or_null("VBox/command_Box/command");
+		if (command_line and command_line is LineEdit and get_viewport().gui_get_focus_owner() != command_line):
+			command_line.grab_focus();
 	
 	else:
 		if (!cheat_command and cheat_command_scene != null):
 			cheat_command_scene.visible = false;
-
-# Movement and Physics Logic
+			# Release focus defensively to return keyboard control to game inputs
+			var command_line = cheat_command_scene.get_node_or_null("VBox/command_Box/command");
+			if (command_line and command_line is LineEdit and get_viewport().gui_get_focus_owner() == command_line):
+				command_line.release_focus();
 
 # Function Handles Player Movement
 func handle_movement_input() -> void:
+	# Ignore all movement inputs if typing in any text box/input field
+	if (is_typing_in_input()):
+		input_direction_A = 0.0;
+		input_direction = 0.0;
+		velocity.x = 0.0;
+		is_sprinting = false;
+		move_speed = speed;
+		return;
+
 	input_direction_A = Input.get_axis("move_left", "move_right");
 
 	if (input_direction_A != 0):

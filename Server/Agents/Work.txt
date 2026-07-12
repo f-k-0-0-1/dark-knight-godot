@@ -1,4 +1,0 @@
-Problems
-	1. Only Server player Messages shows in the Client player tab
-	2. While if Client sent it does not showes in serve
-	3. But both can see there "You" and client can seee server chat as player 1 

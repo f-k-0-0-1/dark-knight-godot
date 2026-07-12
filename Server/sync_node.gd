@@ -15,6 +15,7 @@ var isPlayer2: bool = false
 var myPort: int = PORT_PRIMARY
 var targetPort: int = PORT_SECONDARY
 var targetIp: String = DEFAULT_IP
+var playerName: String = ""
 
 # Pure GDScript WebSocket Engines
 var ws_server: TCPServer = TCPServer.new()
@@ -35,6 +36,9 @@ var tunnel_timer: float = 0.0
 var tunnel_resolved: bool = false
 
 func _ready() -> void:
+	# Generate unique default player identity to avoid machine conflict
+	playerName = "Player" + str(randi_range(1000, 9999))
+	
 	# Attempt to bind to the primary port to dynamically determine identity
 	var err = ws_server.listen(PORT_PRIMARY)
 	
@@ -59,6 +63,33 @@ func _ready() -> void:
 
 	# Connect default client target (local loopback fallback)
 	reconnect_client()
+
+# Gracefully disconnect all server and client connections
+func disconnect_all() -> void:
+	print("[Network] Disconnecting all network connections...")
+	
+	# Stop Cloudflare tunnel
+	stopCloudflareTunnel()
+	
+	# Close all active server peers
+	for peer in server_peers:
+		if peer != null:
+			peer.close()
+	server_peers.clear()
+	
+	# Stop the server itself
+	if ws_server.is_listening():
+		ws_server.stop()
+		print("[Network] Server stopped listening.")
+		
+	# Close the client peer
+	if client_peer != null:
+		client_peer.close()
+		client_connected = false
+		print("[Network] Client peer closed.")
+		
+	# Clear queues
+	pending_send_queue.clear()
 
 # Connects or reconnects the persistent client peer to the target
 func reconnect_client() -> void:
@@ -143,6 +174,14 @@ func connectToCloudflareServer(token: String) -> void:
 # Asynchronously spawn cloudflared quick-tunnel
 func startCloudflareTunnel() -> void:
 	stopCloudflareTunnel()
+	
+	# Defensive: Automatically bind/restart the listener if previously exited via chat -e
+	if not ws_server.is_listening():
+		var err = ws_server.listen(myPort)
+		if err == OK:
+			print("[Network] TCPServer successfully restarted on port: ", myPort)
+		else:
+			printerr("[Network] Failed to bind TCPServer on port: ", myPort)
 	
 	var log_path: String = "user://cloudflare.log"
 	if FileAccess.file_exists(log_path):
