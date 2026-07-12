@@ -34,6 +34,7 @@ var cloudflare_pid: int = -1
 var tunnel_timer: float = 0.0
 var tunnel_resolved: bool = false
 var is_cloudflare_installed: bool = false
+var cloudflare_executable: String = ""
 
 # Connected Players Tracking & Scene Management
 var connected_players: Dictionary = {}
@@ -53,14 +54,32 @@ func _ready() -> void:
 	_start_host()
 
 func _check_cloudflare_installed() -> void:
+	var os_name: String = OS.get_name()
 	var output: Array = []
-	var exit_code: int = OS.execute("cloudflared", ["--version"], output, true, false)
+	var exit_code: int = -1
+	
+	# Platform-specific executable resolution
+	if os_name == "Windows":
+		cloudflare_executable = "cloudflared.exe"
+		# Check both with and without extension as Windows PATH behavior varies
+		exit_code = OS.execute(cloudflare_executable, ["--version"], output, true, false)
+		if exit_code == -1 or exit_code > 0:
+			cloudflare_executable = "cloudflared"
+			exit_code = OS.execute(cloudflare_executable, ["--version"], output, true, false)
+	elif os_name == "Linux" or os_name == "macOS":
+		cloudflare_executable = "cloudflared"
+		exit_code = OS.execute(cloudflare_executable, ["--version"], output, true, false)
+	else:
+		is_cloudflare_installed = false
+		print("[Network] Unsupported OS for Cloudflare detection: ", os_name)
+		return
+		
 	if exit_code == -1 or exit_code > 0:
 		is_cloudflare_installed = false
-		print("[Network] 'cloudflared' not found in system PATH. Cloudflare tunneling disabled.")
+		print("[Network] '", cloudflare_executable, "' not found in system PATH. Cloudflare tunneling disabled.")
 	else:
 		is_cloudflare_installed = true
-		print("[Network] 'cloudflared' detected. Cloudflare tunneling available.")
+		print("[Network] '", cloudflare_executable, "' detected. Cloudflare tunneling available.")
 
 func _start_host() -> void:
 	var err: int = ws_server.listen(PORT_PRIMARY)
@@ -104,10 +123,14 @@ func reconnect_client() -> void:
 	client_connected = false
 	
 	var clean_ip: String = target_ip.strip_edges()
-	if clean_ip.begins_with("https://"): clean_ip = clean_ip.substr(8)
-	elif clean_ip.begins_with("http://"): clean_ip = clean_ip.substr(7)
-	elif clean_ip.begins_with("wss://"): clean_ip = clean_ip.substr(6)
-	elif clean_ip.begins_with("ws://"): clean_ip = clean_ip.substr(5)
+	if clean_ip.begins_with("https://"):
+		clean_ip = clean_ip.substr(8)
+	elif clean_ip.begins_with("http://"):
+		clean_ip = clean_ip.substr(7)
+	elif clean_ip.begins_with("wss://"):
+		clean_ip = clean_ip.substr(6)
+	elif clean_ip.begins_with("ws://"):
+		clean_ip = clean_ip.substr(5)
 		
 	var protocol: String = "wss://" if "trycloudflare.com" in clean_ip else "ws://"
 	var port_str: String = ""
@@ -141,8 +164,10 @@ func syncVariableToPeer(myVariable: String) -> void:
 
 func connectToCloudflareServer(token: String) -> void:
 	var clean_token: String = token.strip_edges()
-	if clean_token.begins_with("https://"): clean_token = clean_token.substr(8)
-	elif clean_token.begins_with("http://"): clean_token = clean_token.substr(7)
+	if clean_token.begins_with("https://"):
+		clean_token = clean_token.substr(8)
+	elif clean_token.begins_with("http://"):
+		clean_token = clean_token.substr(7)
 		
 	if "mock-tunnel-" in clean_token:
 		target_ip = "127.0.0.1"
@@ -171,7 +196,7 @@ func connectToCloudflareServer(token: String) -> void:
 
 func startCloudflareTunnel() -> void:
 	if not is_cloudflare_installed:
-		cloudflare_tunnel_failed.emit("Cloudflare ('cloudflared') is not installed. Please install it to use online tunneling. Running localhost only.")
+		cloudflare_tunnel_failed.emit("Cloudflare ('" + cloudflare_executable + "') is not installed. Please install it to use online tunneling. Running localhost only.")
 		return
 
 	stopCloudflareTunnel()
@@ -184,20 +209,21 @@ func startCloudflareTunnel() -> void:
 		DirAccess.remove_absolute(log_path)
 		
 	var global_log: String = ProjectSettings.globalize_path(log_path)
-	var osName: String = OS.get_name()
+	var os_name: String = OS.get_name()
 	tunnel_timer = 0.0
 	tunnel_resolved = false
 	
-	if osName == "Windows":
-		cloudflare_pid = OS.create_process("cmd.exe", ["/c", "cloudflared tunnel --url http://localhost:" + str(my_port) + " > \"" + global_log + "\" 2>&1"])
-	elif osName == "Linux" or osName == "macOS":
-		cloudflare_pid = OS.create_process("sh", ["-c", "cloudflared tunnel --url http://localhost:" + str(my_port) + " > \"" + global_log + "\" 2>&1"])
+	# Use the resolved platform-specific executable name
+	if os_name == "Windows":
+		cloudflare_pid = OS.create_process("cmd.exe", ["/c", cloudflare_executable + " tunnel --url http://localhost:" + str(my_port) + " > \"" + global_log + "\" 2>&1"])
+	elif os_name == "Linux" or os_name == "macOS":
+		cloudflare_pid = OS.create_process("sh", ["-c", cloudflare_executable + " tunnel --url http://localhost:" + str(my_port) + " > \"" + global_log + "\" 2>&1"])
 	else:
 		cloudflare_pid = -1
-		cloudflare_tunnel_failed.emit("Unsupported OS Platform")
+		cloudflare_tunnel_failed.emit("Unsupported OS Platform: " + os_name)
 		
 	if cloudflare_pid == -1:
-		cloudflare_tunnel_failed.emit("Failed to start cloudflared process.")
+		cloudflare_tunnel_failed.emit("Failed to start " + cloudflare_executable + " process.")
 
 func stopCloudflareTunnel() -> void:
 	if cloudflare_pid != -1:
