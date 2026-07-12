@@ -182,8 +182,58 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_0wmv4")
 }],
-"loop": false,
+"loop": true,
 "name": &"charge",
+"speed": 25.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i2l6w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_usfgj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eapjj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ybo4t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vmky4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_foy24")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fn1xf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xvwyn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p3n15")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nc2n7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ta3ll")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dulvk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c6mst")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p5qdy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7tmaa")
+}],
+"loop": false,
+"name": &"charge_2",
 "speed": 25.0
 }]
 
@@ -195,14 +245,15 @@ z_index = -1
 script = ExtResource("1_jpx7n")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=692683435]
+texture_filter = 6
 scale = Vector2(3.5, 3.5)
 sprite_frames = SubResource("SpriteFrames_ie7ns")
-animation = &"charge"
-frame = 24
-frame_progress = 1.0
+animation = &"charge_2"
+frame = 14
 speed_scale = 0.7
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=309791117]
+visible = false
 shape = SubResource("CircleShape2D_steq6")
 
 [node name="ShootSound" type="AudioStreamPlayer" parent="." unique_id=359946854]

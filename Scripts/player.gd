@@ -62,7 +62,12 @@ var bonus_heart_unlocked: bool = false;
 var jump_count: int = 0;
 var move_speed: float = speed;
 var time_elapsed: float = 0.0;
-var cooldown_remaining: float = 0.0;
+
+# === COOLDOWN UI FIX ===
+var cooldown_remaining: float = 0.0       # Time left for active phase
+var cooldown_active_phase: bool = false   # True = Active, False = Cooldown phase
+var cooldown_phase_timer: Timer          # Special timer for the UI phases
+
 var current_health: int = max_health;
 var old_health: int = current_health;
 
@@ -165,13 +170,26 @@ func _physics_process(delta) -> void:
 	handle_animation();
 	update_lightning_ball_position();
 	
+	# === COOLDOWN UI FIX: Handle Full UI Cycle ===
 	if (cooldown_remaining > 0):
-		cooldown_remaining -= delta;
-		ability_cooldown_bar.value = lightning_ability_cooldown - cooldown_remaining;
+		cooldown_remaining -= delta
+		
+		if (cooldown_active_phase):
+			# We are in the "Active" phase. Bar goes from 0 to MAX
+			ability_cooldown_bar.value = lightning_ability_duration - cooldown_remaining
+		else:
+			# We are in the "Cooldown" phase. Bar goes from MAX back to 0
+			ability_cooldown_bar.value = cooldown_remaining
 
-	if (cooldown_remaining <= 0):
-		cooldown_remaining = 0;
-		ability_cooldown_bar.value = lightning_ability_cooldown;
+	# When the active timer hits 0, switch to Cooldown phase automatically
+	if (cooldown_remaining <= 0 and cooldown_active_phase):
+		cooldown_active_phase = false
+		cooldown_remaining = lightning_ability_cooldown
+		ability_cooldown_bar.max_value = lightning_ability_cooldown
+
+	if (cooldown_remaining <= 0 and not cooldown_active_phase):
+		cooldown_remaining = 0
+		ability_cooldown_bar.value = lightning_ability_cooldown
 
 # Every Frame Logic Here
 func _process(_delta: float) -> void:
@@ -308,9 +326,11 @@ func activate_lightning_ball() -> void:
 	can_use_lightning = false;
 	is_lightning_active = true;
 	
-	cooldown_remaining = lightning_ability_cooldown;
-	ability_cooldown_bar.max_value = lightning_ability_cooldown;
-	ability_cooldown_bar.value = 0;
+	# === COOLDOWN UI FIX: Set up the Phase 1 (Active) ===
+	cooldown_active_phase = true
+	cooldown_remaining = lightning_ability_duration
+	ability_cooldown_bar.max_value = lightning_ability_duration
+	ability_cooldown_bar.value = 0
 	
 	ball = lightning_ball_scene.instantiate() as Area2D;
 	ball.scale = Vector2(1.5, 1.5);
