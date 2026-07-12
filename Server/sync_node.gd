@@ -19,7 +19,15 @@ var targetIp: String = DEFAULT_IP
 # Pure GDScript WebSocket Engines
 var ws_server: TCPServer = TCPServer.new()
 var server_peers: Array[WebSocketPeer] = []
-var pending_send_queue: Array[Dictionary] = [] # Array of Dictionary: { "peer": WebSocketPeer, "payload": String, "sent": bool }
+var pending_send_queue: Array[String] = [] # Queue of string payloads to send once connected
+
+# Persistent Bi-directional Client Connection
+var client_peer: WebSocketPeer = WebSocketPeer.new()
+var client_connected: bool = false
+
+# Network Deduplication Variables
+var last_received_packet: String = ""
+var last_received_time: int = 0
 
 # Cloudflare Tunnel Process Variables
 var cloudflare_pid: int = -1
@@ -49,11 +57,15 @@ func _ready() -> void:
 			# Both ports are blocked by other running background processes
 			printerr("CRITICAL ERROR: Failed to listen on both 8080 and 8081 ports. Sockets are blocked.")
 
-# Transmit message variable dynamically over a non-blocking WebSocket handshake
-func syncVariableToPeer(myVariable: String) -> void:
-	var ws_client: WebSocketPeer = WebSocketPeer.new()
-	var clean_ip: String = targetIp.strip_edges()
+	# Connect default client target (local loopback fallback)
+	reconnect_client()
+
+# Connects or reconnects the persistent client peer to the target
+func reconnect_client() -> void:
+	client_peer.close()
+	client_connected = false
 	
+	var clean_ip: String = targetIp.strip_edges()
 	if clean_ip.begins_with("https://"):
 		clean_ip = clean_ip.substr(8)
 	elif clean_ip.begins_with("http://"):
@@ -70,13 +82,28 @@ func syncVariableToPeer(myVariable: String) -> void:
 		port_str = ":" + str(targetPort)
 		
 	var url: String = protocol + clean_ip + port_str
-	var err = ws_client.connect_to_url(url)
-	if err == OK:
-		pending_send_queue.append({
-			"peer": ws_client,
-			"payload": myVariable,
-			"sent": false
-		})
+	print("[Network] Initiating persistent client connection to: ", url)
+	var err = client_peer.connect_to_url(url)
+	if err != OK:
+		printerr("[Network] Failed to initiate connection to: ", url)
+
+# Transmit message variable dynamically over persistent sockets
+func syncVariableToPeer(myVariable: String) -> void:
+	# 1. Transmit via persistent client connection if open
+	if client_peer.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		client_peer.send_text(myVariable)
+	else:
+		# 2. If client is not open, use active server connections as fallback (redundancy)
+		var sent_via_server: bool = false
+		for peer in server_peers:
+			if peer.get_ready_state() == WebSocketPeer.STATE_OPEN:
+				peer.send_text(myVariable)
+				sent_via_server = true
+		
+		# 3. If neither is available, queue message to flush once client connects
+		if not sent_via_server:
+			pending_send_queue.append(myVariable)
+			reconnect_client()
 
 # Parse connection token and update routing properties
 func connectToCloudflareServer(token: String) -> void:
@@ -96,6 +123,7 @@ func connectToCloudflareServer(token: String) -> void:
 			targetPort = port_part.to_int()
 		else:
 			targetPort = PORT_PRIMARY
+		reconnect_client()
 		return
 
 	if ":" in clean_token:
@@ -108,6 +136,9 @@ func connectToCloudflareServer(token: String) -> void:
 			targetPort = 443
 		else:
 			targetPort = PORT_PRIMARY
+			
+	# Trigger client connection to the new destination
+	reconnect_client()
 
 # Asynchronously spawn cloudflared quick-tunnel
 func startCloudflareTunnel() -> void:
@@ -138,6 +169,18 @@ func stopCloudflareTunnel() -> void:
 	tunnel_resolved = false
 	tunnel_timer = 0.0
 
+# Network packet receiving handler with integrated time-based deduplication
+func _on_packet_received(text: String) -> void:
+	var current_time: int = Time.get_ticks_msec()
+	
+	# Discard identical packets arriving within 200ms (avoids double printing)
+	if text == last_received_packet and (current_time - last_received_time) < 200:
+		return
+		
+	last_received_packet = text
+	last_received_time = current_time
+	variableSynced.emit(text)
+
 # Non-blocking main-thread polling loop
 func _process(delta: float) -> void:
 	# 1. Process active Server incoming connections
@@ -160,32 +203,37 @@ func _process(delta: float) -> void:
 			while peer.get_available_packet_count() > 0:
 				var packet = peer.get_packet()
 				var text = packet.get_string_from_utf8()
-				variableSynced.emit(text)
+				_on_packet_received(text)
 		elif state == WebSocketPeer.STATE_CLOSED:
 			server_peers.remove_at(server_idx)
 		server_idx -= 1
 
-	# 3. Process Client Sending Queue
-	var client_idx = pending_send_queue.size() - 1
-	while client_idx >= 0:
-		var item = pending_send_queue[client_idx]
-		var peer = item["peer"] as WebSocketPeer
-		peer.poll()
-		
-		var state = peer.get_ready_state()
-		if state == WebSocketPeer.STATE_OPEN:
-			if not item["sent"]:
-				peer.send_text(item["payload"])
-				item["sent"] = true
-			else:
-				# Once packet leaves buffer, close socket cleanly
-				if peer.get_current_outbound_buffered_amount() == 0:
-					peer.close()
-		elif state == WebSocketPeer.STATE_CLOSED:
-			pending_send_queue.remove_at(client_idx)
-		client_idx -= 1
+	# 3. Process Persistent Client Connection
+	client_peer.poll()
+	var client_state = client_peer.get_ready_state()
+	
+	if client_state == WebSocketPeer.STATE_OPEN:
+		if not client_connected:
+			client_connected = true
+			print("[Network] Persistent client connection established!")
+			
+		# Flush any messages queued during handshake
+		while pending_send_queue.size() > 0:
+			var payload = pending_send_queue.pop_front()
+			client_peer.send_text(payload)
+			
+		# Receive incoming data packets on client socket
+		while client_peer.get_available_packet_count() > 0:
+			var packet = client_peer.get_packet()
+			var text = packet.get_string_from_utf8()
+			_on_packet_received(text)
+			
+	elif client_state == WebSocketPeer.STATE_CLOSED:
+		if client_connected:
+			client_connected = false
+			print("[Network] Persistent client connection closed.")
 
-	# 4. Process Cloudflare Tunnel Logs and Handshake (with expanded 15s timeout)
+	# 4. Process Cloudflare Tunnel Logs and Handshake
 	if cloudflare_pid != -1 and not tunnel_resolved:
 		tunnel_timer += delta
 		var log_path: String = "user://cloudflare.log"
