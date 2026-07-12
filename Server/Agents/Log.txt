@@ -1,0 +1,8 @@
+ot Engine v4.6.stable.official.89cea1439 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 535.309.01 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1650
+
+Godot Engine v4.6.stable.official.89cea1439 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 535.309.01 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1650
+
+[Network] Dynamic setup successful: Configured as Player 2 (Port 8081)
+[Network] Dynamic setup successful: Configured as Player 1 (Port 8080)

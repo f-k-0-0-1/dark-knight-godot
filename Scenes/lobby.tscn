@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://431qb4277g1q"]
 
-[ext_resource type="Script" uid="uid://djg77bv30c8u8" path="res://Scripts/lobby.gd" id="1_nvaej"]
+[ext_resource type="Script" uid="uid://bnk8sq5dweb4l" path="res://Server/sync_node.gd" id="1_nvaej"]
 
 [node name="Lobby" type="Control" unique_id=744302885]
 layout_mode = 3
@@ -62,5 +62,3 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 26
 text = "Send"
-
-[connection signal="pressed" from="Bg/Button" to="." method="_sendMessage"]
