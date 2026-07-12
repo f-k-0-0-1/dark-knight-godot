@@ -15,7 +15,8 @@ var scene_paths: Dictionary = {
 	"credits": "res://Scenes/credits.tscn",
 	"floating_text": "res://Scenes/FloatingText.tscn",
 	"cheat_command" : "res://Scenes/cheat_command.tscn",
-	"shop_menu" : "res://Scenes/Shop.tscn"
+	"shop_menu" : "res://Scenes/Shop.tscn",
+	"lobby" : "res://Scenes/lobby.tscn"
 }
 # Loaded Scenes Dic
 var scenes: Dictionary = {}

@@ -1,0 +1,59 @@
+===================================================================
+		 PROJECT PROGRESS SUMMARY: HYBRID C-GODOT NETWORKING
+===================================================================
+
+STATUS: 
+- Localhost Chat Engine: OPERATIONAL
+- Multi-threaded C Binaries: COMPILATION RESOLVED / FUNCTIONAL
+- Multi-instance Auto-Detection: STABILIZED / OPERATIONAL
+- GDScript API Integration: SYNCHRONIZED / STABLE
+
+-------------------------------------------------------------------
+1. SYSTEM ARCHITECTURE OVERVIEW
+-------------------------------------------------------------------
+This project implements a custom hybrid networking pipeline. Instead of relying on Godot's high-level multiplayer API, it passes data directly through compiled C socket applications optimized to run entirely in system memory via standard outputs (I/O streaming).
+
+- SENDER (peer.c): A lightweight socket client that takes an IP, Port, and a dynamic text payload string as CLI arguments, connects to the target machine, drops the packet, and terminates instantly.
+- RECEIVER (server.c): A lightweight background socket listener that binds to a port, waits for a connection packet, outputs the payload to stdout, closes the connection, and prepares for the next loop.
+
+-------------------------------------------------------------------
+2. RECENT STABILIZATION & REFACTORING UPDATE
+-------------------------------------------------------------------
+
+A. Styling and Vibe Unification
+- Refactored all C and GDScript source files to match Allman brace alignment rules, camelCase method/variable identifiers, and UPPER_SNAKE_CASE macros and constants.
+
+B. Windows and Linux C Compilation Stability
+- Integrated '<stdint.h>' inside 'peer.c' and 'server.c' to resolve cross-compilation errors under MinGW (gcc/x86_64-w64-mingw32-gcc) where 'uint16_t' was undeclared.
+
+C. Thread and Process Lifecycle Management
+- Implemented 'cleanOldBinaries()' to terminate leftover servers or peers during fresh startups (when starting as Player 1).
+- Resolved Unix ECHILD (Errno 10) parent-child thread warnings by implementing a platform-aware PID query 'isPidActive()', using 'kill -0' on POSIX systems instead of Godot's child-restricted 'OS.is_process_running()'.
+- Addressed process-killing loops on localhost by stopping Player 2 from invoking 'cleanOldBinaries()' when Player 1 is already active.
+- Added 'unblockLocalServer()' inside '_exit_tree()' to send a local dummy TCP connection on game exit, unblocking 'accept()' in 'server.c' and allowing the process to terminate cleanly and its Thread reference to join without leaks.
+
+D. Dynamic Port Binding and Routing
+- Modified 'server.c' to accept an optional command-line port argument. This allows GDScript to assign exact ports (Player 1 listens on 8080 and sends to 8081, Player 2 listens on 8081 and sends to 8080), avoiding bind conflicts, message loopbacks, or self-echoing chat instances.
+
+E. UI Integration and Compatibility
+- Re-established send button behavior in 'lobby.gd' by resolving double-connection errors via 'is_connected()' checks and providing a legacy snake_case method wrapper ('_send_message()') to support existing scene layouts.
+
+-------------------------------------------------------------------
+3. LOCAL TESTING MODE CONFIGURATION
+-------------------------------------------------------------------
+Local development operates across a coordinated port exchange:
+
+- WINDOW 1 (Player 1): Listens on 8080 <-- Sends targets to 8081
+- WINDOW 2 (Player 2): Listens on 8081 <-- Sends targets to 8080
+
+This creates a loopback channel allowing text exchange on a single machine without complex socket proxies.
+
+-------------------------------------------------------------------
+4. FUTURE ROADMAP: MOVING TO THE INTERNET (CloudFare)
+-------------------------------------------------------------------
+When migrating to online tunnels (cloudfare, Pinggy, LocalXpose, zrok):
+
+1. Expose Host: The player hosting (Player 1) runs a tunneling command to expose the internal listener port to a public endpoint.
+2. Dynamic Address Parameters: Player 2 inputs the dynamic public address and port provided by the hosting agent rather than using the hardcoded localhost loop.
+3. Export Configuration: Ensure C binaries under 'lib_c/*' are included in Godot non-resource filters to be bundled correctly with standalone application packages.
+===================================================================

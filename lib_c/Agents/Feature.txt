@@ -1,0 +1,24 @@
++-----------------------------------------------------------------------------------+
+|                                   PLAYER.GD                                       |
+|  - Listens for Key Toggles (Backtick/Tilde '~' or custom action)                  |
+|  - Instantiates or toggles Visibility of Cheat/Chat Command GUI                   |
++----------------------------------------+------------------------------------------+
+										 |
+										 v
++-----------------------------------------------------------------------------------+
+|                              CHEAT_COMMAND.GD                                     |
+|  - Parses console inputs defensively (bypasses space-split limits for text)      |
+|  - Commands:                                                                      |
+|    * "chat -s"  -> Starts Cloudflare Quick Tunnel on local listener port          |
+|    * "chat -j"  -> Sets remote IP and Port using the tunnel token                 |
+|    * "chat -m"  -> Packages message payload and transmits over raw C sockets       |
+|    * "chat -ui" -> Swaps active viewport scene to Lobby UI                        |
++--------------------+------------------------------------+-------------------------+
+					 |                                    |
+					 v                                    v
++--------------------+------------------+ +---------------+-------------------------+
+|                LIB_C                  | |            SCENE_MANAGER                |
+|  - Spawns background tunnel process   | |  - Navigates viewports dynamically       |
+|  - Non-blocking Log Parsing           | |  - Manages active game loop states      |
+|  - Transmits TCP socket payload       | +-----------------------------------------+
++---------------------------------------+

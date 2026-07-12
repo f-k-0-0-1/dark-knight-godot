@@ -1,0 +1,7 @@
+Problems:
+	1. The player which used chat -j if send message get back its own message as player1
+	2. On server player chat -s one if send message gets nothing 
+	3. In lobby same issue 
+	
+Thoughts:
+	1. Maybe i am running this on single pc so getting this issue ? 

@@ -15,14 +15,23 @@ func _ready() -> void:
 	player = null;
 	flag = null;
 	
-	# Init the dictionary
+	# Init the dictionary (legacy structures preserved)
 	commands = {
 	"help" : [["-l", "-m"],[help_line, help_multi]],
 	"teleport" : [["-s", "-e"], [tele_end, tele_start]],
 	"level" : [["-n", "-b"], [level_next, level_before]],
 	"clear" : [["-all"], [clear_log]],
-	"shop" : [["-"], [init_shop]]
+	"shop" : [["-"], [init_shop]],
+	"chat" : [["-s", "-m", "-"], [init_server, send_msg]]
 	};
+
+	# Connect background network and cloudflare signals to logging area
+	if (LIB_C.has_signal("variableSynced")):
+		LIB_C.variableSynced.connect(_on_network_message_received);
+	if (LIB_C.has_signal("cloudflare_tunnel_ready")):
+		LIB_C.cloudflare_tunnel_ready.connect(_on_cloudflare_tunnel_ready);
+	if (LIB_C.has_signal("cloudflare_tunnel_failed")):
+		LIB_C.cloudflare_tunnel_failed.connect(_on_cloudflare_tunnel_failed);
 
 # Called from the player Script
 func run_command() -> void:
@@ -35,9 +44,22 @@ func run_command() -> void:
 	# Init flag rep
 	if (flag == null):
 		flag = get_tree().get_first_node_in_group("flag");
+
+	# Intercept and process chat commands dynamically to handle arguments with spaces
+	var input_text: String = command_box.text.strip_edges();
+	if (input_text.begins_with("chat ")):
+		handle_chat_cli_command(input_text);
+		return;
 	
-	# Spilt the commands via spaces
+	# Split the commands via spaces (fallback for legacy commands)
 	command = command_box.text.split(" ", false);
+	
+	# Check for "Chat"
+	if (command[0] == "chat"):
+		Globals.MAX_ARG_SIZE = 3;
+		Globals.MIN_ARG_SIZE = 3;
+	else:
+		Globals.MAX_ARG_SIZE = 2;
 	
 	# Handle Overflow/UnderFlow Args
 	if (command.size() < Globals.MIN_ARG_SIZE && command[0]):
@@ -65,8 +87,11 @@ func run_command() -> void:
 		var arg_index = args.find(arg_name);
 		
 		if arg_index != -1:
-			# Call the function
-			args_funcs[arg_index].call()
+			
+			if (cmd_name == "chat"):
+				args_funcs[arg_index].call(command[2]);
+			else:
+				args_funcs[arg_index].call();
 		else:
 			if (arg_name) == "-":
 				log_error("Need Arguments: Type help -m for Help\n");
@@ -80,6 +105,86 @@ func run_command() -> void:
 		log_error("Invalid Command!\n");
 		command_box.text= "";
 		return;
+
+# Specific robust CLI parser for dynamic chat operations
+func handle_chat_cli_command(text: String) -> void:
+	var parts: PackedStringArray = text.split(" ", false);
+	if (parts.size() < 2):
+		log_error("Invalid chat command. Use 'help -m' for details.\n");
+		command_box.text = "";
+		return;
+
+	var sub_cmd: String = parts[1];
+
+	if (sub_cmd == "-s"):
+		info_box.text += "\n[System] Spawning local server and initiating Cloudflare tunnel...";
+		LIB_C.startCloudflareTunnel();
+		command_box.text = "";
+		
+	elif (sub_cmd == "-j"):
+		if (parts.size() < 3):
+			log_error("Missing dynamic connection token. Format: chat -j -<token>\n")
+			command_box.text = ""
+			return
+		
+		var token: String = parts[2].strip_edges()
+		
+		# Strip leading hyphen
+		if (token.begins_with("-")):
+			token = token.substr(1)
+			
+		# Strip surrounding quotes
+		if (token.begins_with("\"") and token.ends_with("\"")):
+			token = token.substr(1, token.length() - 2)
+			
+		info_box.text += "\n[System] Directing connection targets to tunnel host: " + token
+		LIB_C.connectToCloudflareServer(token)
+		command_box.text = "";
+		
+	elif (sub_cmd == "-m"):
+		var msg_prefix_1: String = "chat -m -\"";
+		var msg_prefix_2: String = "chat -m ";
+		var raw_msg: String = "";
+		
+		if (text.begins_with(msg_prefix_1) and text.ends_with("\"")):
+			raw_msg = text.substr(msg_prefix_1.length(), text.length() - msg_prefix_1.length() - 1);
+		elif (text.begins_with(msg_prefix_2)):
+			var payload_part: String = text.substr(msg_prefix_2.length()).strip_edges();
+			if (payload_part.begins_with("-")):
+				payload_part = payload_part.substr(1).strip_edges();
+			if (payload_part.begins_with("\"") and payload_part.ends_with("\"")):
+				payload_part = payload_part.substr(1, payload_part.length() - 2);
+			raw_msg = payload_part;
+			
+		if (raw_msg.is_empty()):
+			log_error("Cannot transmit blank payload.\n");
+			command_box.text = "";
+			return;
+			
+		var playerName: String = "Player 2" if LIB_C.isPlayer2 else "Player 1";
+		var payload: String = playerName + ": " + raw_msg;
+		LIB_C.syncVariableToPeer(payload);
+		info_box.text += "\n[You]: " + raw_msg;
+		command_box.text = "";
+		
+	elif (sub_cmd == "-ui"):
+		info_box.text += "\n[System] Moving visual frame to Lobby scene...";
+		SceneManager.change_scene("lobby");
+		command_box.text = "";
+		
+	else:
+		log_error("Unknown argument parameters on chat command: " + sub_cmd + "\n");
+		command_box.text = "";
+
+# Signal Callback handlers
+func _on_network_message_received(data: String) -> void:
+	info_box.text += "\n" + data;
+
+func _on_cloudflare_tunnel_ready(token: String) -> void:
+	info_box.text += "\n[System] Connection Tunnel Online! Token has been copied to your clipboard: " + token
+
+func _on_cloudflare_tunnel_failed(error_msg: String) -> void:
+	info_box.text += "\n[Error] Cloudflare pipeline failed: " + error_msg;
 
 # Call Backs for Help
 func help_line() -> void: 
@@ -97,7 +202,7 @@ func help_multi() -> void:
 # Call Backs for Teleport
 func tele_start() -> void: 
 	player.global_position.y = flag.global_position.y;
-	player.global_position.x = flag.global_position.x - Globals.TELE_DIS
+	player.global_position.x = flag.global_position.x - Globals.TELE_DIS;
 	command_box.text= "";
 	
 func tele_end() -> void:
@@ -154,3 +259,9 @@ func init_shop() -> void:
 	
 	# Reset Command Box
 	command_box.text= "";
+
+func init_server(_hostname: String = "") -> void:
+	pass;
+	
+func send_msg(_msg: String = "") -> void:
+	pass;

@@ -1,7 +1,7 @@
 extends Node
 
 # === GLOBALS COMMAND SYSTEM ===
-var MAX_ARG_SIZE: int = 2
+var MAX_ARG_SIZE: int = 3
 var MIN_ARG_SIZE: int = 2
 var TELE_DIS: float = 1200.00
 var PLAYER_TRANS_START: Vector2 = Vector2(0, 0)
@@ -15,6 +15,8 @@ var commandsInfo: String = """
 6. level -n -> Bypass to Next Level\n
 7. clear -all ->  To Clear The Commands & Error Logs\n
 8. shop  - (use '-' for no args) -> To Open Shop Menu\n
+9. chat -s -> Add Server Ip\n
+10 chat -m -> Send Message \n
 """
 
 # === CURRENCY SYSTEM ===
