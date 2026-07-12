@@ -5,6 +5,8 @@
 [ext_resource type="AudioStream" uid="uid://82bgii5e6i3k" path="res://Audio/sfx/button_click.mp3" id="3_1ehe0"]
 [ext_resource type="Texture2D" uid="uid://bimda18cxwk18" path="res://Assets/Backgrounds/Buttons/sound_Button2.png" id="3_n45e2"]
 [ext_resource type="Texture2D" uid="uid://da2qhcdm4ww6p" path="res://Assets/Backgrounds/Buttons/sound_Button1.png" id="4_opfnp"]
+[ext_resource type="StyleBox" uid="uid://bvgbqhpvhyt1e" path="res://Styles/ui_popup_bg.tres" id="6_opfnp"]
+[ext_resource type="StyleBox" uid="uid://dqgctydm5lrm5" path="res://Styles/ui_popup.tres" id="7_cp0ys"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ce3w2"]
 texture = ExtResource("2_1ehe0")
@@ -209,5 +211,43 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_trj04")
 
 [node name="clicksound" type="AudioStreamPlayer" parent="." unique_id=49672240]
 stream = ExtResource("3_1ehe0")
+
+[node name="NamePopup" type="Panel" parent="." unique_id=1953460946]
+layout_mode = 0
+offset_left = 792.0
+offset_top = 248.0
+offset_right = 1002.0
+offset_bottom = 401.0
+theme_override_styles/panel = ExtResource("6_opfnp")
+
+[node name="PopupTitle" type="Label" parent="NamePopup" unique_id=762827221]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 19.0
+offset_right = 187.0
+offset_bottom = 42.0
+text = "Set Your Player Name"
+
+[node name="NameInput" type="LineEdit" parent="NamePopup" unique_id=1237422729]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 58.0
+offset_right = 184.0
+offset_bottom = 89.0
+theme_override_styles/normal = ExtResource("6_opfnp")
+placeholder_text = "Enter Player Name"
+alignment = 1
+expand_to_text_length = true
+
+[node name="ConfirmNameButton" type="Button" parent="NamePopup" unique_id=484367912]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 108.0
+offset_right = 145.0
+offset_bottom = 142.0
+theme_override_styles/normal = ExtResource("6_opfnp")
+theme_override_styles/pressed = ExtResource("7_cp0ys")
+theme_override_styles/hover = ExtResource("7_cp0ys")
+text = "   confirm   "
 
 [connection signal="pressed" from="Panel/Sound" to="." method="_on_sound_pressed"]

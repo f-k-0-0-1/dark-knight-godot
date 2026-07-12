@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://431qb4277g1q"]
 
-[ext_resource type="Script" uid="uid://djg77bv30c8u8" path="res://Scripts/lobby.gd" id="1_nvaej"]
+[ext_resource type="Script" uid="uid://djg77bv30c8u8" path="res://Scripts/multiplayer_chat_ui.gd" id="1_nvaej"]
 [ext_resource type="Shader" uid="uid://bo2yjehime3xk" path="res://Shaders/blurr.gdshader" id="2_y0s6v"]
-[ext_resource type="StyleBox" uid="uid://7h6fn6xvrpla" path="res://Styles/looby.tres" id="3_avk8s"]
+[ext_resource type="StyleBox" uid="uid://bvgbqhpvhyt1e" path="res://Styles/ui_popup_bg.tres" id="3_rlnir"]
 [ext_resource type="StyleBox" uid="uid://j4gp43w8ntdb" path="res://Styles/CheatCode_BG.tres" id="4_ruji2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u1o2k"]
@@ -27,7 +27,7 @@ shader_parameter/blur_amount = 2.5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o08vn"]
 
-[node name="Lobby" type="CanvasLayer" unique_id=2113538294]
+[node name="multiplayer_chat_ui" type="CanvasLayer" unique_id=2113538294]
 script = ExtResource("1_nvaej")
 
 [node name="Blur" type="Panel" parent="." unique_id=1375000285]
@@ -49,7 +49,7 @@ offset_left = -0.16800308
 offset_top = -0.23200226
 offset_right = -0.16003418
 offset_bottom = 0.18395996
-theme_override_styles/panel = ExtResource("3_avk8s")
+theme_override_styles/panel = ExtResource("3_rlnir")
 
 [node name="ChatBox" type="RichTextLabel" parent="Blur/ChatBox_Bg" unique_id=2047173036]
 self_modulate = Color(1, 1, 1, 0.8156863)
@@ -85,7 +85,7 @@ offset_right = -6.1035156e-05
 offset_bottom = -0.1920166
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = ExtResource("3_avk8s")
+theme_override_styles/panel = ExtResource("3_rlnir")
 
 [node name="LineEdit" type="LineEdit" parent="Blur/LineEdit_Bg" unique_id=867314159]
 texture_filter = 1
@@ -118,13 +118,13 @@ offset_bottom = -8.856018
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 26
-theme_override_styles/normal = ExtResource("3_avk8s")
-theme_override_styles/normal_mirrored = ExtResource("3_avk8s")
-theme_override_styles/pressed = ExtResource("3_avk8s")
-theme_override_styles/pressed_mirrored = ExtResource("3_avk8s")
-theme_override_styles/hover = ExtResource("3_avk8s")
+theme_override_styles/normal = ExtResource("3_rlnir")
+theme_override_styles/normal_mirrored = ExtResource("3_rlnir")
+theme_override_styles/pressed = ExtResource("3_rlnir")
+theme_override_styles/pressed_mirrored = ExtResource("3_rlnir")
+theme_override_styles/hover = ExtResource("3_rlnir")
 theme_override_styles/disabled = ExtResource("4_ruji2")
-theme_override_styles/focus = ExtResource("3_avk8s")
+theme_override_styles/focus = ExtResource("3_rlnir")
 text = "Send"
 
 [node name="Exit" type="Button" parent="Blur" unique_id=1564374759]

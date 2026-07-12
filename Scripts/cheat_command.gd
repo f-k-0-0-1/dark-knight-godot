@@ -167,25 +167,30 @@ func handle_chat_cli_command(text: String) -> void:
 		command_box.text = ""
 		
 	elif (sub_cmd == "-ui"):
-		info_box.text += "\n[System] Managing visual frames... Checking for active Lobby instances..."
+		info_box.text += "\n[System] Managing visual frames... Checking for active Chat instances..."
 		player.lobby = true
-		var existing_lobby = get_tree().root.get_node_or_null("Lobby")
-		if (existing_lobby == null):
+		
+		# Check if a Chat scene is already open
+		var existing_chat = get_tree().root.get_node_or_null("Chat")
+		if (existing_chat == null):
+			# Fallback search in case the node is named slightly differently
 			for child in get_tree().root.get_children():
-				if (child.name.to_lower() == "lobby" or child.name.to_lower().begins_with("lobby")):
-					existing_lobby = child
+				if (child.name.to_lower() == "chat" or child.name.to_lower().begins_with("chat")):
+					existing_chat = child
 					break
-		if (existing_lobby != null):
-			info_box.text += "\n[System] Active Lobby frame is already displayed."
+					
+		if (existing_chat != null):
+			info_box.text += "\n[System] Active Chat frame is already displayed."
 		else:
-			var lobby_scene = SceneManager.get_scene("lobby")
-			if (lobby_scene != null):
-				var lobby_instance = lobby_scene.instantiate()
-				get_tree().root.add_child(lobby_instance)
-				info_box.text += "\n[System] Lobby interface overlay spawned successfully."
+			# Load the Chat scene (Update this path to your actual Chat scene path)
+			var chat_scene = SceneManager.get_scene("chat") 
+			if (chat_scene != null):
+				var chat_instance = chat_scene.instantiate()
+				get_tree().root.add_child(chat_instance)
+				info_box.text += "\n[System] Chat interface overlay spawned successfully."
 				player.cheat_command = false
 			else:
-				log_error("SceneManager lookup returned empty for lobby scene resource.\n")
+				log_error("SceneManager lookup returned empty for chat scene resource.\n")
 		command_box.text = ""
 		
 	elif (sub_cmd == "-e"):
@@ -205,6 +210,9 @@ func handle_chat_cli_command(text: String) -> void:
 			log_error("Blank payloads are invalid for identity transformations.\n")
 			command_box.text = ""
 			return
+			
+		LIB_C.save_player_name(new_name)
+		
 		LIB_C.playerName = new_name
 		info_box.text += "\n[System] Your dynamic identity is now: " + new_name
 		command_box.text = ""

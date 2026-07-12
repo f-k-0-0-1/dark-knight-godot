@@ -250,6 +250,7 @@ func _process(_delta: float) -> void:
 	if cheat_command and cheat_command_scene == null:
 		cheat_command_scene = SceneManager.get_scene("cheat_command").instantiate();
 		add_child(cheat_command_scene);
+		cheat_command_scene.name = "cheat_command"
 		var command_line = cheat_command_scene.get_node_or_null("VBox/command_Box/command");
 		if command_line and command_line is LineEdit:
 			command_line.grab_focus();

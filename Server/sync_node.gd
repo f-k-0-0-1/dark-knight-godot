@@ -47,16 +47,44 @@ var remote_players: Dictionary = {}
 var player_scene: PackedScene = null
 
 func _ready() -> void:
-	playerName = "Player" + str(randi_range(1000, 9999))
+	# --- Load saved name if it exists ---
+	var saved_name = load_player_name()
+	if saved_name != "":
+		playerName = saved_name
+		print("[Network] Loaded saved player name: ", playerName)
+	else:
+		# Generate random name only if no saved name exists
+		# THIS WILL NOT BE SAVED TO DISK!
+		playerName = "Player" + str(randi_range(1000, 9999))
+		print("[Network] Generated new random player name: ", playerName)
+	
 	get_tree().node_added.connect(_on_scene_node_added)
 	
-	# Load Player Scene for Remote Spawning
 	if ResourceLoader.exists(PLAYER_SCENE_PATH):
 		player_scene = load(PLAYER_SCENE_PATH)
 	else:
 		push_error("[Network] Could not find player.tscn. Remote players will not spawn.")
 		
 	_start_host()
+	
+func save_player_name(name_to_save: String) -> void:
+	var config = ConfigFile.new()
+	var file_path = "user://player_name.ini"
+	
+	config.load(file_path)
+	config.set_value("player_data", "name", name_to_save)
+	config.save(file_path)
+	print("[Network] Saved player name: ", name_to_save)
+
+func load_player_name() -> String:
+	var config = ConfigFile.new()
+	var file_path = "user://player_name.ini"
+	
+	if config.load(file_path) == OK:
+		var loaded_name = config.get_value("player_data", "name", "")
+		return loaded_name
+	return ""
+
 
 func _check_cloudflare_installed() -> void:
 	var output: Array = []
@@ -302,6 +330,10 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 				connected_players[sender] = {"pos": Vector2.ZERO, "anim": "idle"}
 				player_joined.emit(sender)
 				_spawn_remote_player(sender)
+			"game_start":
+				var level_name: String = data.get("level", "")
+				if level_name != "":
+					level_sync_received.emit(level_name)
 				
 				if is_host and from_peer != null:
 					var host_join: Dictionary = {"type": "join", "sender": playerName}
@@ -377,9 +409,14 @@ func _spawn_remote_player(p_name: String) -> void:
 func _despawn_remote_player(p_name: String) -> void:
 	if remote_players.has(p_name):
 		var instance: Node = remote_players[p_name]
+		
+		# === THE FIX: Remove it from the dictionary FIRST ===
+		remote_players.erase(p_name)
+		
+		# Now it's safe to delete the instance
 		if is_instance_valid(instance):
 			instance.queue_free()
-		remote_players.erase(p_name)
+			
 		print("[Network] Despawned remote player: ", p_name)
 
 func _update_remote_player(p_name: String, pos: Vector2, anim: String, flip: bool) -> void:
@@ -392,6 +429,33 @@ func _update_remote_player(p_name: String, pos: Vector2, anim: String, flip: boo
 		else:
 			remote_players.erase(p_name)
 			connected_players.erase(p_name)
+
+# =====================
+# NEW ROLE & BROADCAST FUNCTIONS
+# =====================
+
+# Call this from the Lobby when the player picks Host or Client
+func set_role(is_host_mode: bool):
+	if is_host_mode:
+		_start_host()
+	else:
+		disconnect_all() # Ensures we are cleanly in client mode
+		print("[Network] Role set to Client.")
+
+# Called by the Host Lobby when the countdown finishes
+func send_game_start(level_name: String):
+	print("[Network] Host broadcasting game start on level: ", level_name)
+	
+	var packet: Dictionary = {
+		"type": "game_start",
+		"sender": playerName,
+		"level": level_name
+	}
+	
+	if is_host:
+		for peer in server_peers:
+			if peer.get_ready_state() == WebSocketPeer.STATE_OPEN:
+				peer.send_text(JSON.stringify(packet))
 
 func _process(delta: float) -> void:
 	# 1. Process Server
@@ -458,9 +522,18 @@ func _process(delta: float) -> void:
 							DisplayServer.clipboard_set(tunnel_url)
 							cloudflare_tunnel_ready.emit(tunnel_url)
 							return
-		if tunnel_timer >= 15.0:
-			tunnel_resolved = true
-			cloudflare_tunnel_failed.emit("Timed out waiting for Cloudflare tunnel URL.")
+				
+				# === THE FIX: If the log shows a 502 error or stale connection, RESTART the tunnel ===
+				if "502" in file_text or "failed" in file_text.to_lower():
+					print("[Network] Cloudflare tunnel expired or failed. Restarting...")
+					stopCloudflareTunnel()
+					await get_tree().create_timer(0.5).timeout
+					startCloudflareTunnel()
+					return
+					
+	if tunnel_timer >= 15.0:
+		tunnel_resolved = true
+		cloudflare_tunnel_failed.emit("Timed out waiting for Cloudflare tunnel URL.")
 
 func _on_scene_node_added(node: Node) -> void:
 	# When a new scene loads, reparent all active remote players to the new scene root

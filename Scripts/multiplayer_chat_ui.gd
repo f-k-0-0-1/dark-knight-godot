@@ -51,5 +51,4 @@ func _onChatMessageReceived(sender: String, msg: String) -> void:
 	chatBox.append_text("[color=cyan]" + sender + ":[/color] " + msg + "\n")
 
 func _exit() -> void:
-	player.lobby = false
 	self.queue_free()

@@ -1,11 +1,12 @@
 extends MenuButton
 
-# Explicit constants for Menu Item IDs to eliminate magic numbers
+# Explicit constants for Menu Item IDs
 const MENU_ID_PAUSE: int = 0
 const MENU_ID_RETRY: int = 1
-const MENU_ID_BGM: int = 2
-const MENU_ID_MAIN_MENU: int = 3
-const MENU_ID_QUIT: int = 4
+const MENU_ID_CHAT: int = 2   # <-- Moved to 3rd place (ID 2)
+const MENU_ID_BGM: int = 3
+const MENU_ID_MAIN_MENU: int = 4
+const MENU_ID_QUIT: int = 5
 
 func _ready() -> void:
 	# Ensure the menu processes even when the scene tree is paused
@@ -22,12 +23,14 @@ func _ready() -> void:
 	popup.clear()
 	_set_popup_style(popup)
 	
-	# Cleaned up item strings—fancy styling handles the visual depth
+	# Cleaned up item strings
 	var pause_text: String = "▶  Resume" if get_tree().paused else "⏸  Pause"
 	popup.add_item(pause_text, MENU_ID_PAUSE)
 	popup.add_item("🔁  Retry", MENU_ID_RETRY)
 	
-	# Initial Dynamic Text Check for BGM
+	# === NEW: Chat button is now the 3rd item ===
+	popup.add_item("💬  Chat", MENU_ID_CHAT)
+	
 	var bgm_text: String = "🔇  BGM Mute" if MusicManager.isMusicPlaying else "🔊  BGM Unmute"
 	popup.add_item(bgm_text, MENU_ID_BGM)
 	
@@ -42,12 +45,10 @@ func _on_menu_option_selected(id: int) -> void:
 		MENU_ID_PAUSE:
 			MusicManager.play_button_click()
 			if get_tree().paused:
-				# Game is currently paused -> Resume it
 				get_tree().paused = false
 				get_popup().set_item_text(MENU_ID_PAUSE, "⏸  Pause")
 			else:
-				# Game is running -> Pause it
-				await get_tree().create_timer(0.15, true).timeout # Snappier latency feel
+				await get_tree().create_timer(0.15, true).timeout
 				get_tree().paused = true
 				get_popup().set_item_text(MENU_ID_PAUSE, "▶  Resume")
 				
@@ -56,9 +57,12 @@ func _on_menu_option_selected(id: int) -> void:
 			get_tree().paused = false
 			get_tree().reload_current_scene()
 			
+		MENU_ID_CHAT:  # <-- Chat logic
+			MusicManager.play_button_click()
+			_open_chat_overlay()
+			
 		MENU_ID_BGM:
 			MusicManager.play_button_click()
-			# Toggled state flip
 			MusicManager.isMusicPlaying = !MusicManager.isMusicPlaying
 			
 			if MusicManager.isMusicPlaying:
@@ -81,6 +85,21 @@ func _on_menu_option_selected(id: int) -> void:
 			get_tree().paused = false
 			get_tree().quit()
 
+func _open_chat_overlay() -> void:
+	# 1. Preload the Chat scene
+	const CHAT_SCENE = preload("res://Scenes/multiplayer_chat_ui.tscn")
+	
+	# 2. Check if chat is already open to prevent duplicates
+	if get_tree().current_scene.get_node_or_null("ChatUI") != null:
+		return
+		
+	# 3. Instantiate the chat
+	var chat_instance = CHAT_SCENE.instantiate()
+	chat_instance.name = "ChatUI"
+	
+	# 4. Add it to the current scene (on top of the paused game)
+	get_tree().current_scene.add_child(chat_instance)
+
 func _set_popup_style(popup: PopupMenu) -> void:
 	var luxury_theme: Theme = Theme.new()
 	
@@ -89,37 +108,25 @@ func _set_popup_style(popup: PopupMenu) -> void:
 		var font: Font = load("res://Fonts/YourCustomFont.tres")
 		luxury_theme.set_font("font", "PopupMenu", font)
 		
-	# High-end Metallic/Neon Text States (Corrected Godot 4 property names)
-	luxury_theme.set_color("font_color", "PopupMenu", Color(0.95, 0.95, 0.98)) # Clean diamond white
-	luxury_theme.set_color("font_hover_color", "PopupMenu", Color(1.0, 0.65, 0.0)) # Cyberpunk Gold / Amber hover
+	luxury_theme.set_color("font_color", "PopupMenu", Color(0.95, 0.95, 0.98))
+	luxury_theme.set_color("font_hover_color", "PopupMenu", Color(1.0, 0.65, 0.0))
 	luxury_theme.set_color("font_pressed_color", "PopupMenu", Color(0.6, 0.6, 0.6))
 	
-	# Extra item vertical padding for a spacious, premium look
 	luxury_theme.set_constant("v_separation", "PopupMenu", 12)
 	
-	# --- 2. Main Background Panel (Sleek Obsidian Glass) ---
+	# --- 2. Main Background Panel ---
 	var panel_style: StyleBoxFlat = StyleBoxFlat.new()
-	
-	# AAA UI trick: Deep charcoal tint with high translucency looks identical to premium frosted glass
 	panel_style.bg_color = Color(0.06, 0.06, 0.08, 0.93)
-	
-	# Clean rounded edges
 	panel_style.set_corner_radius_all(8)
-	
-	# 3D Metallic Rim Light effect (Thin, translucent white outline)
 	panel_style.border_width_left = 1
 	panel_style.border_width_top = 1
 	panel_style.border_width_right = 1
 	panel_style.border_width_bottom = 1
 	panel_style.border_blend = true 
-	panel_style.border_color = Color(1.0, 1.0, 1.0, 0.12) # Catches light beautifully without being harsh
-	
-	# Deep volumetric soft shadow to give physical depth
+	panel_style.border_color = Color(1.0, 1.0, 1.0, 0.12)
 	panel_style.shadow_color = Color(0.0, 0.0, 0.0, 0.7)
 	panel_style.shadow_size = 16
 	panel_style.shadow_offset = Vector2(0, 8)
-	
-	# Inner Panel Padding layout
 	panel_style.set_content_margin(SIDE_LEFT, 16)
 	panel_style.set_content_margin(SIDE_RIGHT, 16)
 	panel_style.set_content_margin(SIDE_TOP, 12)
@@ -127,12 +134,10 @@ func _set_popup_style(popup: PopupMenu) -> void:
 	
 	luxury_theme.set_stylebox("panel", "PopupMenu", panel_style)
 	
-	# --- 3. Hover Selection Style (Glow Strip Accent) ---
+	# --- 3. Hover Selection Style ---
 	var hover_style: StyleBoxFlat = StyleBoxFlat.new()
-	hover_style.bg_color = Color(1.0, 0.65, 0.0, 0.07) # Micro-dose highlight matching the text glow
+	hover_style.bg_color = Color(1.0, 0.65, 0.0, 0.07)
 	hover_style.set_corner_radius_all(4)
-	
-	# Sharp left vertical indicator accent
 	hover_style.border_width_left = 3
 	hover_style.border_color = Color(1.0, 0.651, 0.0, 0.0)
 	hover_style.set_content_margin(SIDE_LEFT, 12)
@@ -141,9 +146,7 @@ func _set_popup_style(popup: PopupMenu) -> void:
 	
 	luxury_theme.set_stylebox("hover", "PopupMenu", hover_style)
 	
-	# --- 4. Safely Hide the Scrollbar (Keep Scroll Working) ---
-	# The scrollbar inside a PopupMenu is a VScrollBar node. 
-	# We must apply the StyleBoxEmpty overrides to the "VScrollBar" theme type, not "PopupMenu".
+	# --- 4. Safely Hide the Scrollbar ---
 	var empty_style: StyleBoxEmpty = StyleBoxEmpty.new()
 	luxury_theme.set_stylebox("scroll", "VScrollBar", empty_style)
 	luxury_theme.set_stylebox("scroll_focus", "VScrollBar", empty_style)
@@ -151,5 +154,4 @@ func _set_popup_style(popup: PopupMenu) -> void:
 	luxury_theme.set_stylebox("grabber_highlight", "VScrollBar", empty_style)
 	luxury_theme.set_stylebox("grabber_pressed", "VScrollBar", empty_style)
 	
-	# Apply final verified theme properties
 	popup.theme = luxury_theme
