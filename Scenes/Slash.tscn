@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bh1p0wjjoof5c"]
+[gd_scene format=3 uid="uid://b35veeba4jj6p"]
 
 [ext_resource type="Script" uid="uid://dc0mwuymhtoe3" path="res://Scripts/slash.gd" id="1_375u6"]
 [ext_resource type="Texture2D" uid="uid://danavwnixmi1l" path="res://Assets/Sword Slashes/White Group Slashes/File1.png" id="1_q5a0e"]

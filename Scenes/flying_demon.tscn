@@ -230,7 +230,7 @@ script = ExtResource("1_dnv03")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=827229981]
 sprite_frames = SubResource("SpriteFrames_eycmg")
-animation = &"death"
+animation = &"hurt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1926983156]
 position = Vector2(-8, 4)

@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_cehma")
-item_name = "Wooden Axe"
+item_name = "Wood Axe"
 category = "axe"
 price = 50
 damage = 10

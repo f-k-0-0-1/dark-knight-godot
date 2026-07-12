@@ -24,7 +24,7 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("enemies"):
 		if body.has_method("take_damage"):
-			body.take_damage(1, global_position)
+			body.take_damage(35, global_position)
 			camera.trigger_shake(10.0, 0.3)
 		queue_free()
 
