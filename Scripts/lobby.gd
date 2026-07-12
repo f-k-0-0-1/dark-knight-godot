@@ -10,28 +10,22 @@ var player: CharacterBody2D
 var playerName: String = ""
 
 func _ready() -> void:
-	# Retrieve up-to-date identity dynamically from the LIB_C autoload engine
 	playerName = LIB_C.playerName
 	player = get_tree().get_first_node_in_group("player")
-	
 	DisplayServer.window_set_title(playerName + " - Game Window")
-
-	if not LIB_C.variableSynced.is_connected(_onChatMessageReceived):
-		LIB_C.variableSynced.connect(_onChatMessageReceived)
+	
+	if not LIB_C.chat_received.is_connected(_onChatMessageReceived):
+		LIB_C.chat_received.connect(_onChatMessageReceived)
 		
 	lineEdit.text_submitted.connect(func(_text: String): _sendMessage())
 	
-	# Connect send button dynamically
 	if not send.pressed.is_connected(_sendMessage):
 		send.pressed.connect(_sendMessage)
 		
-	# Fix core structural bug: Connect exit button explicitly to disconnect/destroy lobby node
 	if not exit.pressed.is_connected(_exit):
 		exit.pressed.connect(_exit)
-	
+		
 	chatBox.append_text("[color=yellow]Welcome " + playerName + "! Chat Initialized.[/color]\n")
-	
-	# Automatically grab focus so typing is immediate and movement inputs are frozen
 	lineEdit.grab_focus()
 
 func _sendMessage() -> void:
@@ -39,17 +33,23 @@ func _sendMessage() -> void:
 	if messageText.is_empty():
 		return
 		
-	# Synchronize local name cache with any dynamic CLI transitions
 	playerName = LIB_C.playerName
-	var payload: String = playerName + ": " + messageText
+	var packet: Dictionary = {
+		"type": "chat",
+		"sender": playerName,
+		"msg": messageText
+	}
+	
 	chatBox.append_text("[color=cyan]You:[/color] " + messageText + "\n")
-	LIB_C.syncVariableToPeer(payload)
+	LIB_C.send_json_packet(packet)
 	lineEdit.clear()
 	lineEdit.grab_focus()
 
-func _onChatMessageReceived(incomingText: String) -> void:
-	chatBox.append_text(incomingText + "\n")
-	
+func _onChatMessageReceived(sender: String, msg: String) -> void:
+	if sender == playerName:
+		return # Prevent double printing local messages
+	chatBox.append_text("[color=cyan]" + sender + ":[/color] " + msg + "\n")
+
 func _exit() -> void:
-	player.lobby = false;
+	player.lobby = false
 	self.queue_free()

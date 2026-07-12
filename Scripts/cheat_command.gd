@@ -112,116 +112,111 @@ func run_command() -> void:
 
 # Specific robust CLI parser for dynamic chat operations
 func handle_chat_cli_command(text: String) -> void:
-	var parts: PackedStringArray = text.split(" ", false);
+	var parts: PackedStringArray = text.split(" ", false)
 	if (parts.size() < 2):
-		log_error("Invalid chat command. Use 'help -m' for details.\n");
-		command_box.text = "";
-		return;
+		log_error("Invalid chat command. Use 'help -m' for details.\n")
+		command_box.text = ""
+		return
 
-	var sub_cmd: String = parts[1];
-
+	var sub_cmd: String = parts[1]
+	
 	if (sub_cmd == "-s"):
-		info_box.text += "\n[System] Spawning local server and initiating Cloudflare tunnel...";
-		LIB_C.startCloudflareTunnel();
-		command_box.text = "";
+		if not LIB_C.is_cloudflare_installed:
+			info_box.text += "\n[System] 'cloudflared' is not installed. Please install it to play online. Starting local host instead."
+			LIB_C._start_host()
+		else:
+			info_box.text += "\n[System] Spawning local server and initiating Cloudflare tunnel..."
+			LIB_C.startCloudflareTunnel()
+		command_box.text = ""
 		
 	elif (sub_cmd == "-j"):
 		if (parts.size() < 3):
-			log_error("Missing dynamic connection token. Format: chat -j -<token>\n")
+			log_error("Missing dynamic connection token. Format: chat -j <token_or_ip>\n")
 			command_box.text = ""
 			return
-		
 		var token: String = parts[2].strip_edges()
-		
-		# Strip leading hyphen
 		if (token.begins_with("-")):
 			token = token.substr(1)
-			
-		# Strip surrounding quotes
 		if (token.begins_with("\"") and token.ends_with("\"")):
 			token = token.substr(1, token.length() - 2)
-			
-		info_box.text += "\n[System] Directing connection targets to tunnel host: " + token
+		info_box.text += "\n[System] Directing connection targets to: " + token
 		LIB_C.connectToCloudflareServer(token)
-		command_box.text = "";
+		command_box.text = ""
 		
 	elif (sub_cmd == "-m"):
-		var msg_prefix_1: String = "chat -m -\"";
-		var msg_prefix_2: String = "chat -m ";
-		var raw_msg: String = "";
-		
+		var msg_prefix_1: String = "chat -m -\""
+		var msg_prefix_2: String = "chat -m "
+		var raw_msg: String = ""
 		if (text.begins_with(msg_prefix_1) and text.ends_with("\"")):
-			raw_msg = text.substr(msg_prefix_1.length(), text.length() - msg_prefix_1.length() - 1);
+			raw_msg = text.substr(msg_prefix_1.length(), text.length() - msg_prefix_1.length() - 1)
 		elif (text.begins_with(msg_prefix_2)):
-			var payload_part: String = text.substr(msg_prefix_2.length()).strip_edges();
+			var payload_part: String = text.substr(msg_prefix_2.length()).strip_edges()
 			if (payload_part.begins_with("-")):
-				payload_part = payload_part.substr(1).strip_edges();
+				payload_part = payload_part.substr(1).strip_edges()
 			if (payload_part.begins_with("\"") and payload_part.ends_with("\"")):
-				payload_part = payload_part.substr(1, payload_part.length() - 2);
-			raw_msg = payload_part;
+				payload_part = payload_part.substr(1, payload_part.length() - 2)
+			raw_msg = payload_part
 			
 		if (raw_msg.is_empty()):
-			log_error("Cannot transmit blank payload.\n");
-			command_box.text = "";
-			return;
+			log_error("Cannot transmit blank payload.\n")
+			command_box.text = ""
+			return
 			
-		var playerName: String = LIB_C.playerName;
-		var payload: String = playerName + ": " + raw_msg;
-		LIB_C.syncVariableToPeer(payload);
-		info_box.text += "\n[You]: " + raw_msg;
-		command_box.text = "";
+		var packet: Dictionary = {
+			"type": "chat",
+			"sender": LIB_C.playerName,
+			"msg": raw_msg
+		}
+		LIB_C.send_json_packet(packet)
+		info_box.text += "\n[You]: " + raw_msg
+		command_box.text = ""
 		
 	elif (sub_cmd == "-ui"):
-		info_box.text += "\n[System] Managing visual frames... Checking for active Lobby instances...";
-		player.lobby = true;
-		var existing_lobby = get_tree().root.get_node_or_null("Lobby");
+		info_box.text += "\n[System] Managing visual frames... Checking for active Lobby instances..."
+		player.lobby = true
+		var existing_lobby = get_tree().root.get_node_or_null("Lobby")
 		if (existing_lobby == null):
-			# Scan children of root to avoid duplicates
 			for child in get_tree().root.get_children():
 				if (child.name.to_lower() == "lobby" or child.name.to_lower().begins_with("lobby")):
-					existing_lobby = child;
-					break;
-		
+					existing_lobby = child
+					break
 		if (existing_lobby != null):
-			info_box.text += "\n[System] Active Lobby frame is already displayed.";
+			info_box.text += "\n[System] Active Lobby frame is already displayed."
 		else:
-			var lobby_scene = SceneManager.get_scene("lobby");
+			var lobby_scene = SceneManager.get_scene("lobby")
 			if (lobby_scene != null):
-				var lobby_instance = lobby_scene.instantiate();
-				get_tree().root.add_child(lobby_instance);
-				info_box.text += "\n[System] Lobby interface overlay spawned successfully.";
-				player.cheat_command = false;
+				var lobby_instance = lobby_scene.instantiate()
+				get_tree().root.add_child(lobby_instance)
+				info_box.text += "\n[System] Lobby interface overlay spawned successfully."
+				player.cheat_command = false
 			else:
-				log_error("SceneManager lookup returned empty for lobby scene resource.\n");
-		command_box.text = "";
+				log_error("SceneManager lookup returned empty for lobby scene resource.\n")
+		command_box.text = ""
 		
 	elif (sub_cmd == "-e"):
-		info_box.text += "\n[System] Initiating network termination. Stopping TCPServer and shutting down active sockets...";
-		LIB_C.disconnect_all();
-		command_box.text = "";
+		info_box.text += "\n[System] Initiating network termination. Stopping TCPServer and shutting down active sockets..."
+		LIB_C.disconnect_all()
+		command_box.text = ""
 		
 	elif (sub_cmd == "-n"):
 		if (parts.size() < 3):
-			log_error("Missing parameter name. Usage syntax: chat -n <new_name>\n");
-			command_box.text = "";
-			return;
-			
-		var new_name: String = text.substr(text.find("-n") + 2).strip_edges();
+			log_error("Missing parameter name. Usage syntax: chat -n <new_name>\n")
+			command_box.text = ""
+			return
+		var new_name: String = text.substr(text.find("-n") + 2).strip_edges()
 		if (new_name.begins_with("\"") and new_name.ends_with("\"")):
-			new_name = new_name.substr(1, new_name.length() - 2);
-			
+			new_name = new_name.substr(1, new_name.length() - 2)
 		if (new_name.is_empty()):
-			log_error("Blank payloads are invalid for identity transformations.\n");
-			command_box.text = "";
-			return;
-			
-		LIB_C.playerName = new_name;
-		info_box.text += "\n[System] Your dynamic identity is now: " + new_name;
-		command_box.text = "";
+			log_error("Blank payloads are invalid for identity transformations.\n")
+			command_box.text = ""
+			return
+		LIB_C.playerName = new_name
+		info_box.text += "\n[System] Your dynamic identity is now: " + new_name
+		command_box.text = ""
 		
 	else:
-		log_error("Unknown argument parameters on chat command: " + sub_cmd + "\n");
-		command_box.text = "";
+		log_error("Unknown argument parameters on chat command: " + sub_cmd + "\n")
+		command_box.text = ""
 
 # Signal Callback handlers
 func _on_network_message_received(data: String) -> void:

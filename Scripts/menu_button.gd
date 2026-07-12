@@ -1,63 +1,74 @@
 extends MenuButton
 
-func _ready():
-	process_mode = Node.PROCESS_MODE_ALWAYS
+# Explicit constants for Menu Item IDs to eliminate magic numbers
+const MENU_ID_PAUSE: int = 0
+const MENU_ID_RETRY: int = 1
+const MENU_ID_BGM: int = 2
+const MENU_ID_MAIN_MENU: int = 3
+const MENU_ID_QUIT: int = 4
 
+func _ready() -> void:
+	# Ensure the menu processes even when the scene tree is paused
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	# Strip the white outline from the main MenuButton itself if focused
 	add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-
-	var popup := get_popup()
+	
+	var popup: PopupMenu = get_popup()
+	if not is_instance_valid(popup):
+		push_error("Failed to retrieve PopupMenu from MenuButton.")
+		return
+		
 	popup.clear()
 	_set_popup_style(popup)
-
+	
 	# Cleaned up item strings—fancy styling handles the visual depth
-	var pause_text = "▶  Resume" if get_tree().paused else "⏸  Pause"
-	popup.add_item(pause_text, 0)      # Index 0
-	popup.add_item("🔁  Retry", 1)       # Index 1
+	var pause_text: String = "▶  Resume" if get_tree().paused else "⏸  Pause"
+	popup.add_item(pause_text, MENU_ID_PAUSE)
+	popup.add_item("🔁  Retry", MENU_ID_RETRY)
 	
-	# Initial Dynamic Text Check
-	var bgm_text = "🔇  BGM Mute" if MusicManager.isMusicPlaying else "🔊  BGM Unmute"
-	popup.add_item(bgm_text, 2)         # Index 2
+	# Initial Dynamic Text Check for BGM
+	var bgm_text: String = "🔇  BGM Mute" if MusicManager.isMusicPlaying else "🔊  BGM Unmute"
+	popup.add_item(bgm_text, MENU_ID_BGM)
 	
-	popup.add_item("🏠  Main Menu", 3)   # Index 3
-	popup.add_item("🚪  Quit", 4)        # Index 4
-
+	popup.add_item("🏠  Main Menu", MENU_ID_MAIN_MENU)
+	popup.add_item("🚪  Quit", MENU_ID_QUIT)
+	
+	# Connect the signal for item selection
 	popup.id_pressed.connect(_on_menu_option_selected)
 
 func _on_menu_option_selected(id: int) -> void:
 	match id:
-		0:
+		MENU_ID_PAUSE:
 			MusicManager.play_button_click()
-			
 			if get_tree().paused:
 				# Game is currently paused -> Resume it
 				get_tree().paused = false
-				get_popup().set_item_text(0, "⏸  Pause")
+				get_popup().set_item_text(MENU_ID_PAUSE, "⏸  Pause")
 			else:
 				# Game is running -> Pause it
 				await get_tree().create_timer(0.15, true).timeout # Snappier latency feel
 				get_tree().paused = true
-				get_popup().set_item_text(0, "▶  Resume")
-		
-		1:
+				get_popup().set_item_text(MENU_ID_PAUSE, "▶  Resume")
+				
+		MENU_ID_RETRY:
 			MusicManager.play_button_click()
 			get_tree().paused = false
 			get_tree().reload_current_scene()
-		
-		2:
+			
+		MENU_ID_BGM:
 			MusicManager.play_button_click()
 			# Toggled state flip
 			MusicManager.isMusicPlaying = !MusicManager.isMusicPlaying
 			
-			# FIXED: Changed index from 3 to 2 to match its position
 			if MusicManager.isMusicPlaying:
-				get_popup().set_item_text(2, "🔇  BGM Mute")
+				get_popup().set_item_text(MENU_ID_BGM, "🔇  BGM Mute")
 				MusicManager.music.play()
 			else:
-				get_popup().set_item_text(2, "🔊  BGM Unmute")
+				get_popup().set_item_text(MENU_ID_BGM, "🔊  BGM Unmute")
 				MusicManager.music.stop()
-		
-		3:
+				
+		MENU_ID_MAIN_MENU:
 			MusicManager.play_button_click()
 			get_tree().paused = false
 			if SceneManager.scenes.has("main_menu"):
@@ -65,29 +76,29 @@ func _on_menu_option_selected(id: int) -> void:
 			else:
 				push_error("Scene 'main_menu' not found in SceneManager!")
 				
-		4:
+		MENU_ID_QUIT:
 			MusicManager.play_button_click()
 			get_tree().paused = false
 			get_tree().quit()
 
 func _set_popup_style(popup: PopupMenu) -> void:
-	var luxury_theme = Theme.new()
+	var luxury_theme: Theme = Theme.new()
 	
 	# --- 1. Typography & Colors ---
 	if ResourceLoader.exists("res://Fonts/YourCustomFont.tres"):
-		var font = load("res://Fonts/YourCustomFont.tres")
+		var font: Font = load("res://Fonts/YourCustomFont.tres")
 		luxury_theme.set_font("font", "PopupMenu", font)
 		
-	# High-end Metallic/Neon Text States
+	# High-end Metallic/Neon Text States (Corrected Godot 4 property names)
 	luxury_theme.set_color("font_color", "PopupMenu", Color(0.95, 0.95, 0.98)) # Clean diamond white
-	luxury_theme.set_color("font_color_hover", "PopupMenu", Color(1.0, 0.65, 0.0)) # Cyberpunk Gold / Amber hover
-	luxury_theme.set_color("font_color_pressed", "PopupMenu", Color(0.6, 0.6, 0.6))
+	luxury_theme.set_color("font_hover_color", "PopupMenu", Color(1.0, 0.65, 0.0)) # Cyberpunk Gold / Amber hover
+	luxury_theme.set_color("font_pressed_color", "PopupMenu", Color(0.6, 0.6, 0.6))
 	
 	# Extra item vertical padding for a spacious, premium look
 	luxury_theme.set_constant("v_separation", "PopupMenu", 12)
-
+	
 	# --- 2. Main Background Panel (Sleek Obsidian Glass) ---
-	var panel_style := StyleBoxFlat.new()
+	var panel_style: StyleBoxFlat = StyleBoxFlat.new()
 	
 	# AAA UI trick: Deep charcoal tint with high translucency looks identical to premium frosted glass
 	panel_style.bg_color = Color(0.06, 0.06, 0.08, 0.93)
@@ -102,12 +113,12 @@ func _set_popup_style(popup: PopupMenu) -> void:
 	panel_style.border_width_bottom = 1
 	panel_style.border_blend = true 
 	panel_style.border_color = Color(1.0, 1.0, 1.0, 0.12) # Catches light beautifully without being harsh
-
+	
 	# Deep volumetric soft shadow to give physical depth
 	panel_style.shadow_color = Color(0.0, 0.0, 0.0, 0.7)
 	panel_style.shadow_size = 16
 	panel_style.shadow_offset = Vector2(0, 8)
-
+	
 	# Inner Panel Padding layout
 	panel_style.set_content_margin(SIDE_LEFT, 16)
 	panel_style.set_content_margin(SIDE_RIGHT, 16)
@@ -115,26 +126,30 @@ func _set_popup_style(popup: PopupMenu) -> void:
 	panel_style.set_content_margin(SIDE_BOTTOM, 12)
 	
 	luxury_theme.set_stylebox("panel", "PopupMenu", panel_style)
-
+	
 	# --- 3. Hover Selection Style (Glow Strip Accent) ---
-	var hover_style := StyleBoxFlat.new()
+	var hover_style: StyleBoxFlat = StyleBoxFlat.new()
 	hover_style.bg_color = Color(1.0, 0.65, 0.0, 0.07) # Micro-dose highlight matching the text glow
 	hover_style.set_corner_radius_all(4)
 	
 	# Sharp left vertical indicator accent
 	hover_style.border_width_left = 3
 	hover_style.border_color = Color(1.0, 0.651, 0.0, 0.0)
-	
 	hover_style.set_content_margin(SIDE_LEFT, 12)
 	hover_style.set_content_margin(SIDE_TOP, 6)
 	hover_style.set_content_margin(SIDE_BOTTOM, 6)
 	
 	luxury_theme.set_stylebox("hover", "PopupMenu", hover_style)
-
-	# --- 4. Safely Hide the Scrollbar ---
-	luxury_theme.set_stylebox("scroll", "PopupMenu", StyleBoxEmpty.new())
-	luxury_theme.set_stylebox("scroll_focus", "PopupMenu", StyleBoxEmpty.new())
-	luxury_theme.set_constant("scrollbar_width", "PopupMenu", 0)
-
+	
+	# --- 4. Safely Hide the Scrollbar (Keep Scroll Working) ---
+	# The scrollbar inside a PopupMenu is a VScrollBar node. 
+	# We must apply the StyleBoxEmpty overrides to the "VScrollBar" theme type, not "PopupMenu".
+	var empty_style: StyleBoxEmpty = StyleBoxEmpty.new()
+	luxury_theme.set_stylebox("scroll", "VScrollBar", empty_style)
+	luxury_theme.set_stylebox("scroll_focus", "VScrollBar", empty_style)
+	luxury_theme.set_stylebox("grabber", "VScrollBar", empty_style)
+	luxury_theme.set_stylebox("grabber_highlight", "VScrollBar", empty_style)
+	luxury_theme.set_stylebox("grabber_pressed", "VScrollBar", empty_style)
+	
 	# Apply final verified theme properties
 	popup.theme = luxury_theme

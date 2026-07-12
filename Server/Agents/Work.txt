@@ -1,0 +1,14 @@
+Context:
+	1.sync_node.gd is a global auto load script
+
+To-Do:
+	1. If player type "ui -s" and cloudflare is not installed tell them to install cloudflare
+	2. If no cloudeflare just run localhost
+	3. Add more then 2 players support for joining and server 
+	4. Spaw the player when conned (in game)
+	5. Keep track of player and update them all 
+	6. Make sure nothing breaks
+	7. Can Make new files if needed
+	
+Fix:	
+	1. If all players has unique name then why print() logs shows Player 1 or Player2
