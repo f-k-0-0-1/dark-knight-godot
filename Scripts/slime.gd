@@ -38,6 +38,10 @@ func _ready() -> void:
 	hitbox.body_entered.connect(_on_hitbox_body_entered)
 	hitbox.body_exited.connect(_on_hitbox_body_exited)
 	sync_id = str(get_path())
+	
+	var player_node: Node = get_tree().get_first_node_in_group("player")
+	if player_node != null:
+		camera = player_node.get_node_or_null("Camera2D")
 
 	if LIB_C != null:
 		if not LIB_C.enemy_sync_received.is_connected(_on_enemy_sync_received):
@@ -129,15 +133,21 @@ func get_closest_player() -> Node2D:
 func _on_hitbox_body_entered(body: Node) -> void:
 	if is_dead or not can_hit:
 		return
-
+		
 	if body.is_in_group("player") and body.has_method("take_damage"):
 		can_hit = false
-		var recoil_direction = (global_position - body.global_position).normalized()
+		var recoil_direction: Vector2 = (global_position - body.global_position).normalized()
 		velocity = recoil_direction * knockback_strength
 		is_recoiling = true
 		recoil_timer = recoil_duration
 		body.take_damage(35, global_position)
-		camera.trigger_shake(8.0, 0.2)
+		
+		var target_camera: Node = camera
+		if target_camera == null:
+			target_camera = body.get_node_or_null("Camera2D")
+		if target_camera != null and target_camera.has_method("trigger_shake"):
+			target_camera.trigger_shake(8.0, 0.2)
+			
 		start_hit_cooldown()
 
 func _on_hitbox_body_exited(body: Node) -> void:
@@ -189,7 +199,7 @@ func die() -> void:
 		
 	health_bar.visible = false
 	collision_shape.call_deferred("set_disabled", true)
-	if camera:
+	if camera != null:
 		camera.trigger_shake(6.0, 0.2)
 	death_sound.play()
 	await death_sound.finished
