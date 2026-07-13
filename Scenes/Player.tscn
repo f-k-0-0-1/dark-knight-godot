@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://m1r7afhf8aax"]
 
 [ext_resource type="Script" uid="uid://bcpi7jhd7dwh3" path="res://Scripts/player.gd" id="1_6f3s4"]
-[ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="2_l3y8b"]
 [ext_resource type="Texture2D" uid="uid://b5pgosn7hwav5" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00000.png" id="17_lrj6g"]
 [ext_resource type="Texture2D" uid="uid://cqjso8te4fshr" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00001.png" id="18_ytcev"]
 [ext_resource type="Texture2D" uid="uid://dadu0xus6luha" path="res://Assets/BlueWizard/2BlueWizardJump/Dash2/DashBlue_00002.png" id="19_kk0t0"]
@@ -52,6 +51,7 @@
 [ext_resource type="PackedScene" uid="uid://cgg1gy8u8qthd" path="res://Scenes/sword.tscn" id="73_l3y8b"]
 [ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="73_ujsok"]
 [ext_resource type="Texture2D" uid="uid://o21rda5gyxfb" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00005.png" id="74_nxdfc"]
+[ext_resource type="PackedScene" uid="uid://bcgeeh78xolyr" path="res://Scenes/ambient_glow.tscn" id="74_ujsok"]
 [ext_resource type="Texture2D" uid="uid://733hf886jnwu" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00006.png" id="75_s57pu"]
 [ext_resource type="Texture2D" uid="uid://dvd58e4xvsui6" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00007.png" id="76_if58w"]
 [ext_resource type="Texture2D" uid="uid://h4bg6y2nu6o4" path="res://Assets/BlueWizard/2BlueWizardWalk/Chara_BlueWalk00000.png" id="77_k1fgv"]
@@ -386,7 +386,7 @@ corner_radius_bottom_left = 30
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("1_6f3s4")
-lightning_ball_scene = ExtResource("2_l3y8b")
+lightning_ball_scene = ExtResource("73_ujsok")
 
 [node name="name" type="Label" parent="." unique_id=1947800940]
 visible = false
@@ -549,3 +549,7 @@ stream = ExtResource("70_ed4yo")
 
 [node name="PlayerHurt" type="AudioStreamPlayer" parent="." unique_id=1108856263]
 stream = ExtResource("71_fsa4a")
+
+[node name="AmbientGlow" parent="." unique_id=1338851922 instance=ExtResource("74_ujsok")]
+visible = false
+amount = 15

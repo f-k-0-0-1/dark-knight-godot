@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://djur6qbwjuote"]
+
+[node name="Level 4" type="Node2D" unique_id=915597193]
+
+[node name="ParallaxSystem" type="Parallax2D" parent="." unique_id=377299789]
+
+[node name="BgLayer" type="Node2D" parent="ParallaxSystem" unique_id=468053151]
+
+[node name="DistantMountains" type="Sprite2D" parent="ParallaxSystem/BgLayer" unique_id=993052099]
+
+[node name="WallsLayer" type="Node2D" parent="ParallaxSystem" unique_id=1490771585]
+
+[node name="CaveTileMap" type="Sprite2D" parent="ParallaxSystem/WallsLayer" unique_id=1740194812]
+
+[node name="FoliageLayer" type="Node2D" parent="ParallaxSystem" unique_id=606073945]
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxSystem/FoliageLayer" unique_id=71829407]
