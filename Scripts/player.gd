@@ -97,36 +97,33 @@ var time_for_1_star: float;
 
 # Engine Callbacks
 func _ready() -> void:
-	# Remote Player Initialization
 	if not is_local:
 		if name_label:
-			name_label.text = player_name;
-			name_label.visible = true;
-		remove_from_group("player");
-		
-		var collision_shapes: Array[Node] = find_children("*", "CollisionShape2D");
+			name_label.text = player_name
+			name_label.visible = true
+
+		var collision_shapes: Array[Node] = find_children("*", "CollisionShape2D")
 		for shape in collision_shapes:
-			shape.set_deferred("disabled", true);
+			shape.set_deferred("disabled", true)
 			
-		# Prevent the remote player from lerping to (0,0) before the first network packet arrives
-		network_target_pos = global_position;
+		network_target_pos = global_position
 		
 		if camera:
-			camera.enabled = false;
-			camera = null;
-		if timer_label: timer_label.visible = false;
-		if zoom_button: zoom_button.visible = false;
-		if coin_counter_label: coin_counter_label.visible = false;
-		if ability_cooldown_bar: ability_cooldown_bar.visible = false;
-		if jump_sound: jump_sound.volume_db = -80;
-		if player_hurt: player_hurt.volume_db = -80;
-		if double_jump_sound: double_jump_sound.volume_db = -80;
-		return;
-
+			camera.enabled = false
+			camera = null
+		if timer_label: timer_label.visible = false
+		if zoom_button: zoom_button.visible = false
+		if coin_counter_label: coin_counter_label.visible = false
+		if ability_cooldown_bar: ability_cooldown_bar.visible = false
+		if jump_sound: jump_sound.volume_db = -80
+		if player_hurt: player_hurt.volume_db = -80
+		if double_jump_sound: double_jump_sound.volume_db = -80
+		return
+		
 	# Local Player Initialization
 	if name_label:
 		name_label.visible = false;
-
+		
 	fireball_scene = SceneManager.scenes.get("fireball_scene");
 	Globals.level_coins_updated.connect(_update_coin_ui);
 	Globals.weapon_equipped.connect(_on_weapon_equipped);
@@ -150,9 +147,30 @@ func _ready() -> void:
 			LIB_C.fireball_spawn_received.connect(_on_fireball_spawn_received)
 		if not LIB_C.fireball_destroy_received.is_connected(_on_fireball_destroy_received):
 			LIB_C.fireball_destroy_received.connect(_on_fireball_destroy_received)
-	
+		if not LIB_C.player_died_received.is_connected(_on_player_died_received):
+			LIB_C.player_died_received.connect(_on_player_died_received)
+		if not LIB_C.player_respawned_received.is_connected(_on_player_respawned_received):
+			LIB_C.player_respawned_received.connect(_on_player_respawned_received)
+			
 	if LIB_C != null and not LIB_C.weapon_sync_received.is_connected(_on_weapon_sync_received):
 		LIB_C.weapon_sync_received.connect(_on_weapon_sync_received)
+		
+	# Delayed broadcast to ensure remote clients are ready to receive initial weapon state
+	if is_local and Globals.is_online_mode and LIB_C != null:
+		var timer = get_tree().create_timer(1.5)
+		timer.timeout.connect(_broadcast_initial_weapon)
+
+func _broadcast_initial_weapon() -> void:
+	if not is_local or not Globals.is_online_mode or LIB_C == null:
+		return
+	if Globals.equipped_item_name.is_empty():
+		return
+		
+	var packet: Dictionary = Dictionary()
+	packet["type"] = "weapon_sync"
+	packet["sender"] = LIB_C.playerName
+	packet["weapon_name"] = Globals.equipped_item_name.strip_edges()
+	LIB_C.send_json_packet(packet)
 
 func is_typing_in_input() -> bool:
 	var focus_owner = get_viewport().gui_get_focus_owner();
@@ -166,15 +184,15 @@ func _input(event) -> void:
 		return;
 	if is_dead:
 		return;
-
+		
 	if event.is_action_pressed("cheat_command") or (event is InputEventKey and event.pressed and (event.keycode == KEY_QUOTELEFT or event.keycode == KEY_ASCIITILDE)):
 		cheat_command = !cheat_command;
 		get_viewport().set_input_as_handled();
 		return;
-
+		
 	if is_typing_in_input() and !event.is_action_pressed("Enter"):
 		return;
-
+		
 	if !cheat_command and event.is_action_pressed("fireball"):
 		shoot_fireball();
 	if !cheat_command and event.is_action_pressed("lightning_ability"):
@@ -185,8 +203,10 @@ func _input(event) -> void:
 	if !cheat_command and event.is_action_pressed("god_mode_toggle"):
 		god_mode = !god_mode;
 		velocity = Vector2.ZERO;
+		
 	if cheat_command and cheat_command_scene != null and event.is_action_pressed("Enter"):
 		cheat_command_scene.run_command();
+		
 	if !cheat_command and Input.is_action_pressed("ui_shift"):
 		is_sprinting = true;
 		move_speed = sprint_speed;
@@ -236,7 +256,7 @@ func _physics_process(delta) -> void:
 		if cooldown_remaining <= 0 and not cooldown_active_phase:
 			cooldown_remaining = 0;
 			ability_cooldown_bar.value = cooldown_remaining;
-
+			
 	# Network Sync Tick (Runs for local player regardless of god_mode)
 	net_tick_timer += delta;
 	if net_tick_timer >= NET_TICK_RATE:
@@ -246,7 +266,7 @@ func _physics_process(delta) -> void:
 func _process(_delta: float) -> void:
 	if not is_local:
 		return;
-
+		
 	if current_health != old_health:
 		health_changed.emit(current_health, max_health);
 		
@@ -282,7 +302,7 @@ func handle_movement_input() -> void:
 		is_sprinting = false;
 		move_speed = speed;
 		return;
-
+		
 	input_direction_A = Input.get_axis("move_left", "move_right");
 	if input_direction_A != 0:
 		facing_right = input_direction_A > 0;
@@ -291,11 +311,11 @@ func handle_movement_input() -> void:
 			sword_holder.position = Vector2(20, -5);
 		else:
 			sword_holder.position = Vector2(-20, -5);
-
+			
 	if is_sword_swinging and not god_mode:
 		velocity.x = 0;
 		return;
-
+		
 	if !cheat_command and god_mode:
 		velocity = Vector2.ZERO;
 		if Input.is_action_pressed("move_right"): velocity.x += move_speed;
@@ -331,39 +351,49 @@ func handle_landing_reset() -> void:
 func shoot_fireball() -> void:
 	if not can_shoot or fireball_scene == null or is_shooting:
 		return;
+		
 	fireball = fireball_scene.instantiate();
 	fireball.direction = Vector2.RIGHT if facing_right else Vector2.LEFT;
 	fireball.global_position = fire_point.global_position;
 	get_tree().current_scene.add_child(fireball);
+	
 	dash_locked = true;
 	sprite.play("dash");
 	sprite.frame = 0;
+	
 	if sprite.animation_finished.is_connected(_on_dash_anim_finished):
 		sprite.animation_finished.disconnect(_on_dash_anim_finished);
 	sprite.animation_finished.connect(_on_dash_anim_finished, CONNECT_ONE_SHOT);
+	
 	is_shooting = true;
 	can_shoot = false;
+	
 	if camera:
 		camera.trigger_shake(5.0, 0.15);
+		
 	start_timer(shoot_anim_duration, _on_shoot_anim_end);
 	start_timer(fireball_cooldown, _on_fireball_cooldown_timeout);
 
 func activate_lightning_ball() -> void:
 	if not can_use_lightning or lightning_ball_scene == null:
 		return;
+		
 	can_use_lightning = false;
 	is_lightning_active = true;
 	cooldown_active_phase = true;
 	cooldown_remaining = lightning_ability_duration;
 	ability_cooldown_bar.max_value = lightning_ability_duration;
 	ability_cooldown_bar.value = 0;
+	
 	ball = lightning_ball_scene.instantiate() as Area2D;
 	ball.scale = Vector2(1.5, 1.5);
 	ball.global_position = global_position + Vector2(50 if facing_right else -50, 0);
+	
 	if ball.has_method("set_direction"):
 		ball.set_direction(Vector2(1, 0) if facing_right else Vector2(-1, 0));
 	if ball.has_method("activate"):
 		ball.activate();
+		
 	get_tree().current_scene.add_child(ball);
 	
 	cleanup_timer = Timer.new();
@@ -378,6 +408,7 @@ func activate_lightning_ball() -> void:
 	);
 	add_child(cleanup_timer);
 	cleanup_timer.start();
+	
 	start_timer(lightning_ability_cooldown, _on_lightning_cooldown_timeout);
 	start_timer(lightning_ability_duration, _on_lightning_ability_end);
 
@@ -413,24 +444,82 @@ func add_bonus_heart() -> bool:
 	return true;
 
 func die() -> void:
-	if is_dead: 
+	if is_dead:
 		return
 	is_dead = true
-
+	
+	if LIB_C != null:
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "player_died"
+		packet["sender"] = LIB_C.playerName
+		LIB_C.send_json_packet(packet)
+		
 	if not is_local:
 		if sprite:
 			sprite.visible = false
-		queue_free()
+		if sword_holder:
+			sword_holder.visible = false
 		return
 		
 	if camera: 
 		camera.trigger_shake(20.0, 0.8)
-		
 	MusicManager.play_game_over()
 	set_process(false)
 	set_process_input(false)
+	set_physics_process(false)
+	
+	if sprite:
+		sprite.visible = false
+	if sword_holder:
+		sword_holder.visible = false
+		
 	await get_tree().create_timer(0.5).timeout
-	SceneManager.change_scene("retry_menu")
+	show_retry_overlay()
+
+func show_retry_overlay() -> void:
+	var retry_scene: PackedScene = SceneManager.get_scene("retry_menu")
+	if retry_scene:
+		var canvas_layer: CanvasLayer = CanvasLayer.new()
+		canvas_layer.layer = 100
+		var overlay: Control = retry_scene.instantiate()
+		overlay.set_meta("target_player", self)
+		overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+		canvas_layer.add_child(overlay)
+		get_tree().root.add_child(canvas_layer)
+
+func respawn() -> void:
+	is_dead = false
+	current_health = max_health
+	old_health = current_health
+	health_changed.emit(current_health, max_health)
+	
+	global_position = Vector2(100, 100) 
+	velocity = Vector2.ZERO
+	
+	if sprite:
+		sprite.visible = true
+	if sword_holder:
+		sword_holder.visible = true
+		
+	set_process(true)
+	set_process_input(true)
+	set_physics_process(true)
+	
+	if LIB_C != null:
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "player_respawned"
+		packet["sender"] = LIB_C.playerName
+		LIB_C.send_json_packet(packet)
+
+func _on_player_died_received(sender: String) -> void:
+	if not is_local and sender == player_name:
+		if sprite: sprite.visible = false
+		set_process(false)
+
+func _on_player_respawned_received(sender: String) -> void:
+	if not is_local and sender == player_name:
+		if sprite: sprite.visible = true
+		set_process(true)
 
 # Utilities and Helpers
 func handle_animation() -> void:
@@ -475,19 +564,35 @@ func reset_level_timer() -> void:
 	level_timer.start();
 
 func _send_network_state() -> void:
-	if LIB_C == null: return;
-	if not LIB_C.is_host and not LIB_C.client_connected: return;
-	var anim_name: String = "idle";
-	if sprite: anim_name = sprite.animation;
-	var packet: Dictionary = {
-		"type": "pos",
-		"sender": LIB_C.playerName,
-		"x": global_position.x,
-		"y": global_position.y,
-		"anim": anim_name,
-		"flip": sprite.flip_h if sprite else false
-	};
-	LIB_C.send_json_packet(packet);
+	if LIB_C == null: return
+	if not LIB_C.is_host and not LIB_C.client_connected: return
+	
+	var anim_name: String = "idle"
+	if sprite: 
+		anim_name = sprite.animation
+		
+	var packet: Dictionary = Dictionary()
+	packet["type"] = "pos"
+	packet["sender"] = LIB_C.playerName
+	packet["x"] = global_position.x
+	packet["y"] = global_position.y
+	packet["anim"] = anim_name
+	packet["flip"] = sprite.flip_h if sprite else false
+	LIB_C.send_json_packet(packet)
+
+func _on_weapon_equipped(item_data: ItemData) -> void:
+	sword.equip_weapon(item_data)
+	if not sword.swing_started.is_connected(_on_sword_swing_started):
+		sword.swing_started.connect(_on_sword_swing_started)
+	if not sword.swing_finished.is_connected(_on_sword_swing_finished):
+		sword.swing_finished.connect(_on_sword_swing_finished)
+		
+	if is_local and Globals.is_online_mode and LIB_C != null:
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "weapon_sync"
+		packet["sender"] = LIB_C.playerName
+		packet["weapon_name"] = item_data.item_name.strip_edges()
+		LIB_C.send_json_packet(packet)
 
 # Signal Handlers
 func _update_coin_ui(new_total: int) -> void:
@@ -503,42 +608,25 @@ func _on_dash_anim_finished() -> void:
 	if abs(velocity.x) > 10.0: sprite.play("walk");
 	else: sprite.play("idle");
 
-func _on_weapon_equipped(item_data: ItemData) -> void:
-	sword.equip_weapon(item_data);
-	if not sword.swing_started.is_connected(_on_sword_swing_started):
-		sword.swing_started.connect(_on_sword_swing_started);
-	if not sword.swing_finished.is_connected(_on_sword_swing_finished):
-		sword.swing_finished.connect(_on_sword_swing_finished);
-		
-	 # sync weapon to remote players
-	if is_local and Globals.is_online_mode and LIB_C != null:
-		var packet: Dictionary = {
-			"type": "weapon_sync",
-			"sender": LIB_C.playerName,
-			"weapon_name": item_data.item_name
-		}
-		LIB_C.send_json_packet(packet)
-
 func _on_lightning_ability_end() -> void:
 	is_lightning_active = false;
 	if is_instance_valid(lightning_ball_instance):
 		lightning_ball_instance.visible = false;
-		if lightning_ball_instance.has_method("deactivate"):
-			lightning_ball_instance.deactivate();
+	if lightning_ball_instance.has_method("deactivate"):
+		lightning_ball_instance.deactivate();
 
 func _on_weapon_sync_received(sender: String, weapon_name: String) -> void:
-	if not is_local and sender != LIB_C.playerName:  # Only apply remote players' weapons
+	weapon_name = weapon_name.strip_edges()
+	if not is_local and sender != LIB_C.playerName:
 		var item_data = Globals.get_item_data_by_name(weapon_name)
 		if item_data != null:
 			sword.equip_weapon(item_data)
 		else:
 			push_warning("Weapon sync: unknown weapon name: ", weapon_name)
-			
 
 func _on_fireball_spawn_received(sender: String, x: float, y: float, dir_x: float, dir_y: float, fb_speed: float, lifetime: float, fireball_id: String) -> void:
 	if sender == LIB_C.playerName:
 		return  # ignore our own spawns
-
 	var fb_instance = fireball_scene.instantiate()
 	fb_instance.global_position = Vector2(x, y)
 	fb_instance.direction = Vector2(dir_x, dir_y)
@@ -553,7 +641,7 @@ func _on_fireball_destroy_received(sender: String, fireball_id: String) -> void:
 		return
 	if remote_fireballs.has(fireball_id):
 		var fb_fireball = remote_fireballs[fireball_id]
-		if is_instance_valid(fireball):
+		if is_instance_valid(fb_fireball):
 			fb_fireball.queue_free()
 		remote_fireballs.erase(fireball_id)
 

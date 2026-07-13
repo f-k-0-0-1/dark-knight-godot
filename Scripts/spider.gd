@@ -8,6 +8,7 @@ var state_broadcast_timer: float = 0.0
 const STATE_BROADCAST_INTERVAL: float = 0.1
 var last_state: Dictionary = {}
 var is_remote_damage: bool = false
+var network_target_pos: Vector2 = Vector2.ZERO
 
 var current_health: int
 var player: Node2D
@@ -22,53 +23,57 @@ func _ready() -> void:
 	current_health = max_health
 	add_to_group("enemies")
 	sync_id = str(get_path())
+	network_target_pos = global_position
 	
 	if LIB_C != null:
 		if not LIB_C.enemy_state_received.is_connected(_on_enemy_state_received):
 			LIB_C.enemy_state_received.connect(_on_enemy_state_received)
 		if not LIB_C.enemy_damage_received.is_connected(_on_enemy_damage_received):
 			LIB_C.enemy_damage_received.connect(_on_enemy_damage_received)
-	
-	if LIB_C != null:
 		if not LIB_C.enemy_sync_received.is_connected(_on_enemy_sync_received):
 			LIB_C.enemy_sync_received.connect(_on_enemy_sync_received)
 
 func _physics_process(delta: float) -> void:
-	
-	# Online Sync Logic
+	if is_dead:
+		return
+
+	# Online Client Logic: Interpolate to host position and bypass local AI
+	if Globals.is_online_mode and LIB_C != null and not LIB_C.is_host:
+		global_position = global_position.lerp(network_target_pos, 10.0 * delta)
+		return
+
+	# Online Host Logic: Broadcast state
 	if Globals.is_online_mode and LIB_C != null and LIB_C.is_host and not is_dead:
 		state_broadcast_timer += delta
 		if state_broadcast_timer >= STATE_BROADCAST_INTERVAL:
 			state_broadcast_timer = 0.0
-			var current_state = {
-				"x": global_position.x,
-				"y": global_position.y,
-				"anim": sprite.animation,
-				"flip_h": sprite.flip_h,
-			}
+			var current_state: Dictionary = Dictionary()
+			current_state["x"] = global_position.x
+			current_state["y"] = global_position.y
+			current_state["anim"] = sprite.animation
+			current_state["flip_h"] = sprite.flip_h
+		
 			if current_state != last_state:
-				var packet: Dictionary = {
-					"type": "enemy_state",
-					"sender": LIB_C.playerName,
-					"id": sync_id,
-					"x": global_position.x,
-					"y": global_position.y,
-					"anim": sprite.animation,
-					"flip_h": sprite.flip_h,
-				}
+				var packet: Dictionary = Dictionary()
+				packet["type"] = "enemy_state"
+				packet["sender"] = LIB_C.playerName
+				packet["id"] = sync_id
+				packet["x"] = global_position.x
+				packet["y"] = global_position.y
+				packet["anim"] = sprite.animation
+				packet["flip_h"] = sprite.flip_h
 				LIB_C.send_json_packet(packet)
 				last_state = current_state
-	
+
 	if not is_instance_valid(player) or not player.is_local:
 		player = get_closest_player()	
-	
+		
 	if not player:
 		velocity = Vector2.ZERO
 		sprite.play("idle")
 		return
 		
 	var distance_to_player: float = global_position.distance_to(player.global_position)
-	
 	if distance_to_player > detection_range:
 		velocity = Vector2.ZERO
 		sprite.play("idle")
@@ -77,7 +82,6 @@ func _physics_process(delta: float) -> void:
 	var direction: Vector2 = (player.global_position - global_position).normalized()
 	velocity = direction * speed
 	move_and_slide()
-	
 	sprite.flip_h = velocity.x < 0
 	
 	if not is_on_floor():
@@ -95,23 +99,24 @@ func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 		die()
 		
 	if Globals.is_online_mode and LIB_C != null and not is_remote_damage:
-		var packet: Dictionary = {
-			"type": "enemy_damage",
-			"sender": LIB_C.playerName,
-			"id": sync_id,
-			"damage": amount,
-			"source_x": source_position.x,
-			"source_y": source_position.y
-		}
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "enemy_damage"
+		packet["sender"] = LIB_C.playerName
+		packet["id"] = sync_id
+		packet["damage"] = amount
+		packet["source_x"] = source_position.x
+		packet["source_y"] = source_position.y
 		LIB_C.send_json_packet(packet)
-	
+
 func get_closest_player() -> Node2D:
 	var players: Array[Node] = get_tree().get_nodes_in_group("player")
+	if players.is_empty():
+		return null
 	var closest: Node2D = null
 	var closest_dist: float = INF
-	
 	for p in players:
-		if p is CharacterBody2D and p.is_local:
+		# Target any alive player (host or client)
+		if p is CharacterBody2D and not p.is_dead:
 			var dist: float = global_position.distance_to(p.global_position)
 			if dist < closest_dist:
 				closest = p
@@ -121,7 +126,7 @@ func get_closest_player() -> Node2D:
 func _on_enemy_sync_received(enemy_id: String) -> void:
 	if enemy_id == sync_id and current_health > 0 and not is_dead:
 		take_damage(max_health, Vector2.ZERO)
-		
+
 func _on_enemy_state_received(sender: String, enemy_id: String, x: float, y: float, anim: String, flip_h: bool, _new_health: int) -> void:
 	if sender == LIB_C.playerName:
 		return  # ignore own broadcasts (host)
@@ -129,9 +134,9 @@ func _on_enemy_state_received(sender: String, enemy_id: String, x: float, y: flo
 		return  # host does not apply others' states
 	if enemy_id != sync_id or is_dead:
 		return
-
-	# Update position with interpolation or direct
-	global_position = Vector2(x, y)  # or lerp
+		
+	# Update target position for smooth interpolation in _physics_process
+	network_target_pos = Vector2(x, y)
 	if sprite.animation != anim:
 		sprite.play(anim)
 	sprite.flip_h = flip_h
@@ -152,7 +157,7 @@ func die() -> void:
 	if is_dead:
 		return
 	is_dead = true
-
+	
 	if LIB_C != null:
 		var packet: Dictionary = Dictionary()
 		packet["type"] = "enemy_sync"
