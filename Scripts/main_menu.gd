@@ -1,12 +1,18 @@
 extends Control
 
+@onready var panel: Panel = $Panel
 @onready var play_button: Button = $Panel/Play
 @onready var credits_button: Button = $Panel/Credits
 @onready var quit_button: Button = $Panel/Quit
-@onready var play_multi_button: Button = $Panel/Play_Multi   # <-- NEW BUTTON REFERENCE
+@onready var play_multi_button: Button = $Panel/Play_Multi
 @onready var click_sound: AudioStreamPlayer = $clicksound
 @onready var mute_sound_btn : Button = $Panel/Sound
-@onready var panel: Panel = $Panel
+
+# === NEW: Reference the Name Popup nodes (Based on your Screenshot) ===
+@onready var name_popup: Panel = $NamePopup
+@onready var name_input: LineEdit = $NamePopup/NameInput
+@onready var confirm_name_button: Button = $NamePopup/ConfirmNameButton
+@onready var popup_title: Label = $NamePopup/PopupTitle
 
 # Reference to the Multiplayer Lobby scene
 const MULTIPLAYER_LOBBY_SCENE = preload("res://Scenes/multiplayer_lobby.tscn")
@@ -17,11 +23,11 @@ func _ready():
 
 	# Check for the bg sound flag
 	if !MusicManager.isMusicPlaying:
-		mute_sound_btn.get_child(0).visible = true;
-		mute_sound_btn.get_child(1).visible = false;
+		mute_sound_btn.get_child(0).visible = true
+		mute_sound_btn.get_child(1).visible = false
 	else:
 		mute_sound_btn.get_child(1).visible = true
-		mute_sound_btn.get_child(0).visible = false;
+		mute_sound_btn.get_child(0).visible = false
 		
 	if not play_button or not quit_button:
 		push_error("Play or Quit button not found! Check your node names and paths.")
@@ -31,11 +37,42 @@ func _ready():
 	credits_button.pressed.connect(_on_credits_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 	
-	# === CONNECT THE MULTIPLAYER BUTTON ===
 	if play_multi_button:
 		play_multi_button.pressed.connect(_on_play_multi_pressed)
 	else:
 		push_error("Play_Multi button not found! Check your node names.")
+		
+	# === NEW: NAME POPUP LOGIC ===
+	# Hide the popup by default
+	name_popup.visible = false
+	
+	# Check if a name is saved
+	var saved_name = LIB_C.load_player_name()
+	
+	if saved_name == "":
+		# No name saved -> Show the popup
+		name_popup.visible = true
+		confirm_name_button.pressed.connect(_on_confirm_name_pressed)
+		name_input.grab_focus() # Automatically focus the text box
+	else:
+		print("Name already saved: ", saved_name)
+
+# === NEW: Confirm Name Button Handler ===
+func _on_confirm_name_pressed():
+	var new_name = name_input.text.strip_edges()
+	if new_name == "":
+		# Do NOT assign a random name. Just alert the player and refocus.
+		name_input.grab_focus()
+		print("Please enter a valid name before confirming.")
+		return
+	
+	# Save the name to disk
+	LIB_C.save_player_name(new_name)
+	LIB_C.playerName = new_name
+	
+	# Close the popup
+	name_popup.visible = false
+	print("Player name saved: ", new_name)
 
 func _on_play_pressed():
 	click_sound.play()
@@ -58,15 +95,13 @@ func _on_quit_pressed():
 	get_tree().paused = false
 	get_tree().quit()
 
-# === NEW MULTIPLAYER BUTTON FUNCTION ===
 func _on_play_multi_pressed():
 	click_sound.play()
 	await click_sound.finished
 	
-	# Check if the lobby is already open. If not, open it.
 	if lobby_instance == null or not is_instance_valid(lobby_instance):
-		# Hide the main menu buttons
-		panel.visible = false
+		# Hide the ENTIRE MainMenu control
+		visible = false  
 		
 		# Instantiate the lobby
 		lobby_instance = MULTIPLAYER_LOBBY_SCENE.instantiate()
@@ -74,10 +109,6 @@ func _on_play_multi_pressed():
 		
 		# Connect the start signal to start the game
 		lobby_instance.start_game_pressed.connect(_on_lobby_start_game)
-		
-		# Also, allow the lobby to close and return to menu
-		# (You would need to add a "Back" button in your lobby to call this)
-		# lobby_instance.back_to_menu.connect(_on_lobby_closed)
 
 func _on_lobby_start_game(level_name: String):
 	print("Starting Multiplayer Game on Level: ", level_name)
@@ -89,7 +120,6 @@ func _on_lobby_start_game(level_name: String):
 	else:
 		push_error("Level scene not found: ", level_name)
 
-# (Optional) Function to return to main menu from lobby
 func _on_lobby_closed():
 	if lobby_instance != null and is_instance_valid(lobby_instance):
 		lobby_instance.queue_free()
@@ -98,12 +128,12 @@ func _on_lobby_closed():
 
 func _on_sound_pressed() -> void:
 	if MusicManager.isMusicPlaying:
-		MusicManager.music.stop();
-		mute_sound_btn.get_child(0).visible = true;
-		mute_sound_btn.get_child(1).visible = false;
-		MusicManager.isMusicPlaying = false;
+		MusicManager.music.stop()
+		mute_sound_btn.get_child(0).visible = true
+		mute_sound_btn.get_child(1).visible = false
+		MusicManager.isMusicPlaying = false
 	else:
-		MusicManager.music.play();
+		MusicManager.music.play()
 		mute_sound_btn.get_child(1).visible = true
-		mute_sound_btn.get_child(0).visible = false;
-		MusicManager.isMusicPlaying = true;
+		mute_sound_btn.get_child(0).visible = false
+		MusicManager.isMusicPlaying = true

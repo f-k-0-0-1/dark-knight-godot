@@ -3,27 +3,41 @@
 [ext_resource type="Texture2D" uid="uid://df1x1b3e8ig5p" path="res://Assets/Backgrounds/multiplayer_lobby_ui.png" id="1_8caof"]
 [ext_resource type="Script" uid="uid://bbdd2ae3bcpmy" path="res://Scripts/multiplayer_lobby.gd" id="1_a0yqj"]
 [ext_resource type="Texture2D" uid="uid://bjo5tawrdksvo" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00000.png" id="2_a0yqj"]
+[ext_resource type="StyleBox" uid="uid://cf2yhx7jv3238" path="res://Shaders/credits_back_button_textures.tres" id="4_qnydk"]
+[ext_resource type="StyleBox" uid="uid://bvgbqhpvhyt1e" path="res://Styles/ui_popup_bg.tres" id="5_ubasi"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8caof"]
 texture = ExtResource("1_8caof")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnydk"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubasi"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xrrnt"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxa2p"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f4qmh"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqp54"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hyoii"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -51,6 +65,19 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34kdt"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qix15"]
+bg_color = Color(0, 0, 0, 0.7882353)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
 [node name="MultiplayerLobby" type="CanvasLayer" unique_id=662087595]
 script = ExtResource("1_a0yqj")
 
@@ -69,11 +96,12 @@ offset_bottom = 40.0
 
 [node name="PlayerName" type="Label" parent="Panel/PlayerCard1" unique_id=273563471]
 layout_mode = 0
-offset_left = 345.0
+offset_left = 283.0
 offset_top = 308.0
-offset_right = 417.0
+offset_right = 489.0
 offset_bottom = 331.0
 text = "PLAYER 1"
+horizontal_alignment = 1
 
 [node name="player_sprite_1" type="Sprite2D" parent="Panel/PlayerCard1" unique_id=842349276]
 position = Vector2(253, 372)
@@ -87,11 +115,12 @@ offset_bottom = 40.0
 
 [node name="PlayerName" type="Label" parent="Panel/PlayerCard2" unique_id=954675087]
 layout_mode = 0
-offset_left = 808.0
+offset_left = 736.0
 offset_top = 308.0
-offset_right = 880.0
+offset_right = 940.0
 offset_bottom = 331.0
 text = "PLAYER 2"
+horizontal_alignment = 1
 
 [node name="player_sprite_2" type="Sprite2D" parent="Panel/PlayerCard2" unique_id=1538850841]
 position = Vector2(701, 372)
@@ -100,34 +129,35 @@ texture = ExtResource("2_a0yqj")
 
 [node name="StartButton" type="Button" parent="Panel" unique_id=2104864470]
 layout_mode = 0
-offset_left = 427.0
-offset_top = 522.0
-offset_right = 817.0
-offset_bottom = 589.0
+offset_left = 428.0
+offset_top = 519.0
+offset_right = 816.0
+offset_bottom = 590.0
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_qnydk")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ubasi")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xrrnt")
+text = "START GAME"
 
 [node name="JoinButton" type="Button" parent="Panel" unique_id=733342364]
 layout_mode = 0
-offset_left = 529.0
-offset_top = 194.0
-offset_right = 646.0
-offset_bottom = 243.0
+offset_left = 537.0
+offset_top = 200.0
+offset_right = 636.0
+offset_bottom = 236.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_hxa2p")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_f4qmh")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xqp54")
 
 [node name="LinkInput" type="LineEdit" parent="Panel" unique_id=1578970654]
 layout_mode = 0
-offset_left = 208.0
+offset_left = 205.0
 offset_top = 193.0
-offset_right = 482.0
+offset_right = 484.0
 offset_bottom = 245.0
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_hyoii")
 placeholder_text = "  Paste Invite Link .........."
-expand_to_text_length = true
 
 [node name="LevelSelectDropdown" type="OptionButton" parent="Panel" unique_id=1987941556]
 layout_mode = 0
@@ -163,3 +193,69 @@ offset_bottom = 579.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_a0yqj")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_mxcfh")
 theme_override_styles/hover = SubResource("StyleBoxFlat_34kdt")
+
+[node name="BackButton" type="Button" parent="Panel" unique_id=2095761514]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 22.0
+offset_right = 153.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("4_qnydk")
+theme_override_styles/pressed = ExtResource("4_qnydk")
+theme_override_styles/hover = ExtResource("4_qnydk")
+text = "BACK"
+
+[node name="RolePopup" type="Panel" parent="." unique_id=1535739294]
+visible = false
+offset_left = 165.0
+offset_top = 91.0
+offset_right = 999.0
+offset_bottom = 554.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qix15")
+
+[node name="Label" type="Label" parent="RolePopup" unique_id=1168960745]
+layout_mode = 0
+offset_left = 233.0
+offset_top = 24.0
+offset_right = 562.0
+offset_bottom = 79.0
+theme_override_font_sizes/font_size = 40
+text = "Select your role"
+horizontal_alignment = 1
+
+[node name="HostButton" type="Button" parent="RolePopup" unique_id=378112162]
+layout_mode = 0
+offset_left = 273.0
+offset_top = 158.0
+offset_right = 523.0
+offset_bottom = 233.0
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("5_ubasi")
+theme_override_styles/pressed = ExtResource("5_ubasi")
+theme_override_styles/hover = ExtResource("5_ubasi")
+text = "Host Game"
+
+[node name="ClientButton" type="Button" parent="RolePopup" unique_id=1126363178]
+layout_mode = 0
+offset_left = 273.0
+offset_top = 265.0
+offset_right = 523.0
+offset_bottom = 340.0
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("5_ubasi")
+theme_override_styles/pressed = ExtResource("5_ubasi")
+theme_override_styles/hover = ExtResource("5_ubasi")
+text = "Join Game"
+
+[node name="BackButton" type="Button" parent="RolePopup" unique_id=984921667]
+layout_mode = 0
+offset_left = 674.0
+offset_top = 19.0
+offset_right = 805.0
+offset_bottom = 67.0
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("5_ubasi")
+theme_override_styles/pressed = ExtResource("5_ubasi")
+theme_override_styles/hover = ExtResource("5_ubasi")
+text = "BACK"
