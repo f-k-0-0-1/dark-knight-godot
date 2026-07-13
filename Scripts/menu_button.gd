@@ -86,6 +86,13 @@ func _on_menu_option_selected(id: int) -> void:
 			get_tree().quit()
 
 func _open_chat_overlay() -> void:
+	
+	# 0. If not Global model Return
+	if not Globals.is_online_mode:
+		# Optionally show a message or do nothing
+		print("Chat is only available in multiplayer mode.")
+		return
+	
 	# 1. Preload the Chat scene
 	const CHAT_SCENE = preload("res://Scenes/multiplayer_chat_ui.tscn")
 	

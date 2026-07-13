@@ -1,0 +1,14 @@
+Problems: 
+	"Sometimes the Enemy goes out of sync"
+	"Sword Animations are not sync"
+	"When player die retry menu btn not spwan it again"
+	"In Client Local Enemies are seen hide them becuase if they move they don't sync with the host enemies"
+	"On host enemies sync with the client"
+	
+Erros:
+	When Anyplayer click retry:
+		" E 0:05:01:510   scene_manager.gd:59 @ get_scene(): Scene '' not registered in SceneManager!
+  			<C++ Source>  core/variant/variant_utility.cpp:1024 @ push_error()
+  			<Stack Trace> scene_manager.gd:59 @ get_scene()
+             scene_manager.gd:63 @ change_scene()
+             retry.gd:12 @ retry_level()"

@@ -24,6 +24,10 @@ signal start_game_pressed(level_name: String)
 @onready var level_dropdown: OptionButton = $Panel/LevelSelectDropdown
 @onready var back_button: Button = $Panel/BackButton
 
+# Connection
+var _join_attempted: bool = false
+var _join_success: bool = false
+
 # === STATE ===
 var players_ready := {}
 var countdown_timer: Timer
@@ -37,7 +41,7 @@ var client_name_cached: String = "Player 2" # === ADDED: Cache to remember clien
 
 func _ready():
 # 1. Hide everything initially
-	panel.visible = false
+	panel.visible = true
 	role_popup.visible = true
 	
 	var black_style = StyleBoxFlat.new()
@@ -80,6 +84,8 @@ func _ready():
 			level_dropdown.add_item(key)
 	level_dropdown.select(0)
 	
+	if LIB_C.has_signal("player_name_updated"):
+		LIB_C.player_name_updated.connect(_on_player_name_updated)
 	if LIB_C.has_signal("player_joined"):
 		LIB_C.player_joined.connect(_on_player_joined)
 	if LIB_C.has_signal("player_left"):
@@ -162,48 +168,38 @@ func _on_tunnel_ready(url: String):
 # =====================
 func _on_join_pressed():
 	if current_role == "host":
+		# Host logic – unchanged
 		print("Host forcing fresh tunnel generation...")
 		LIB_C.stopCloudflareTunnel()
 		await get_tree().create_timer(0.5).timeout
-		
 		if LIB_C.has_signal("cloudflare_tunnel_ready"):
 			LIB_C.cloudflare_tunnel_ready.connect(_on_tunnel_ready, CONNECT_ONE_SHOT)
 			LIB_C.startCloudflareTunnel()
-			
 		link_input.text = "Refreshing..."
 		link_input.editable = false
 		return
-	
+
 	var link = link_input.text.strip_edges()
 	if link.is_empty():
 		return
+
 	print("Client attempting to join: ", link)
-	
 	player_card_2.visible = true
 	player_name_2.text = "Connecting..."
-	
+
+	_join_attempted = true
+	_join_success = false
+
 	LIB_C.connectToCloudflareServer(link)
-	
-	if not is_connected("player_joined", _on_player_joined):
-		LIB_C.player_joined.connect(_on_player_joined, CONNECT_ONE_SHOT)
-	
-	var timeout_timer = Timer.new()
-	timeout_timer.wait_time = 10.0
-	timeout_timer.one_shot = true
-	timeout_timer.timeout.connect(func():
+
+	# Wait for 10 seconds
+	await get_tree().create_timer(10.0).timeout
+
+	if not _join_success:
+		# Timeout – connection failed
 		if player_name_2.text == "Connecting...":
 			player_name_2.text = "Connection Failed"
-			if LIB_C.player_joined.is_connected(_on_player_joined):
-				LIB_C.player_joined.disconnect(_on_player_joined)
-	)
-	add_child(timeout_timer)
-	timeout_timer.start()
-	
-	var signal_cleanup = func():
-		if timeout_timer and timeout_timer.is_inside_tree():
-			timeout_timer.stop()
-			timeout_timer.queue_free()
-	LIB_C.player_joined.connect(signal_cleanup, CONNECT_ONE_SHOT)
+			_join_attempted = false
 
 func _on_chat_pressed():
 	const CHAT_SCENE = preload("res://Scenes/multiplayer_chat_ui.tscn")
@@ -269,6 +265,10 @@ func _on_start_pressed():
 # NETWORK SIGNAL HANDLERS
 # =====================
 func _on_player_joined(player_name: String):
+	if _join_attempted :
+		_join_success = true
+		_join_attempted = false 
+		
 	print("Lobby: Player joined: ", player_name)
 	
 	if player_name == LIB_C.playerName:
@@ -316,6 +316,7 @@ func _on_game_start_received(level_name: String):
 	if current_role == "client":
 		print("Client shifting to gameplay level: ", level_name)
 		start_game_pressed.emit(level_name)
+		Globals.is_online_mode = true;
 
 # === ADDED: Updates UI when the client status packet is intercepted ===
 func _on_player_ready_changed(_sender_name: String, ready_state: bool):
@@ -327,6 +328,15 @@ func _on_player_ready_changed(_sender_name: String, ready_state: bool):
 		else:
 			player_name_2.text = client_name_cached + " (Not Ready)"
 			start_button.disabled = true
+
+func _on_player_name_updated(new_name: String):
+	# Update the client's own card
+	if current_role == "client":
+		player_name_2.text = new_name + " (Not Ready)"
+		client_name_cached = new_name
+	elif current_role == "host":
+		# If host changes name (unlikely), but handle anyway
+		player_name_1.text = new_name + " (Host)"
 
 func _exit_tree():
 	var player_node = get_tree().get_first_node_in_group("player")
@@ -340,6 +350,7 @@ func _exit_tree():
 # COUNTDOWN LOGIC
 # =====================
 func _start_countdown():
+	Globals.is_online_mode = true;
 	is_countdown_running = true
 	countdown_value = 5
 	start_button.disabled = true

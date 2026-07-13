@@ -1,0 +1,22 @@
+Godot Engine v4.6.stable.official.89cea1439 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 535.309.01 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1650
+
+[Network] Loaded saved player name: QwenCoder
+[Network] Disconnecting all network connections...
+[Network] Client peer closed.
+[Network] Initialized as HOST. Identity: QwenCoder | Listening on Port: 8080
+Name already saved: QwenCoder
+[Network] Host already active. Listening on Port: 8080
+[Network] Disconnecting all network connections...
+[Network] Server stopped listening.
+[Network] Client peer closed.
+[Network] Disconnecting all network connections...
+[Network] Client peer closed.
+[Network] Initialized as HOST. Identity: QwenCoder | Listening on Port: 8080
+[Network] Cloudflared found:
+	Executable: cloudflared
+cloudflared version 2026.2.0 (built 2026-02-06-14:47 UTC)
+
+Host forcing fresh tunnel generation...
+[Network] Identity assertion verified: QwenCoder
+Lobby: Player joined: QwenCoder

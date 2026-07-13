@@ -46,6 +46,7 @@ var network_target_pos: Vector2 = Vector2.ZERO;
 var network_anim: String = "idle";
 var network_flip_h: bool = false;
 var net_tick_timer: float = 0.0;
+var remote_fireballs: Dictionary = {}
 
 # Variables when Node init
 var fireball_scene: PackedScene;
@@ -103,9 +104,6 @@ func _ready() -> void:
 			name_label.visible = true;
 		remove_from_group("player");
 		
-		# CRITICAL FIX: Disable all collision shapes recursively.
-		# This prevents remote players from physically pushing the local player 
-		# or triggering Area2D signals (like sword hits or coin pickups).
 		var collision_shapes: Array[Node] = find_children("*", "CollisionShape2D");
 		for shape in collision_shapes:
 			shape.set_deferred("disabled", true);
@@ -146,6 +144,15 @@ func _ready() -> void:
 			_on_weapon_equipped(saved_item);
 		else:
 			print("Player: saved equipped item not found: ", Globals.equipped_item_name);
+			
+	if LIB_C != null:
+		if not LIB_C.fireball_spawn_received.is_connected(_on_fireball_spawn_received):
+			LIB_C.fireball_spawn_received.connect(_on_fireball_spawn_received)
+		if not LIB_C.fireball_destroy_received.is_connected(_on_fireball_destroy_received):
+			LIB_C.fireball_destroy_received.connect(_on_fireball_destroy_received)
+	
+	if LIB_C != null and not LIB_C.weapon_sync_received.is_connected(_on_weapon_sync_received):
+		LIB_C.weapon_sync_received.connect(_on_weapon_sync_received)
 
 func is_typing_in_input() -> bool:
 	var focus_owner = get_viewport().gui_get_focus_owner();
@@ -502,6 +509,15 @@ func _on_weapon_equipped(item_data: ItemData) -> void:
 		sword.swing_started.connect(_on_sword_swing_started);
 	if not sword.swing_finished.is_connected(_on_sword_swing_finished):
 		sword.swing_finished.connect(_on_sword_swing_finished);
+		
+	 # sync weapon to remote players
+	if is_local and Globals.is_online_mode and LIB_C != null:
+		var packet: Dictionary = {
+			"type": "weapon_sync",
+			"sender": LIB_C.playerName,
+			"weapon_name": item_data.item_name
+		}
+		LIB_C.send_json_packet(packet)
 
 func _on_lightning_ability_end() -> void:
 	is_lightning_active = false;
@@ -509,6 +525,37 @@ func _on_lightning_ability_end() -> void:
 		lightning_ball_instance.visible = false;
 		if lightning_ball_instance.has_method("deactivate"):
 			lightning_ball_instance.deactivate();
+
+func _on_weapon_sync_received(sender: String, weapon_name: String) -> void:
+	if not is_local and sender != LIB_C.playerName:  # Only apply remote players' weapons
+		var item_data = Globals.get_item_data_by_name(weapon_name)
+		if item_data != null:
+			sword.equip_weapon(item_data)
+		else:
+			push_warning("Weapon sync: unknown weapon name: ", weapon_name)
+			
+
+func _on_fireball_spawn_received(sender: String, x: float, y: float, dir_x: float, dir_y: float, fb_speed: float, lifetime: float, fireball_id: String) -> void:
+	if sender == LIB_C.playerName:
+		return  # ignore our own spawns
+
+	var fb_instance = fireball_scene.instantiate()
+	fb_instance.global_position = Vector2(x, y)
+	fb_instance.direction = Vector2(dir_x, dir_y)
+	fb_instance.speed = fb_speed
+	fb_instance.lifetime = lifetime
+	fb_instance.is_remote = true
+	get_tree().current_scene.add_child(fb_instance)
+	remote_fireballs[fireball_id] = fb_instance
+
+func _on_fireball_destroy_received(sender: String, fireball_id: String) -> void:
+	if sender == LIB_C.playerName:
+		return
+	if remote_fireballs.has(fireball_id):
+		var fb_fireball = remote_fireballs[fireball_id]
+		if is_instance_valid(fireball):
+			fb_fireball.queue_free()
+		remote_fireballs.erase(fireball_id)
 
 func _on_lightning_cooldown_timeout() -> void:
 	can_use_lightning = true;

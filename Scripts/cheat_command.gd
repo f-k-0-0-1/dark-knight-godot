@@ -112,6 +112,12 @@ func run_command() -> void:
 
 # Specific robust CLI parser for dynamic chat operations
 func handle_chat_cli_command(text: String) -> void:
+	# ONLINE MODE GUARD 
+	if not Globals.is_online_mode:
+		log_error("Chat is only available in multiplayer mode.\n")
+		command_box.text = ""
+		return
+
 	var parts: PackedStringArray = text.split(" ", false)
 	if (parts.size() < 2):
 		log_error("Invalid chat command. Use 'help -m' for details.\n")

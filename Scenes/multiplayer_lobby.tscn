@@ -71,7 +71,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hxa2p"]
 shader = ExtResource("5_xrrnt")
-shader_parameter/blur_amount = 1.702000080845
+shader_parameter/blur_amount = 1.5150000719625
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qix15"]
 bg_color = Color(0, 0, 0, 0.7882353)

@@ -44,6 +44,10 @@ func _ready():
 	combo_reset_timer.one_shot = true
 	combo_reset_timer.timeout.connect(_reset_combo)
 	add_child(combo_reset_timer)
+	
+	 # Connect to swing sync signal
+	if LIB_C != null and not LIB_C.swing_sync_received.is_connected(_on_swing_sync_received):
+		LIB_C.swing_sync_received.connect(_on_swing_sync_received)
 
 func _reset_combo():
 	combo_count = 0
@@ -72,6 +76,16 @@ func swing(is_facing_right: bool):
 	is_swinging = true
 	enemy_hit = false
 	facing_right = is_facing_right
+	
+	var player = get_tree().get_first_node_in_group("player")
+	if player != null and player.is_local and Globals.is_online_mode and LIB_C != null:
+		var packet: Dictionary = {
+			"type": "swing_sync",
+			"sender": LIB_C.playerName,
+			"facing_right": is_facing_right,
+			"combo": combo_count
+		}
+		LIB_C.send_json_packet(packet)
 
 	hitbox.monitoring = true
 	hitbox.monitorable = true
@@ -150,3 +164,59 @@ func _on_hitbox_body_entered(body: Node2D):
 	if body.is_in_group("enemies") and body.has_method("take_damage"):
 		enemy_hit = true
 		body.take_damage(current_damage, global_position)
+
+func _on_swing_sync_received(_sender: String, f_right: bool, combo: int) -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player == null or player.is_local:
+		return  # ignore local player's own swings
+
+	# Call swing_remote
+	swing_remote(f_right, combo)
+
+func swing_remote(is_facing_right: bool, combo: int) -> void:
+	# Similar to swing but without hitbox/damage and without sending packet again
+	if is_swinging:
+		return
+
+	is_swinging = true
+	facing_right = is_facing_right
+
+	# We do NOT enable hitbox for remote swing (visual only)
+	# hitbox.monitoring = false (already false)
+
+	# Spawn slash effect (visual)
+	var slash_instance = SLASH_SCENE.instantiate()
+	var slash_offset = Vector2(40, 0) if facing_right else Vector2(-40, 0)
+	slash_instance.global_position = global_position + slash_offset
+	if not facing_right:
+		slash_instance.scale.x = -1.0
+	get_tree().current_scene.add_child(slash_instance)
+	slash_instance.init(combo)  # pass combo for correct slash animation
+
+	# Determine swing duration based on combo
+	var swing_duration_actual = 0.30 if combo == 2 else 0.12
+
+	# Animate pivot
+	var start_angle: float
+	var end_angle: float
+	if facing_right:
+		start_angle = base_angle - swing_angle / 2.0
+		end_angle = base_angle + swing_angle / 2.0
+	else:
+		start_angle = 180.0 - base_angle + swing_angle / 2.0
+		end_angle = 180.0 - base_angle - swing_angle / 2.0
+
+	pivot.rotation_degrees = start_angle
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(pivot, "rotation_degrees", end_angle, swing_duration_actual)
+
+	await tween.finished
+
+	if facing_right:
+		pivot.rotation_degrees = base_angle
+	else:
+		pivot.rotation_degrees = 180.0 - base_angle
+
+	is_swinging = false

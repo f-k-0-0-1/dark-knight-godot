@@ -9,6 +9,12 @@ extends CharacterBody2D
 @export var attack_range := 400.0
 @export var attack_cooldown := 1.0
 
+# Online
+var state_broadcast_timer: float = 0.0
+const STATE_BROADCAST_INTERVAL: float = 0.1
+var last_state: Dictionary = {}
+var is_remote_damage: bool = false
+
 # === PATROL BOUNDARIES ===
 @export var patrol_x_min := 19000.0
 @export var patrol_x_max := 22200.0
@@ -46,12 +52,44 @@ func _ready() -> void:
 	sprite.animation_finished.connect(_on_animation_finished)
 	
 	if LIB_C != null:
+		if not LIB_C.enemy_state_received.is_connected(_on_enemy_state_received):
+			LIB_C.enemy_state_received.connect(_on_enemy_state_received)
+		if not LIB_C.enemy_damage_received.is_connected(_on_enemy_damage_received):
+			LIB_C.enemy_damage_received.connect(_on_enemy_damage_received)
+	
+	if LIB_C != null:
 		if not LIB_C.enemy_sync_received.is_connected(_on_enemy_sync_received):
 			LIB_C.enemy_sync_received.connect(_on_enemy_sync_received)
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
 		return
+	
+	# Online Sync Logic
+	if Globals.is_online_mode and LIB_C != null and LIB_C.is_host and not is_dead:
+		state_broadcast_timer += delta
+		if state_broadcast_timer >= STATE_BROADCAST_INTERVAL:
+			state_broadcast_timer = 0.0
+			var current_state = {
+				"x": global_position.x,
+				"y": global_position.y,
+				"anim": sprite.animation,
+				"flip_h": sprite.flip_h,
+				"health": health
+			}
+			if current_state != last_state:
+				var packet: Dictionary = {
+					"type": "enemy_state",
+					"sender": LIB_C.playerName,
+					"id": sync_id,
+					"x": global_position.x,
+					"y": global_position.y,
+					"anim": sprite.animation,
+					"flip_h": sprite.flip_h,
+					"health": health
+				}
+				LIB_C.send_json_packet(packet)
+				last_state = current_state
 
 	if is_recoiling:
 		move_and_slide()
@@ -149,6 +187,26 @@ func take_damage(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 		sprite.stop()
 	if health <= 0:
 		die()
+		
+	if Globals.is_online_mode and LIB_C != null and not is_remote_damage:
+		var packet: Dictionary = {
+			"type": "enemy_damage",
+			"sender": LIB_C.playerName,
+			"id": sync_id,
+			"damage": amount,
+			"source_x": source_position.x,
+			"source_y": source_position.y
+		}
+		LIB_C.send_json_packet(packet)
+
+func _on_enemy_damage_received(sender: String, enemy_id: String, damage: int, source_x: float, source_y: float) -> void:
+	if sender == LIB_C.playerName:
+		return
+	if enemy_id != sync_id or is_dead:
+		return
+	is_remote_damage = true
+	take_damage(damage, Vector2(source_x, source_y))
+	is_remote_damage = false
 
 func update_health_bar() -> void:
 	health_bar.value = float(health) / float(max_health) * 100.0
@@ -226,3 +284,20 @@ func _on_enemy_sync_received(enemy_id: String) -> void:
 	if enemy_id == sync_id and health > 0 and not is_syncing_death:
 		is_syncing_death = true
 		take_damage(max_health, Vector2.ZERO)
+
+func _on_enemy_state_received(sender: String, enemy_id: String, x: float, y: float, anim: String, flip_h: bool, new_health: int) -> void:
+	if sender == LIB_C.playerName:
+		return  # ignore own broadcasts (host)
+	if LIB_C.is_host:
+		return  # host does not apply others' states
+	if enemy_id != sync_id or is_dead:
+		return
+
+	# Update position with interpolation or direct
+	global_position = Vector2(x, y)  # or lerp
+	if sprite.animation != anim:
+		sprite.play(anim)
+	sprite.flip_h = flip_h
+	if new_health != self.health:
+		self.health = new_health
+		update_health_bar()

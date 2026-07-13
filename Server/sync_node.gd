@@ -13,6 +13,16 @@ signal level_sync_received(scene_name: String)
 signal pickup_sync_received(item_id: String)
 signal game_start_received(level_name: String)
 signal player_ready_changed(player_name: String, is_ready: bool)
+
+@warning_ignore("unused_signal")
+signal weapon_sync_received(sender: String, weapon_name: String)
+signal player_name_updated(new_name: String)
+signal fireball_spawn_received(sender: String, x: float, y: float, dir_x: float, dir_y: float, speed: float, lifetime: float, id: String)
+signal fireball_destroy_received(sender: String, id: String)
+signal enemy_state_received(sender: String, enemy_id: String, x: float, y: float, anim: String, flip_h: bool, health: int)
+signal enemy_damage_received(sender: String, enemy_id: String, damage: int, source_x: float, source_y: float)
+signal swing_sync_received(sender: String, facing_right: bool, combo: int)
+
 # Configuration Constants
 const PORT_PRIMARY: int = 8080
 const DEFAULT_IP: String = "127.0.0.1"
@@ -41,6 +51,7 @@ var tunnel_timer: float = 0.0
 var tunnel_resolved: bool = false
 var is_cloudflare_installed: bool = false
 var cloudflare_executable: String = ""
+var peer_to_assigned_name: Dictionary = {}
 
 # Connected Players Tracking & Scene Management
 var connected_players: Dictionary = {}
@@ -187,6 +198,7 @@ func disconnect_all() -> void:
 		_despawn_remote_player(p_name)
 		
 	is_host = false
+	Globals.is_online_mode = false
 
 func reconnect_client() -> void:
 	client_peer.close()
@@ -239,7 +251,9 @@ func connectToCloudflareServer(token: String) -> void:
 	elif clean_token.begins_with("http://"):
 		clean_token = clean_token.substr(7)
 		
-	if "mock-tunnel-" in clean_token:
+	print("Clear Token: " + clean_token);
+		
+	if "mock-tunnel-" in clean_token or "local" in clean_token:
 		target_ip = "127.0.0.1"
 		var parts: PackedStringArray = clean_token.split("-")
 		if parts.size() >= 3:
@@ -308,6 +322,7 @@ func stopCloudflareTunnel() -> void:
 	tunnel_timer = 0.0
 
 func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
+	Globals.is_online_mode = true
 	var json: JSON = JSON.new()
 	var parse_result: int = json.parse(text)
 	
@@ -327,18 +342,41 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 				var msg: String = data.get("msg", "")
 				chat_received.emit(sender, msg)
 			"join":
-				print("[Network] Identity assertion verified: ", sender)
-				player_joined.emit(sender)
-				
-				if is_host and from_peer != null:
-					# Add a "role": "host" flag so the client knows this identity belongs to the master host
-					var host_join: Dictionary = {
-						"type": "join", 
-						"sender": playerName,
-						"role": "host"
-					}
+				var actual_sender = sender
+				if is_host:
+					# Check if the name is already taken (by another player or by the host itself)
+					if connected_players.has(sender) or sender == playerName:
+						var base_name = sender
+						var counter = 1
+						var new_name = base_name + str(counter)
+						while connected_players.has(new_name) or new_name == playerName:
+							counter += 1
+							new_name = base_name + str(counter)
+						# Send a name update packet to the client
+						var update_packet: Dictionary = {
+							"type": "name_update",
+							"new_name": new_name
+						}
+						from_peer.send_text(JSON.stringify(update_packet))
+						actual_sender = new_name
+						# Store the mapping from this peer to the assigned name
+						peer_to_assigned_name[from_peer] = actual_sender
+					else:
+						peer_to_assigned_name[from_peer] = actual_sender
+					
+					# Add the player to the list with the assigned name
+					connected_players[actual_sender] = {}
+					player_joined.emit(actual_sender)
+					print("[Network] Identity assertion verified (assigned): ", actual_sender)
+					
+					if SceneManager.current_level != "" and SceneManager.current_level != "level_select":
+						_spawn_remote_player(actual_sender)
+					
+					# Send the host's join packet back to the client
+					var host_join: Dictionary = {"type": "join", "sender": playerName}
 					from_peer.send_text(JSON.stringify(host_join))
 					
+					# Sync level if needed
 					if SceneManager.current_level != "":
 						var level_packet: Dictionary = {
 							"type": "level_sync",
@@ -346,11 +384,15 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 							"scene": SceneManager.current_level
 						}
 						from_peer.send_text(JSON.stringify(level_packet))
+				else:
+					# Client: just emit the signal for the lobby
+					player_joined.emit(sender)
 			"game_start":
 				var level_name: String = data.get("level", "")
 				if level_name != "":
 					print("[Network] Client received game start for: ", level_name)
 					game_start_received.emit(level_name)
+					Globals.is_online_mode = true
 				
 				if is_host and from_peer != null:
 					var host_join: Dictionary = {"type": "join", "sender": playerName}
@@ -374,13 +416,27 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 				_despawn_remote_player(sender)
 			"pos":
 				if sender != playerName:
+					var actual_name = sender
+
+					# If the sender is not in connected_players, check if we have a peer mapping
+					if from_peer != null and peer_to_assigned_name.has(from_peer):
+						actual_name = peer_to_assigned_name[from_peer]
+
+					# If the name changed, update the sender variable for subsequent logic
+					if actual_name != sender:
+						sender = actual_name
+
+					# Now ensure the player is spawned
+					if not remote_players.has(sender):
+						if not connected_players.has(sender):
+							connected_players[sender] = {}
+						_spawn_remote_player(sender)
+
+					# Update position and animation
 					var x: float = float(data.get("x", 0.0))
 					var y: float = float(data.get("y", 0.0))
 					var anim: String = data.get("anim", "idle")
 					var flip: bool = data.get("flip", false)
-					if not connected_players.has(sender):
-						connected_players[sender] = {}
-						_spawn_remote_player(sender)
 					connected_players[sender]["pos"] = Vector2(x, y)
 					connected_players[sender]["anim"] = anim
 					_update_remote_player(sender, Vector2(x, y), anim, flip)
@@ -400,6 +456,49 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 				var item_id: String = data.get("id", "")
 				if item_id != "":
 					pickup_sync_received.emit(item_id)
+					
+			"fireball_spawn":
+				var x: float = float(data.get("x", 0.0))
+				var y: float = float(data.get("y", 0.0))
+				var dir_x: float = float(data.get("dir_x", 0.0))
+				var dir_y: float = float(data.get("dir_y", 0.0))
+				var speed: float = float(data.get("speed", 0.0))
+				var lifetime: float = float(data.get("lifetime", 0.0))
+				var f_id: String = data.get("id", "")
+				fireball_spawn_received.emit(sender, x, y, dir_x, dir_y, speed, lifetime, f_id)
+				
+			"fireball_destroy":
+				var f_id: String = data.get("id", "")
+				fireball_destroy_received.emit(sender, f_id)
+				
+			"enemy_state":
+				var enemy_id: String = data.get("id", "")
+				var x: float = float(data.get("x", 0.0))
+				var y: float = float(data.get("y", 0.0))
+				var anim: String = data.get("anim", "idle")
+				var flip_h: bool = data.get("flip_h", false)
+				var health: int = int(data.get("health", 0))
+				enemy_state_received.emit(sender, enemy_id, x, y, anim, flip_h, health)
+				
+			"enemy_damage":
+				var enemy_id: String = data.get("id", "")
+				var damage: int = int(data.get("damage", 0))
+				var source_x: float = float(data.get("source_x", 0.0))
+				var source_y: float = float(data.get("source_y", 0.0))
+				enemy_damage_received.emit(sender, enemy_id, damage, source_x, source_y)
+				
+			"swing_sync":
+				var facing_right: bool = data.get("facing_right", false)
+				var combo: int = int(data.get("combo", 0))
+				swing_sync_received.emit(sender, facing_right, combo)
+				
+			"name_update":
+				var new_name: String = data.get("new_name", "")
+				if new_name != "":
+					playerName = new_name
+					save_player_name(new_name)
+					player_name_updated.emit(new_name)
+					print("[Network] Name updated to: ", new_name)
 			_:
 				variableSynced.emit(text)
 	else:
@@ -463,6 +562,7 @@ func set_role(is_host_mode: bool):
 
 # Called by the Host Lobby when the countdown finishes
 func send_game_start(level_name: String):
+	Globals.is_online_mode = true 
 	print("[Network] Host broadcasting game start on level: ", level_name)
 	
 	var packet: Dictionary = {
@@ -557,12 +657,18 @@ func _process(delta: float) -> void:
 func _on_scene_node_added(node: Node) -> void:
 	# When a new scene loads, reparent all active remote players to the new scene root
 	if node == get_tree().current_scene:
+		# Reparent existing remote players
 		for p_name in remote_players.keys():
 			if is_instance_valid(remote_players[p_name]):
 				var instance: Node = remote_players[p_name]
 				if instance.get_parent() != node:
 					instance.get_parent().remove_child(instance)
 					node.add_child(instance)
+
+		if is_host and SceneManager.current_level != "" and SceneManager.current_level != "level_select":
+			for p_name in connected_players.keys():
+				if p_name != playerName and not remote_players.has(p_name):
+					_spawn_remote_player(p_name)
 
 func _exit_tree() -> void:
 	disconnect_all()

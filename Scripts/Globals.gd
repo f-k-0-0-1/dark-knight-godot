@@ -5,7 +5,9 @@ var MAX_ARG_SIZE: int = 3
 var MIN_ARG_SIZE: int = 2
 var TELE_DIS: float = 1200.00
 var PLAYER_TRANS_START: Vector2 = Vector2(0, 0)
+var is_online_mode: bool = false
 var commandsInfo: String = """
+
 \nHere are Some Useful Commands\n
 1. Help -l  -> For Sinlge Line Help Commands\n
 2. Help -m  -> For Multi Line Help Commands\n 
