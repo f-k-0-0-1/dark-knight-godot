@@ -15,6 +15,29 @@ shader_parameter/blur_amount = 2.5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ssoq"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rlnir"]
+bg_color = Color(0, 0, 0, 0.6431373)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mv3wt"]
+bg_color = Color(0, 0, 0, 0.6431373)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.21837533, 0.6039435, 0.28694388, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_avk8s"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ruji2"]
@@ -120,9 +143,9 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = ExtResource("3_rlnir")
 theme_override_styles/normal_mirrored = ExtResource("3_rlnir")
-theme_override_styles/pressed = ExtResource("3_rlnir")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_rlnir")
 theme_override_styles/pressed_mirrored = ExtResource("3_rlnir")
-theme_override_styles/hover = ExtResource("3_rlnir")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mv3wt")
 theme_override_styles/disabled = ExtResource("4_ruji2")
 theme_override_styles/focus = ExtResource("3_rlnir")
 text = "Send"

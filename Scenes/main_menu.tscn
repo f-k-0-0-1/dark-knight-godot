@@ -39,6 +39,22 @@ texture = ExtResource("3_n45e2")
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_trj04"]
 texture = ExtResource("4_opfnp")
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m3bi6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cp0ys"]
+bg_color = Color(0, 0.039215688, 0.03529412, 0.6431373)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhxw7"]
+bg_color = Color(0, 0.16862746, 0, 0.70980394)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
 [node name="MainMenu" type="Control" unique_id=1618176307]
 layout_mode = 3
 anchors_preset = 15
@@ -213,11 +229,16 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_trj04")
 stream = ExtResource("3_1ehe0")
 
 [node name="NamePopup" type="Panel" parent="." unique_id=1953460946]
-layout_mode = 0
-offset_left = 792.0
-offset_top = 248.0
-offset_right = 1002.0
-offset_bottom = 401.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.841
+anchor_top = 0.65300006
+anchor_right = 0.841
+anchor_bottom = 0.65300006
+offset_left = -104.83203
+offset_top = -0.14404297
+offset_right = 105.16797
+offset_bottom = 152.85596
 theme_override_styles/panel = ExtResource("6_cp0ys")
 
 [node name="PopupTitle" type="Label" parent="NamePopup" unique_id=762827221]
@@ -226,7 +247,9 @@ offset_left = 19.0
 offset_top = 19.0
 offset_right = 187.0
 offset_bottom = 42.0
-text = "Set Your Player Name"
+theme_override_colors/font_color = Color(0.0036831095, 0.668414, 0.25993097, 1)
+text = "Name"
+horizontal_alignment = 1
 
 [node name="NameInput" type="LineEdit" parent="NamePopup" unique_id=1237422729]
 layout_mode = 0
@@ -234,20 +257,21 @@ offset_left = 14.0
 offset_top = 58.0
 offset_right = 184.0
 offset_bottom = 89.0
-theme_override_styles/normal = ExtResource("6_cp0ys")
-placeholder_text = "Enter Player Name"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_m3bi6")
+placeholder_text = "Enter:  Player Name"
 alignment = 1
 expand_to_text_length = true
 
 [node name="ConfirmNameButton" type="Button" parent="NamePopup" unique_id=484367912]
+modulate = Color(1, 1, 1, 0.9098039)
 layout_mode = 0
 offset_left = 59.0
 offset_top = 108.0
 offset_right = 145.0
 offset_bottom = 142.0
-theme_override_styles/normal = ExtResource("6_cp0ys")
-theme_override_styles/pressed = ExtResource("7_cp0ys")
+theme_override_styles/normal = SubResource("StyleBoxFlat_cp0ys")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_yhxw7")
 theme_override_styles/hover = ExtResource("7_cp0ys")
-text = "   confirm   "
+text = "Submit  "
 
 [connection signal="pressed" from="Panel/Sound" to="." method="_on_sound_pressed"]

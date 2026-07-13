@@ -318,7 +318,7 @@ func _on_game_start_received(level_name: String):
 		start_game_pressed.emit(level_name)
 
 # === ADDED: Updates UI when the client status packet is intercepted ===
-func _on_player_ready_changed(sender_name: String, ready_state: bool):
+func _on_player_ready_changed(_sender_name: String, ready_state: bool):
 	if current_role == "host":
 		is_client_ready = ready_state
 		if ready_state:
