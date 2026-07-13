@@ -45,7 +45,7 @@ func _ready():
 	combo_reset_timer.timeout.connect(_reset_combo)
 	add_child(combo_reset_timer)
 	
-	 # Connect to swing sync signal
+	# Connect to swing sync signal
 	if LIB_C != null and not LIB_C.swing_sync_received.is_connected(_on_swing_sync_received):
 		LIB_C.swing_sync_received.connect(_on_swing_sync_received)
 
@@ -54,14 +54,15 @@ func _reset_combo():
 
 func equip_weapon(item_data: ItemData):
 	current_damage = item_data.damage
-	var name_parts = item_data.item_name.split(" ")
+	var clean_name = item_data.item_name.strip_edges()
+	var name_parts = clean_name.split(" ")
 	if name_parts.size() >= 2:
-		current_material = name_parts[0]
-		current_category = name_parts[-1]
+		current_material = name_parts[0].strip_edges()
+		current_category = name_parts[-1].strip_edges()
 	else:
 		push_error("Sword: Item name format invalid: " + item_data.item_name)
 		return
-	
+		
 	var new_texture = WeaponManager.get_weapon_texture(current_material, current_category)
 	if new_texture:
 		sprite.texture = new_texture
@@ -72,33 +73,31 @@ func equip_weapon(item_data: ItemData):
 func swing(is_facing_right: bool):
 	if is_swinging:
 		return
-
 	is_swinging = true
 	enemy_hit = false
 	facing_right = is_facing_right
 	
-	var player = get_tree().get_first_node_in_group("player")
-	if player != null and player.is_local and Globals.is_online_mode and LIB_C != null:
-		var packet: Dictionary = {
-			"type": "swing_sync",
-			"sender": LIB_C.playerName,
-			"facing_right": is_facing_right,
-			"combo": combo_count
-		}
+	# Identify owner by traversing scene tree: Sword -> SwordHolder -> Player
+	var player = get_parent().get_parent()
+	if player != null and player is CharacterBody2D and player.is_local and Globals.is_online_mode and LIB_C != null:
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "swing_sync"
+		packet["sender"] = LIB_C.playerName
+		packet["facing_right"] = is_facing_right
+		packet["combo"] = combo_count
 		LIB_C.send_json_packet(packet)
-
+		
 	hitbox.monitoring = true
 	hitbox.monitorable = true
-
+	
 	if swing_sound:
 		swing_sound.play()
-	
+		
 	# Lock player movement during swing
 	swing_started.emit()
 	
 	# === SPAWN SLASH EFFECT ===
 	var slash_instance = SLASH_SCENE.instantiate()
-	
 	# Position it slightly in front of the player
 	var slash_offset = Vector2(40, 0) if facing_right else Vector2(-40, 0)
 	slash_instance.global_position = global_position + slash_offset
@@ -106,10 +105,9 @@ func swing(is_facing_right: bool):
 	# ROTATE THE SLASH BASED ON FACING DIRECTION
 	if not facing_right:
 		slash_instance.scale.x = -1.0 # Flip the slash if facing left
-	
+		
 	# Add it to the world FIRST so @onready variables initialize
 	get_tree().current_scene.add_child(slash_instance)
-	
 	# Pass the current combo count to decide which slash to play
 	slash_instance.init(combo_count)
 	
@@ -119,37 +117,35 @@ func swing(is_facing_right: bool):
 		swing_duration_actual = 0.30
 	else:  # Single slash (combo 0 or 1)
 		swing_duration_actual = 0.12
-	
+		
 	# === INCREMENT COMBO ===
 	combo_count += 1
 	if combo_count > 2:
 		combo_count = 0 # Loop back to Slash 1 after Spin/Multi Slash
 	combo_reset_timer.start() # Reset the timer
-
+	
 	var start_angle: float
 	var end_angle: float
-
 	if facing_right:
 		start_angle = base_angle - swing_angle / 2.0
 		end_angle = base_angle + swing_angle / 2.0
 	else:
 		start_angle = 180.0 - base_angle + swing_angle / 2.0
 		end_angle = 180.0 - base_angle - swing_angle / 2.0
-
+		
 	pivot.rotation_degrees = start_angle
-
+	
 	var tween := create_tween()
 	tween.set_trans(Tween.TRANS_QUAD)
 	tween.set_ease(Tween.EASE_OUT)
 	tween.tween_property(pivot, "rotation_degrees", end_angle, swing_duration_actual)
-
 	await tween.finished
-
+	
 	if facing_right:
 		pivot.rotation_degrees = base_angle
 	else:
 		pivot.rotation_degrees = 180.0 - base_angle
-
+		
 	hitbox.monitoring = false
 	hitbox.monitorable = false
 	is_swinging = false
@@ -160,16 +156,20 @@ func swing(is_facing_right: bool):
 func _on_hitbox_body_entered(body: Node2D):
 	if enemy_hit:
 		return
-
 	if body.is_in_group("enemies") and body.has_method("take_damage"):
 		enemy_hit = true
 		body.take_damage(current_damage, global_position)
 
-func _on_swing_sync_received(_sender: String, f_right: bool, combo: int) -> void:
-	var player = get_tree().get_first_node_in_group("player")
-	if player == null or player.is_local:
+func _on_swing_sync_received(sender: String, f_right: bool, combo: int) -> void:
+	# Identify owner by traversing scene tree: Sword -> SwordHolder -> Player
+	var player = get_parent().get_parent()
+	if player == null or not player is CharacterBody2D:
+		return
+	if player.is_local:
 		return  # ignore local player's own swings
-
+	if sender != player.player_name:
+		return  # ignore swings from other remote players
+		
 	# Call swing_remote
 	swing_remote(f_right, combo)
 
@@ -177,13 +177,9 @@ func swing_remote(is_facing_right: bool, combo: int) -> void:
 	# Similar to swing but without hitbox/damage and without sending packet again
 	if is_swinging:
 		return
-
 	is_swinging = true
 	facing_right = is_facing_right
-
-	# We do NOT enable hitbox for remote swing (visual only)
-	# hitbox.monitoring = false (already false)
-
+	
 	# Spawn slash effect (visual)
 	var slash_instance = SLASH_SCENE.instantiate()
 	var slash_offset = Vector2(40, 0) if facing_right else Vector2(-40, 0)
@@ -192,10 +188,10 @@ func swing_remote(is_facing_right: bool, combo: int) -> void:
 		slash_instance.scale.x = -1.0
 	get_tree().current_scene.add_child(slash_instance)
 	slash_instance.init(combo)  # pass combo for correct slash animation
-
+	
 	# Determine swing duration based on combo
 	var swing_duration_actual = 0.30 if combo == 2 else 0.12
-
+	
 	# Animate pivot
 	var start_angle: float
 	var end_angle: float
@@ -205,18 +201,18 @@ func swing_remote(is_facing_right: bool, combo: int) -> void:
 	else:
 		start_angle = 180.0 - base_angle + swing_angle / 2.0
 		end_angle = 180.0 - base_angle - swing_angle / 2.0
-
+		
 	pivot.rotation_degrees = start_angle
+	
 	var tween := create_tween()
 	tween.set_trans(Tween.TRANS_QUAD)
 	tween.set_ease(Tween.EASE_OUT)
 	tween.tween_property(pivot, "rotation_degrees", end_angle, swing_duration_actual)
-
 	await tween.finished
-
+	
 	if facing_right:
 		pivot.rotation_degrees = base_angle
 	else:
 		pivot.rotation_degrees = 180.0 - base_angle
-
+		
 	is_swinging = false

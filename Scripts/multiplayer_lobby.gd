@@ -36,8 +36,8 @@ var is_countdown_running := false
 var selected_level := "level_1"
 var my_peer_id: int = 0
 var current_role: String = ""  # "host" or "client"
-var is_client_ready: bool = false # === ADDED: Client ready tracker state ===
-var client_name_cached: String = "Player 2" # === ADDED: Cache to remember client name labels ===
+var is_client_ready: bool = false 
+var client_name_cached: String = "Player 2" 
 
 func _ready():
 	# 1. Hide everything initially
@@ -46,7 +46,6 @@ func _ready():
 	
 	var black_style = StyleBoxFlat.new()
 	black_style.bg_color = Color.BLACK
-	
 	# === UPDATED: Set the corner radius to 30 pixels ===
 	black_style.set_corner_radius_all(30) 
 	black_style.set_content_margin_all(6)
@@ -64,14 +63,14 @@ func _ready():
 			player_node.get_node("HUD").visible = false
 		if player_node.has_node("Camera2D"):
 			player_node.get_node("Camera2D").enabled = false
-	
+			
 	my_peer_id = multiplayer.get_unique_id()
 	
 	host_button.pressed.connect(_on_host_selected)
 	client_button.pressed.connect(_on_client_selected)
 	if popup_back_button:
 		popup_back_button.pressed.connect(_on_back_pressed)
-	
+		
 	join_button.pressed.connect(_on_join_pressed)
 	start_button.pressed.connect(_on_start_pressed)
 	chat_button.pressed.connect(_on_chat_pressed)
@@ -105,8 +104,8 @@ func _on_host_selected():
 	current_role = "host"
 	role_popup.visible = false
 	panel.visible = true
-	
 	LIB_C.set_role(true)
+	
 	LIB_C.disconnect_all()
 	await get_tree().create_timer(0.5).timeout
 	LIB_C.set_role(true)
@@ -136,7 +135,6 @@ func _on_client_selected():
 	current_role = "client"
 	role_popup.visible = false
 	panel.visible = true
-	
 	LIB_C.set_role(false)
 	
 	join_button.text = "Join Game"
@@ -147,13 +145,11 @@ func _on_client_selected():
 	# === FIX: Client's button now behaves as a Ready button ===
 	start_button.text = "Ready"
 	start_button.disabled = true # Enabled only after a successful connection setup
-	
 	selected_level = "level_1"
 	level_dropdown.text = "level_1"
 	
 	player_card_1.visible = true
 	player_name_1.text = "Waiting for Host..."
-	
 	player_card_2.visible = true
 	player_name_2.text = LIB_C.playerName + " (Not Ready)"
 	client_name_cached = LIB_C.playerName
@@ -178,23 +174,21 @@ func _on_join_pressed():
 		link_input.text = "Refreshing..."
 		link_input.editable = false
 		return
-
+		
 	var link = link_input.text.strip_edges()
 	if link.is_empty():
 		return
-
+		
 	print("Client attempting to join: ", link)
 	player_card_2.visible = true
 	player_name_2.text = "Connecting..."
-
 	_join_attempted = true
 	_join_success = false
-
+	
 	LIB_C.connectToCloudflareServer(link)
-
+	
 	# Wait for 10 seconds
 	await get_tree().create_timer(10.0).timeout
-
 	if not _join_success:
 		# Timeout – connection failed
 		if player_name_2.text == "Connecting...":
@@ -216,11 +210,10 @@ func _on_level_selected(index: int):
 	print("Host selected level: ", selected_level)
 	
 	if LIB_C.has_method("send_json_packet"):
-		var packet: Dictionary = {
-			"type": "level_sync",
-			"sender": LIB_C.playerName,
-			"scene": selected_level
-		}
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "level_sync"
+		packet["sender"] = LIB_C.playerName
+		packet["scene"] = selected_level
 		LIB_C.send_json_packet(packet)
 
 func _on_start_pressed():
@@ -233,18 +226,15 @@ func _on_start_pressed():
 		if player_count < 2:
 			print("Need 2 players to start the game!")
 			return
-			
 		if not is_client_ready:
 			print("Cannot start! Client is not ready yet.")
 			return
-		
 		if not is_countdown_running:
 			_start_countdown()
 			
 	# === 2. CLIENT LOGIC: Toggles the ready state ===
 	elif current_role == "client":
 		is_client_ready = !is_client_ready
-		
 		if is_client_ready:
 			start_button.text = "Not Ready"
 			player_name_2.text = client_name_cached + " (I am ready)"
@@ -254,11 +244,10 @@ func _on_start_pressed():
 			
 		# Send our choice up the connection pipe to update the Host panel
 		if LIB_C.has_method("send_json_packet"):
-			var packet: Dictionary = {
-				"type": "ready_status",
-				"sender": LIB_C.playerName,
-				"is_ready": is_client_ready
-			}
+			var packet: Dictionary = Dictionary()
+			packet["type"] = "ready_status"
+			packet["sender"] = LIB_C.playerName
+			packet["is_ready"] = is_client_ready
 			LIB_C.send_json_packet(packet)
 
 # =====================
@@ -267,13 +256,12 @@ func _on_start_pressed():
 func _on_player_joined(player_name: String):
 	if _join_attempted :
 		_join_success = true
-		_join_attempted = false 
+		_join_attempted = false
 		
 	print("Lobby: Player joined: ", player_name)
-	
 	if player_name == LIB_C.playerName:
 		return
-
+		
 	if current_role == "host":
 		player_card_2.visible = true
 		player_name_2.text = player_name + " (Not Ready)"
@@ -281,11 +269,10 @@ func _on_player_joined(player_name: String):
 		is_client_ready = false
 		start_button.disabled = true # Remains locked until they click ready
 		
-		var packet: Dictionary = {
-			"type": "level_sync",
-			"sender": LIB_C.playerName,
-			"scene": selected_level
-		}
+		var packet: Dictionary = Dictionary()
+		packet["type"] = "level_sync"
+		packet["sender"] = LIB_C.playerName
+		packet["scene"] = selected_level
 		LIB_C.send_json_packet(packet)
 		
 	elif current_role == "client":
@@ -361,20 +348,16 @@ func _start_countdown():
 	countdown_timer.timeout.connect(_update_countdown)
 	add_child(countdown_timer)
 	countdown_timer.start()
-	
 	_update_countdown()
 
 func _update_countdown():
 	print("Starting in... ", countdown_value)
 	countdown_value -= 1
-	
 	if countdown_value < 0:
 		countdown_timer.stop()
 		countdown_timer.queue_free()
-		
 		if LIB_C.has_method("send_game_start"):
 			LIB_C.send_game_start(selected_level)
-		
 		if current_role == "host":
 			start_game_pressed.emit(selected_level)
 
@@ -385,5 +368,4 @@ func _on_back_pressed():
 	LIB_C.disconnect_all()
 	if current_role == "host":
 		LIB_C.stopCloudflareTunnel()
-		
-	get_tree().change_scene_to_packed(SceneManager.scenes["main_menu"])
+	SceneManager.change_scene("main_menu")
