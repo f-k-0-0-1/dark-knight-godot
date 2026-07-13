@@ -10,13 +10,25 @@
 texture = ExtResource("1_8caof")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnydk"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ubasi"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xrrnt"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxa2p"]
 bg_color = Color(0, 0, 0, 1)
@@ -84,11 +96,12 @@ offset_bottom = 40.0
 
 [node name="PlayerName" type="Label" parent="Panel/PlayerCard1" unique_id=273563471]
 layout_mode = 0
-offset_left = 345.0
+offset_left = 283.0
 offset_top = 308.0
-offset_right = 417.0
+offset_right = 489.0
 offset_bottom = 331.0
 text = "PLAYER 1"
+horizontal_alignment = 1
 
 [node name="player_sprite_1" type="Sprite2D" parent="Panel/PlayerCard1" unique_id=842349276]
 position = Vector2(253, 372)
@@ -102,11 +115,12 @@ offset_bottom = 40.0
 
 [node name="PlayerName" type="Label" parent="Panel/PlayerCard2" unique_id=954675087]
 layout_mode = 0
-offset_left = 808.0
+offset_left = 736.0
 offset_top = 308.0
-offset_right = 880.0
+offset_right = 940.0
 offset_bottom = 331.0
 text = "PLAYER 2"
+horizontal_alignment = 1
 
 [node name="player_sprite_2" type="Sprite2D" parent="Panel/PlayerCard2" unique_id=1538850841]
 position = Vector2(701, 372)
@@ -115,13 +129,15 @@ texture = ExtResource("2_a0yqj")
 
 [node name="StartButton" type="Button" parent="Panel" unique_id=2104864470]
 layout_mode = 0
-offset_left = 427.0
-offset_top = 522.0
-offset_right = 817.0
-offset_bottom = 589.0
+offset_left = 428.0
+offset_top = 519.0
+offset_right = 816.0
+offset_bottom = 590.0
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_qnydk")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ubasi")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xrrnt")
+text = "START GAME"
 
 [node name="JoinButton" type="Button" parent="Panel" unique_id=733342364]
 layout_mode = 0
@@ -191,10 +207,11 @@ theme_override_styles/hover = ExtResource("4_qnydk")
 text = "BACK"
 
 [node name="RolePopup" type="Panel" parent="." unique_id=1535739294]
-offset_left = 163.0
-offset_top = 150.0
-offset_right = 997.0
-offset_bottom = 613.0
+visible = false
+offset_left = 165.0
+offset_top = 91.0
+offset_right = 999.0
+offset_bottom = 554.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_qix15")
 
 [node name="Label" type="Label" parent="RolePopup" unique_id=1168960745]

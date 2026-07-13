@@ -12,7 +12,7 @@ signal enemy_sync_received(enemy_id: String)
 signal level_sync_received(scene_name: String)
 signal pickup_sync_received(item_id: String)
 signal game_start_received(level_name: String)
-
+signal player_ready_changed(player_name: String, is_ready: bool)
 # Configuration Constants
 const PORT_PRIMARY: int = 8080
 const DEFAULT_IP: String = "127.0.0.1"
@@ -364,7 +364,9 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 							"scene": SceneManager.current_level
 						}
 						from_peer.send_text(JSON.stringify(level_packet))
-					
+			"ready_status":
+				var ready_state: bool = data.get("is_ready", false)
+				player_ready_changed.emit(sender, ready_state)
 			"leave":
 				print("[Network] Player left: ", sender)
 				connected_players.erase(sender)
