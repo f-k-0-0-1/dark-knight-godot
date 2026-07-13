@@ -40,7 +40,7 @@ var is_client_ready: bool = false # === ADDED: Client ready tracker state ===
 var client_name_cached: String = "Player 2" # === ADDED: Cache to remember client name labels ===
 
 func _ready():
-# 1. Hide everything initially
+	# 1. Hide everything initially
 	panel.visible = true
 	role_popup.visible = true
 	

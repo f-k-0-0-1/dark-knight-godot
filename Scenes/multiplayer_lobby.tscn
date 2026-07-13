@@ -360,7 +360,6 @@ theme_override_styles/hover = ExtResource("4_qnydk")
 text = "BACK"
 
 [node name="Panel2" type="Panel" parent="." unique_id=1103950941]
-visible = false
 material = SubResource("ShaderMaterial_hxa2p")
 anchors_preset = 15
 anchor_right = 1.0
