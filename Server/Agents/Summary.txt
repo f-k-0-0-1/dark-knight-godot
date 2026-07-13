@@ -1,63 +1,66 @@
 ===================================================================
-		 PROJECT PROGRESS SUMMARY: PURE GDSCRIPT WEBSOCKET NETWORKING
+PROJECT PROGRESS SUMMARY: PURE GDSCRIPT WEBSOCKET NETWORKING
 ===================================================================
-
-STATUS: 
+STATUS:
 - Localhost Chat Engine: OPERATIONAL (Pure GDScript WebSockets)
 - Multi-instance Auto-Detection: OPERATIONAL (Dynamic Port Probing)
 - Cloudflare Online Tunneling: OPERATIONAL & FULLY INTEGRATED
 - GDScript API Integration: SYNCHRONIZED / TWO-WAY STABLE
-
+- Multiplayer Gameplay Sync: OPERATIONAL (Local Authority Paradigm)
 -------------------------------------------------------------------
 1. SYSTEM ARCHITECTURE OVERVIEW
 -------------------------------------------------------------------
-The networking pipeline has been completely refactored to run as a native GDScript implementation, replacing the compiled C socket binaries (peer.c and server.c) [1]. This architecture eliminates external compilation dependencies, platform execution warnings, and socket handshake drops [1].
-
-- SERVER (TCPServer): A native background listener that binds to your local port, accepts incoming TCP connections, upgrades them to WebSocket connections, and processes incoming data frames natively on the main thread [1].
-- CLIENT (WebSocketPeer): A native persistent WebSocket client that establishes a continuous, secure connection to the host address [1]. Sockets are kept alive throughout the game session, ensuring instantaneous delivery without socket handshake latency [1].
-
--------------------------------------------------------------------
-2. RECENT STABILIZATION & REFACTORING UPDATE
--------------------------------------------------------------------
-
-A. Pure GDScript WebSocket Migration
-- Removed all compiled C binaries, UNIX parent-child thread warnings, and taskkill requirements [1].
-- Integrated persistent, bi-directional client/server connections to avoid socket-handshake latency and eliminate packet drops [1].
-
-B. Dynamic Port Probing & Auto-Detection
-- Retired the lock-file (`testing_pid.lock`) and subprocess PID-checking system (`isPidActive()`) [1].
-- Implemented a self-healing port-probing check: the application attempts to bind to port 8080 on startup [1]. If successful, it configures as Player 1 (Port 8080) [1]. If port 8080 is blocked, it binds to 8081 and configures as Player 2 (Port 8081) [1].
-
-C. Reverse-Lookup Cloudflare Log Parser
-- Overhauled the log-parsing logic inside `sync_node.gd` [1]. The parser finds `.trycloudflare.com` first, then searches backwards (`rfind`) to isolate the preceding `"https://"` [1]. This prevents website terms-of-service links from polluting your clipboard [1].
-- Expanded the tunnel-timer handshake window from 5 to 15 seconds to accommodate network latency, allowing real URLs to resolve successfully [1].
-
-D. Tilde Console Toggle & Packet Deduplication
-- Integrated standard backtick/tilde (`~` / `KEY_QUOTELEFT` / `KEY_ASCIITILDE`) physical key event listeners directly inside `player.gd` [1]. Toggling console focus now calls `get_viewport().set_input_as_handled()` to prevent characters from bleeding into typing fields [1].
-- Implemented a time-based packet deduplicator in `sync_node.gd` that discards identical packet payloads received within a 200ms window, resolving double-printing over full-mesh connections [1].
+The networking pipeline runs as a native GDScript implementation, replacing compiled C socket binaries. This eliminates external compilation dependencies and platform execution warnings.
+- SERVER (TCPServer): A native background listener that binds to the local port, accepts incoming TCP connections, upgrades them to WebSocket connections, and processes incoming data frames natively.
+- CLIENT (WebSocketPeer): A native persistent WebSocket client that establishes a continuous, secure connection to the host address. Sockets are kept alive to ensure instantaneous delivery without handshake latency.
+- PARADIGM (Local Authority): Enemy AI and physics are calculated locally for each client to prevent network lag and visual desync. State changes (deaths, item pickups) are broadcast via discrete packets to maintain logical consistency across peers.
 
 -------------------------------------------------------------------
-3. LOCAL TESTING MODE CONFIGURATION
+2. MULTIPLAYER GAMEPLAY SYNCHRONIZATION & STABILITY OVERHAUL
 -------------------------------------------------------------------
-Local development operates across a coordinated port exchange:
+A. Scene Transition & Network State Stability
+- Implemented remote player reparenting via `_on_scene_node_added` in `sync_node.gd`. Remote avatars are now automatically moved to the new scene root during level transitions, preventing them from being freed and causing null-reference crashes.
+- Added idempotent socket state checking to `_start_host()` to prevent `ERR_ALREADY_IN_USE` C++ engine crashes when redundant host commands are issued.
+- Modified `player.gd` to ensure remote players safely despawn on death without triggering `SceneManager.change_scene("retry_menu")`, which previously caused abrupt scene teardowns for the host.
 
-- WINDOW 1 (Player 1): Listens on 8080 <-- Sends targets to 8081 [1]
-- WINDOW 2 (Player 2): Listens on 8081 <-- Sends targets to 8080 [1]
+B. Enemy AI & Targeting Standardization
+- Enforced strict local-player targeting (`is_local == true`) across all enemy scripts (`slime.gd`, `flying_demon.gd`, `spider.gd`, `shardsoul.gd`). Enemies no longer chase interpolated remote avatars, resolving the "invisible enemy" desync.
+- Standardized the `take_damage(amount: int, source_position: Vector2)` method signature across all enemies to prevent silent method rejection when hit by projectiles or melee attacks.
+- Implemented null-safe runtime camera resolution in enemy scripts. Screen shake effects now dynamically fallback to the colliding body's camera node if the cached reference is invalid, preventing `_on_hitbox_body_entered` crashes.
+- Added `enemy_sync` network packets. When an enemy dies locally, its unique scene-path ID is broadcasted to delete the corresponding entity on the remote client's screen.
 
-The dynamic port-probing system sets up this loopback channel automatically upon launching two game windows on a single machine [1].
+C. Entity & Progression Synchronization
+- Implemented `coin_sync` and `pickup_sync` packets in `coin.gd` and `collectable_lives.gd`. Collectibles generate a unique ID on spawn; when collected, the ID is broadcasted so the remote client can delete its local instance, preventing resource duplication.
+- Implemented `level_sync` packets in `flag.gd`. When the local player completes a level, the next scene name is calculated and broadcasted, forcing remote clients to automatically transition to the correct subsequent level.
+
+D. Performance Optimization
+- Refactored Cloudflare initialization to a lazy-load execution model. The `_check_cloudflare_installed()` file-system scan is bypassed on game startup and only executes when the user explicitly initiates a tunnel (`chat -s`), resolving startup performance bleeding.
+- Removed preemptive boolean checks in `cheat_command.gd` that were blocking the lazy-load Cloudflare verification process.
 
 -------------------------------------------------------------------
-4. COMPLETED CLOUDFLARE ONLINE TUNNELING INTEGRATION
+3. PREVIOUS STABILIZATION & REFACTORING (HISTORICAL)
 -------------------------------------------------------------------
-Cloudflare quick tunnels have been fully integrated to route raw gaming payloads over the public internet using standard web protocols [1]:
+- Pure GDScript WebSocket Migration: Removed C binaries and integrated persistent bi-directional connections.
+- Dynamic Port Probing: Self-healing port-probing check (8080/8081) for local multi-instance testing.
+- Reverse-Lookup Cloudflare Log Parser: Isolates `.trycloudflare.com` URLs safely without capturing TOS links.
+- Tilde Console Toggle: Integrated standard backtick/tilde listeners with input bleeding prevention.
+- Packet Deduplication: Time-based deduplicator discarding identical payloads within a 200ms window.
 
-1. Expose Host: Player 1 hosts the game and initiates the Cloudflare quick tunnel (`chat -s`), exposing local port 8080 via the secure Cloudflare edge [1].
-2. Dynamic WSS Routing: Player 2 inputs the generated trycloudflare subdomain (`chat -j <token>`) [1]. The client establishes a secure WebSocket (`wss://`) handshake over port 443 [1]. Cloudflare handles the HTTP Upgrade headers and proxies the WebSocket connection to the local listener [1].
-3. Clipboard Integration: The host's extracted TryCloudflare URL is automatically copied to the system clipboard upon successful tunnel establishment, allowing rapid sharing [1].
-4. Client Simplicity: No third-party tunneling software, access keys, or client-side setups are required on Player 2's computer [1].
-5. Chat Lobby: Addeed Chat Lobby
-6. Cross-Platform Cloudflare Integration
-	-   Updated `sync_node.gd` to explicitly detect and resolve `cloudflared.exe` on Windows and `cloudflared` on Linux/macOS. The system now stores the resolved executable name and uses it consistently for both version checks and tunnel spawning.
-7. Unified Player Entity Architecture
-	-   Successfully transitioned from a separate `NetworkPlayer` scene to reusing the main `Player.tscn` with an `is_local` flag. This ensures remote players share identical collision shapes, sprites, and animations while having their camera, HUD, audio, and input processing safely disabled.
+-------------------------------------------------------------------
+4. LOCAL TESTING & CLOUDFLARE CONFIGURATION
+-------------------------------------------------------------------
+Local Development:
+- WINDOW 1 (Player 1): Listens on 8080 <-- Sends targets to 8081
+- WINDOW 2 (Player 2): Listens on 8081 <-- Sends targets to 8080
+
+Cloudflare Online Tunneling:
+1. Expose Host: Player 1 initiates the tunnel (`chat -s`), exposing local port 8080 via the Cloudflare edge.
+2. Dynamic WSS Routing: Player 2 inputs the subdomain (`chat -j <token>`). The client establishes a secure WebSocket (`wss://`) handshake over port 443.
+3. Clipboard Integration: The extracted URL is automatically copied to the system clipboard.
+4. Cross-Platform: Explicitly detects and resolves `cloudflared.exe` (Windows) and `cloudflared` (Linux/macOS).
+
+-------------------------------------------------------------------
+5. UNIFIED PLAYER ENTITY ARCHITECTURE
+-------------------------------------------------------------------
+The game utilizes a unified `Player.tscn` with an `is_local` boolean flag instead of a separate `NetworkPlayer` scene. Remote players share identical collision shapes, sprites, and animations, while their camera, HUD, audio, input processing, and physics collision shapes are safely disabled upon initialization.
 ===================================================================

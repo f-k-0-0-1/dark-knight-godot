@@ -49,6 +49,7 @@
 [ext_resource type="Texture2D" uid="uid://boeyl63vds0ll" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00003.png" id="72_2yy7l"]
 [ext_resource type="Texture2D" uid="uid://big3k20ahhovl" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00004.png" id="73_8gwyq"]
 [ext_resource type="PackedScene" uid="uid://cgg1gy8u8qthd" path="res://Scenes/sword.tscn" id="73_l3y8b"]
+[ext_resource type="PackedScene" uid="uid://c6pn6cdgrkp33" path="res://Scenes/lightning_ball.tscn" id="73_ujsok"]
 [ext_resource type="Texture2D" uid="uid://o21rda5gyxfb" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00005.png" id="74_nxdfc"]
 [ext_resource type="Texture2D" uid="uid://733hf886jnwu" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00006.png" id="75_s57pu"]
 [ext_resource type="Texture2D" uid="uid://dvd58e4xvsui6" path="res://Assets/BlueWizard/2BlueWizardJump/CharaWizardJump_00007.png" id="76_if58w"]
@@ -384,6 +385,7 @@ corner_radius_bottom_left = 30
 [node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
 z_index = 2
 script = ExtResource("1_6f3s4")
+lightning_ball_scene = ExtResource("73_ujsok")
 
 [node name="name" type="Label" parent="." unique_id=1947800940]
 visible = false

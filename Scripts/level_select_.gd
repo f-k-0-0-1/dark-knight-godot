@@ -14,11 +14,9 @@ extends Control
 @onready var level10: TextureButton = $GridContainer/level10
 @onready var shop_button: TextureButton = $ShopButton;
 
-
 func _ready():
 	# Back button
 	back_button.pressed.connect(_on_back_pressed)
-	
 	#Shop Button
 	shop_button.pressed.connect(_on_shopButton_pressed);
 
