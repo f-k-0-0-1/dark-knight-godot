@@ -1,17 +1,40 @@
 [gd_scene format=3 uid="uid://djur6qbwjuote"]
 
+[ext_resource type="Script" uid="uid://buryyrd681c8p" path="res://Scripts/level_4.gd" id="1_i1va2"]
+[ext_resource type="PackedScene" uid="uid://duxh1rt4bjo2o" path="res://Scenes/level_complete_screen.tscn" id="2_5eaas"]
+[ext_resource type="Texture2D" uid="uid://dlul14jwck0j4" path="res://Assets/Mossy Tileset/Mossy - TileSet.png" id="2_kdkq3"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wi344"]
+texture = ExtResource("2_kdkq3")
+
+[sub_resource type="TileSet" id="TileSet_f6i20"]
+tile_size = Vector2i(512, 512)
+sources/0 = SubResource("TileSetAtlasSource_wi344")
+
 [node name="Level 4" type="Node2D" unique_id=915597193]
+script = ExtResource("1_i1va2")
 
-[node name="ParallaxSystem" type="Parallax2D" parent="." unique_id=377299789]
+[node name="BackgroundLayers" type="Node2D" parent="." unique_id=677857670]
+visible = false
 
-[node name="BgLayer" type="Node2D" parent="ParallaxSystem" unique_id=468053151]
+[node name="SkyLayer" type="Parallax2D" parent="BackgroundLayers" unique_id=1846302580]
 
-[node name="DistantMountains" type="Sprite2D" parent="ParallaxSystem/BgLayer" unique_id=993052099]
+[node name="Sprite2D" type="Sprite2D" parent="BackgroundLayers/SkyLayer" unique_id=1936147670]
 
-[node name="WallsLayer" type="Node2D" parent="ParallaxSystem" unique_id=1490771585]
+[node name="DistantHills" type="Parallax2D" parent="BackgroundLayers" unique_id=1577611081]
 
-[node name="CaveTileMap" type="Sprite2D" parent="ParallaxSystem/WallsLayer" unique_id=1740194812]
+[node name="Sprite2D" type="Sprite2D" parent="BackgroundLayers/DistantHills" unique_id=1871166753]
 
-[node name="FoliageLayer" type="Node2D" parent="ParallaxSystem" unique_id=606073945]
+[node name="CaveStructures" type="Parallax2D" parent="BackgroundLayers" unique_id=683484962]
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxSystem/FoliageLayer" unique_id=71829407]
+[node name="Sprite2D" type="Sprite2D" parent="BackgroundLayers/CaveStructures" unique_id=1175093448]
+
+[node name="HangingVines" type="Parallax2D" parent="BackgroundLayers" unique_id=1527597712]
+
+[node name="Sprite2D" type="Sprite2D" parent="BackgroundLayers/HangingVines" unique_id=427879554]
+
+[node name="TileMap" type="TileMapLayer" parent="." unique_id=176185860]
+tile_set = SubResource("TileSet_f6i20")
+
+[node name="LevelCompleteScreen" parent="." unique_id=848071443 instance=ExtResource("2_5eaas")]
+visible = false
