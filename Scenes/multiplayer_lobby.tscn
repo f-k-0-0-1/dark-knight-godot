@@ -191,7 +191,6 @@ theme_override_styles/hover = ExtResource("4_qnydk")
 text = "BACK"
 
 [node name="RolePopup" type="Panel" parent="." unique_id=1535739294]
-visible = false
 offset_left = 163.0
 offset_top = 150.0
 offset_right = 997.0
@@ -231,3 +230,15 @@ theme_override_styles/normal = ExtResource("5_ubasi")
 theme_override_styles/pressed = ExtResource("5_ubasi")
 theme_override_styles/hover = ExtResource("5_ubasi")
 text = "Join Game"
+
+[node name="BackButton" type="Button" parent="RolePopup" unique_id=984921667]
+layout_mode = 0
+offset_left = 674.0
+offset_top = 19.0
+offset_right = 805.0
+offset_bottom = 67.0
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = ExtResource("5_ubasi")
+theme_override_styles/pressed = ExtResource("5_ubasi")
+theme_override_styles/hover = ExtResource("5_ubasi")
+text = "BACK"

@@ -11,6 +11,7 @@ signal coin_sync_received(coin_id: String)
 signal enemy_sync_received(enemy_id: String)
 signal level_sync_received(scene_name: String)
 signal pickup_sync_received(item_id: String)
+signal game_start_received(level_name: String)
 
 # Configuration Constants
 const PORT_PRIMARY: int = 8080
@@ -326,14 +327,30 @@ func _on_packet_received(text: String, from_peer: WebSocketPeer = null) -> void:
 				var msg: String = data.get("msg", "")
 				chat_received.emit(sender, msg)
 			"join":
-				print("[Network] Player joined: ", sender)
-				connected_players[sender] = {"pos": Vector2.ZERO, "anim": "idle"}
+				print("[Network] Identity assertion verified: ", sender)
 				player_joined.emit(sender)
-				_spawn_remote_player(sender)
+				
+				if is_host and from_peer != null:
+					# Add a "role": "host" flag so the client knows this identity belongs to the master host
+					var host_join: Dictionary = {
+						"type": "join", 
+						"sender": playerName,
+						"role": "host"
+					}
+					from_peer.send_text(JSON.stringify(host_join))
+					
+					if SceneManager.current_level != "":
+						var level_packet: Dictionary = {
+							"type": "level_sync",
+							"sender": playerName,
+							"scene": SceneManager.current_level
+						}
+						from_peer.send_text(JSON.stringify(level_packet))
 			"game_start":
 				var level_name: String = data.get("level", "")
 				if level_name != "":
-					level_sync_received.emit(level_name)
+					print("[Network] Client received game start for: ", level_name)
+					game_start_received.emit(level_name)
 				
 				if is_host and from_peer != null:
 					var host_join: Dictionary = {"type": "join", "sender": playerName}

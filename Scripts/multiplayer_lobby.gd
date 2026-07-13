@@ -5,9 +5,10 @@ signal start_game_pressed(level_name: String)
 @onready var panel: Panel = $Panel
 @onready var role_popup: Panel = $RolePopup
 
-# Popup Nodes (Matched to your screenshot)
+# Popup Nodes (Matched to your layout)
 @onready var host_button: Button = $RolePopup/HostButton
 @onready var client_button: Button = $RolePopup/ClientButton
+@onready var popup_back_button: Button = $RolePopup/BackButton
 
 # Player Cards
 @onready var player_card_1: Control = $Panel/PlayerCard1
@@ -30,7 +31,6 @@ var countdown_value := 5
 var is_countdown_running := false
 var selected_level := "level_1"
 var my_peer_id: int = 0
-#var my_peer_id: int = multiplayer.get_unique_id()
 var current_role: String = ""  # "host" or "client"
 
 func _ready():
@@ -47,9 +47,12 @@ func _ready():
 			player_node.get_node("Camera2D").enabled = false
 	
 	my_peer_id = multiplayer.get_unique_id()
+	
 	# 2. Connect Popup Buttons
 	host_button.pressed.connect(_on_host_selected)
 	client_button.pressed.connect(_on_client_selected)
+	if popup_back_button:
+		popup_back_button.pressed.connect(_on_back_pressed)
 	
 	# 3. Connect Main Lobby Buttons
 	join_button.pressed.connect(_on_join_pressed)
@@ -72,6 +75,8 @@ func _ready():
 		LIB_C.player_left.connect(_on_player_left)
 	if LIB_C.has_signal("level_sync_received"):
 		LIB_C.level_sync_received.connect(_on_level_sync_received)
+	if LIB_C.has_signal("game_start_received"):
+		LIB_C.game_start_received.connect(_on_game_start_received)
 
 # =====================
 # ROLE SELECTION POPUP
@@ -83,12 +88,9 @@ func _on_host_selected():
 	
 	# Initialize network as Host
 	LIB_C.set_role(true)
-	
-	# === FIX: Force a fresh connection ===
 	LIB_C.disconnect_all()
 	await get_tree().create_timer(0.5).timeout
 	LIB_C.set_role(true)
-	# ======================================
 	
 	# Setup Host UI
 	join_button.text = "📋 Copy Link"
@@ -97,6 +99,7 @@ func _on_host_selected():
 	level_dropdown.disabled = false
 	start_button.disabled = true
 	
+	player_card_1.visible = true
 	player_name_1.text = LIB_C.playerName + " (Host)"
 	player_card_2.visible = false
 	
@@ -106,7 +109,6 @@ func _on_host_selected():
 		LIB_C.cloudflare_tunnel_ready.connect(_on_tunnel_ready, CONNECT_ONE_SHOT)
 		LIB_C.startCloudflareTunnel()
 	else:
-		# Fallback for local testing
 		link_input.text = "ws://localhost:" + str(LIB_C.my_port)
 		link_input.placeholder_text = ""
 
@@ -123,23 +125,22 @@ func _on_client_selected():
 	link_input.editable = true
 	link_input.placeholder_text = "Paste link here..."
 	level_dropdown.disabled = true
-	level_dropdown.text = "Waiting for Host..."
 	start_button.disabled = true
 	
-	# === FIX: FORCE YOUR OWN NAME TO SHOW ===
+	# === FIX: Match level selection exactly to host default display ===
+	selected_level = "level_1"
+	level_dropdown.text = "level_1"
+	
+	# === FIX: Card setup configuration to prevent "Player 1" template text ===
+	player_card_1.visible = true
+	player_name_1.text = "Waiting for Host..."
+	
 	player_card_2.visible = true
-	player_name_2.text = LIB_C.playerName
-	# ==========================================
+	player_name_2.text = LIB_C.playerName + " (You)"
 
 func _on_tunnel_ready(url: String):
 	link_input.text = url
 	link_input.placeholder_text = ""
-	print("Link available at: ", url)
-	
-	# === FIX: Force the link to be fresh ===
-	# We log the time it was generated so the Client knows it's fresh.
-	var timestamp = Time.get_time_string_from_system()
-	print("Tunnel generated at: ", timestamp)
 	join_button.text = "📋 Copy Link (Fresh)"
 
 # =====================
@@ -147,68 +148,47 @@ func _on_tunnel_ready(url: String):
 # =====================
 func _on_join_pressed():
 	if current_role == "host":
-		# === UPDATED HOST LOGIC: Force a fresh link ===
 		print("Host forcing fresh tunnel generation...")
-		
-		# Kill any existing tunnel and start a fresh one
 		LIB_C.stopCloudflareTunnel()
 		await get_tree().create_timer(0.5).timeout
 		
-		# Listen for the fresh link
 		if LIB_C.has_signal("cloudflare_tunnel_ready"):
 			LIB_C.cloudflare_tunnel_ready.connect(_on_tunnel_ready, CONNECT_ONE_SHOT)
 			LIB_C.startCloudflareTunnel()
 			
-		# Keep the current text (it will update when the new tunnel is ready)
 		link_input.text = "Refreshing..."
 		link_input.editable = false
-		
 		return
 	
-	# === CLIENT JOIN LOGIC ===
 	var link = link_input.text.strip_edges()
 	if link.is_empty():
 		return
 	print("Client attempting to join: ", link)
 	
-	# 1. Update UI to show we are trying to connect
 	player_card_2.visible = true
 	player_name_2.text = "Connecting..."
 	
-	# 2. Call the network directly
 	LIB_C.connectToCloudflareServer(link)
 	
-	# 3. Listen for the 'player_joined' signal ONCE (Prevent duplicates)
 	if not is_connected("player_joined", _on_player_joined):
-		# We connect a local listener for the Client specifically
 		LIB_C.player_joined.connect(_on_player_joined, CONNECT_ONE_SHOT)
 	
-	# 4. Set a 10-second safety timeout (in case of a true network failure)
 	var timeout_timer = Timer.new()
 	timeout_timer.wait_time = 10.0
 	timeout_timer.one_shot = true
-	
-	# Define what happens when the timeout triggers
 	timeout_timer.timeout.connect(func():
 		if player_name_2.text == "Connecting...":
-			player_name_2.text = "Connection Failed (Timeout)"
-			# Clean up the signal listener if the connection failed
+			player_name_2.text = "Connection Failed"
 			if LIB_C.player_joined.is_connected(_on_player_joined):
 				LIB_C.player_joined.disconnect(_on_player_joined)
 	)
-	
 	add_child(timeout_timer)
 	timeout_timer.start()
 	
-	# === THE CLEANUP FIX ===
-	# If the connection succeeds early, we need to stop and delete this timer
-	# So the timeout doesn't fire after the player has already joined.
 	var signal_cleanup = func():
 		if timeout_timer and timeout_timer.is_inside_tree():
 			timeout_timer.stop()
 			timeout_timer.queue_free()
-	
-	# Connect the cleanup function to run when the connection works
 	LIB_C.player_joined.connect(signal_cleanup, CONNECT_ONE_SHOT)
 
 func _on_chat_pressed():
@@ -237,7 +217,6 @@ func _on_start_pressed():
 	if current_role != "host":
 		return
 		
-	# === 2-PLAYER CHECK ===
 	var player_count = 0
 	if player_card_1.visible: player_count += 1
 	if player_card_2.visible: player_count += 1
@@ -255,15 +234,15 @@ func _on_start_pressed():
 func _on_player_joined(player_name: String):
 	print("Lobby: Player joined: ", player_name)
 	
-	# === FIX: Remove the "if player_name != LIB_C.playerName" check ===
-	
-	# 1. Logic for the Host (Sees the Client)
+	if player_name == LIB_C.playerName:
+		return
+
+	# 1. Logic for the Host
 	if current_role == "host":
 		player_card_2.visible = true
 		player_name_2.text = player_name
 		start_button.disabled = false
 		
-		# Host sends the current level selection to the new client
 		var packet: Dictionary = {
 			"type": "level_sync",
 			"sender": LIB_C.playerName,
@@ -271,30 +250,34 @@ func _on_player_joined(player_name: String):
 		}
 		LIB_C.send_json_packet(packet)
 		
-	# 2. Logic for the Client (Updates its own card)
+	# 2. Logic for the Client
 	elif current_role == "client":
-		# Update the Client's own card from "Connecting..." to their name
-		player_name_2.text = player_name
+		player_card_1.visible = true
+		player_name_1.text = player_name + " (Host)"
+		player_name_2.text = LIB_C.playerName + " (You)"
 
 func _on_player_left(player_name: String):
 	print("Lobby: Player left: ", player_name)
 	if player_name != LIB_C.playerName:
-		player_card_2.visible = false
-		player_name_2.text = "Disconnected"
-		start_button.disabled = true
+		if current_role == "host":
+			player_card_2.visible = false
+			start_button.disabled = true
+		else:
+			player_card_1.visible = true
+			player_name_1.text = "Host Disconnected"
 
 func _on_level_sync_received(level_name: String):
 	if current_role == "client":
 		selected_level = level_name
-		level_dropdown.text = "Level: " + level_name
+		level_dropdown.text = level_name
 		print("Client synced to level: ", selected_level)
-		
-		# === FIX: Update the UI to show success ===
-		player_name_2.text = LIB_C.playerName
 
+func _on_game_start_received(level_name: String):
+	if current_role == "client":
+		print("Client shifting to gameplay level: ", level_name)
+		start_game_pressed.emit(level_name)
 
 func _exit_tree():
-	# If the lobby is closed, turn the player HUD back on
 	var player_node = get_tree().get_first_node_in_group("player")
 	if player_node:
 		if player_node.has_node("HUD"):
@@ -327,19 +310,19 @@ func _update_countdown():
 		countdown_timer.stop()
 		countdown_timer.queue_free()
 		
-		# === FIX: Tell sync_node to broadcast the start ===
 		if LIB_C.has_method("send_game_start"):
 			LIB_C.send_game_start(selected_level)
 		
-		# === FIX: Load the level for the Host ===
 		if current_role == "host":
 			start_game_pressed.emit(selected_level)
-		else:
-			# Clients just wait for the sync packet
-			pass
 
 # =====================
 # BACK BUTTON
 # =====================
 func _on_back_pressed():
+	# Safely clear any running network infrastructure if exiting from a pre-configured room state
+	LIB_C.disconnect_all()
+	if current_role == "host":
+		LIB_C.stopCloudflareTunnel()
+		
 	get_tree().change_scene_to_packed(SceneManager.scenes["main_menu"])
