@@ -3,12 +3,12 @@ extends CanvasLayer
 signal start_game_pressed(level_name: String)
 
 @onready var panel: Panel = $Panel
-@onready var role_popup: Panel = $RolePopup
+@onready var role_popup: Panel = $Panel2
 
 # Popup Nodes (Matched to your layout)
-@onready var host_button: Button = $RolePopup/HostButton
-@onready var client_button: Button = $RolePopup/ClientButton
-@onready var popup_back_button: Button = $RolePopup/BackButton
+@onready var host_button: Button = $Panel2/RolePopup/HostButton
+@onready var client_button: Button = $Panel2/RolePopup/ClientButton
+@onready var popup_back_button: Button = $Panel2/RolePopup/BackButton
 
 # Player Cards
 @onready var player_card_1: Control = $Panel/PlayerCard1

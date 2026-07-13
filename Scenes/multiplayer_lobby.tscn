@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bjo5tawrdksvo" path="res://Assets/BlueWizard/2BlueWizardIdle/Chara - BlueIdle00000.png" id="2_a0yqj"]
 [ext_resource type="StyleBox" uid="uid://cf2yhx7jv3238" path="res://Shaders/credits_back_button_textures.tres" id="4_qnydk"]
 [ext_resource type="StyleBox" uid="uid://bvgbqhpvhyt1e" path="res://Styles/ui_popup_bg.tres" id="5_ubasi"]
+[ext_resource type="Shader" uid="uid://bo2yjehime3xk" path="res://Shaders/blurr.gdshader" id="5_xrrnt"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8caof"]
 texture = ExtResource("1_8caof")
@@ -68,6 +69,10 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34kdt"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hxa2p"]
+shader = ExtResource("5_xrrnt")
+shader_parameter/blur_amount = 1.702000080845
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qix15"]
 bg_color = Color(0, 0, 0, 0.7882353)
 border_width_left = 2
@@ -93,6 +98,29 @@ corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_05cw1"]
+bg_color = Color(0, 0, 0, 0.6431373)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bb2g5"]
+bg_color = Color(0, 0, 0, 0.6431373)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18825358, 0.52374554, 0.24721459, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l117a"]
 bg_color = Color(0, 0, 0, 0.6431373)
 border_width_left = 1
@@ -100,6 +128,29 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.14509805, 0.41568628, 0.19215687, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cmxx"]
+bg_color = Color(0, 0, 0, 0.6431373)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_elaqm"]
+bg_color = Color(0, 0, 0, 0.6431373)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18125543, 0.5057938, 0.23817006, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -308,14 +359,24 @@ theme_override_styles/pressed = ExtResource("4_qnydk")
 theme_override_styles/hover = ExtResource("4_qnydk")
 text = "BACK"
 
-[node name="RolePopup" type="Panel" parent="." unique_id=1535739294]
+[node name="Panel2" type="Panel" parent="." unique_id=1103950941]
+visible = false
+material = SubResource("ShaderMaterial_hxa2p")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RolePopup" type="Panel" parent="Panel2" unique_id=1535739294]
+layout_mode = 0
 offset_left = 165.0
 offset_top = 91.0
 offset_right = 999.0
 offset_bottom = 554.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_qix15")
 
-[node name="Label" type="Label" parent="RolePopup" unique_id=1168960745]
+[node name="Label" type="Label" parent="Panel2/RolePopup" unique_id=1168960745]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.279
@@ -330,7 +391,7 @@ theme_override_font_sizes/font_size = 40
 text = "Select your role"
 horizontal_alignment = 1
 
-[node name="HostButton" type="Button" parent="RolePopup" unique_id=378112162]
+[node name="HostButton" type="Button" parent="Panel2/RolePopup" unique_id=378112162]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.32700002
@@ -343,11 +404,11 @@ offset_right = 250.28198
 offset_bottom = 1.5
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = SubResource("StyleBoxFlat_ij2tb")
-theme_override_styles/pressed = ExtResource("5_ubasi")
-theme_override_styles/hover = ExtResource("5_ubasi")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_05cw1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bb2g5")
 text = "Host Game"
 
-[node name="ClientButton" type="Button" parent="RolePopup" unique_id=1126363178]
+[node name="ClientButton" type="Button" parent="Panel2/RolePopup" unique_id=1126363178]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.32700002
@@ -360,11 +421,11 @@ offset_right = 250.28198
 offset_bottom = 0.1579895
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = SubResource("StyleBoxFlat_l117a")
-theme_override_styles/pressed = ExtResource("5_ubasi")
-theme_override_styles/hover = ExtResource("5_ubasi")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7cmxx")
+theme_override_styles/hover = SubResource("StyleBoxFlat_elaqm")
 text = "Join Game"
 
-[node name="BackButton" type="Button" parent="RolePopup" unique_id=984921667]
+[node name="BackButton" type="Button" parent="Panel2/RolePopup" unique_id=984921667]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.808
