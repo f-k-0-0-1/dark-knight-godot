@@ -9,5 +9,6 @@ item_name = "Netherite Sword"
 category = "sword"
 price = 500
 damage = 120
+dictionary_key = "Netherite_Sword"
 sprite_texture = ExtResource("2_paus4")
 metadata/_custom_type_script = "uid://be6iw76p3dy2k"

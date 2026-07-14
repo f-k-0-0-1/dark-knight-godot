@@ -40,3 +40,11 @@ func get_weapon_texture(material: String, category: String) -> Texture2D:
 	else:
 		push_error("WeaponManager: Missing texture for key: " + key)
 		return null
+
+# === NEW: Direct key lookup to replace brittle string parsing ===
+func get_weapon_texture_by_key(key: String) -> Texture2D:
+	if weapon_textures.has(key):
+		return weapon_textures[key]
+	else:
+		push_error("WeaponManager: Missing texture for key: " + key)
+		return null

@@ -10,7 +10,6 @@ signal swing_started
 signal swing_finished
 
 # === CONSTANTS ===
-# FIX FOR ERROR 1: This must be declared at the top!
 const SLASH_SCENE = preload("res://Scenes/Slash.tscn");
 
 # === NODES ===
@@ -24,11 +23,8 @@ var is_swinging := false
 var enemy_hit := false
 var facing_right := true
 var current_damage := 1
-var current_material := "Wood"
-var current_category := "Sword"
 
 # === COMBO SYSTEM ===
-# FIX FOR ERROR 2 & 3: Add these variables!
 var combo_count := 0
 var combo_reset_timer: Timer
 
@@ -48,28 +44,52 @@ func _ready():
 	# Connect to swing sync signal
 	if LIB_C != null and not LIB_C.swing_sync_received.is_connected(_on_swing_sync_received):
 		LIB_C.swing_sync_received.connect(_on_swing_sync_received)
+		
+	# === FIX: Prevent default texture assignment on remote players ===
+	# If the player is local, we allow the texture to be set (this is overwritten later if needed).
+	# If the player is remote, the texture remains empty until the weapon_sync packet arrives.
+	var player = get_parent().get_parent()
+	if player != null and player is CharacterBody2D:
+		if player.is_local:
+			# Default texture for local players (will be overwritten by equip_weapon)
+			pass
+		else:
+			# Remote players start with NO texture to prevent overwriting sync data
+			sprite.texture = null
 
 func _reset_combo():
 	combo_count = 0
 
-func equip_weapon(item_data: ItemData):
-	current_damage = item_data.damage
-		
-	var clean_name = item_data.item_name.strip_edges()
-	var name_parts = clean_name.split(" ")
-	if name_parts.size() >= 2:
-		current_material = name_parts[0].strip_edges()
-		current_category = name_parts[-1].strip_edges()
+func equip_weapon(weapon_source) -> void:
+	# Check if we were passed an ItemData resource (local player equipping)
+	if weapon_source is Resource and "dictionary_key" in weapon_source:
+		var key = weapon_source.dictionary_key
+		_apply_weapon_texture_by_key(key)
+	# Check if we were passed a raw string directly (remote player sync)
+	elif weapon_source is String:
+		_apply_weapon_texture_by_key(weapon_source)
 	else:
-		push_error("Sword: Item name format invalid: " + item_data.item_name)
-		return
+		push_warning("[Sword] Invalid weapon source type received: %s" % str(typeof(weapon_source)))
+
+func _apply_weapon_texture_by_key(key: String) -> void:
+	# Convert any spaces (from "Netherite Sword") to underscores ("Netherite_Sword")
+	var normalized_key = key.replace(" ", "_")
+	
+	# Split the key (e.g., "Netherite_Sword") to fit WeaponManager's function signature
+	var parts = normalized_key.split("_")
+	if parts.size() >= 2:
+		var material = parts[0]   # "Netherite"
+		var category = parts[1]   # "Sword"
 		
-	var new_texture = WeaponManager.get_weapon_texture(current_material, current_category)
-	if new_texture:
-		sprite.texture = new_texture
-		print("Equipped: ", item_data.item_name, " | Damage: ", current_damage)
+		# Fetch texture from the WeaponManager singleton
+		var tex = WeaponManager.get_weapon_texture(material, category)
+		if tex:
+			sprite.texture = tex
+			print("[Sword] Weapon sprite successfully updated to: ", normalized_key)
+		else:
+			push_warning("[Sword] Texture not found in WeaponManager for key: " + normalized_key)
 	else:
-		push_warning("Failed to equip: " + item_data.item_name)
+		push_warning("[Sword] Invalid key format for splitting: " + normalized_key)
 
 func equip_weapon_sync(item_data: ItemData):
 	pass

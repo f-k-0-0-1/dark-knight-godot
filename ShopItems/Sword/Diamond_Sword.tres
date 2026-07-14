@@ -9,5 +9,6 @@ item_name = "Diamond Sword"
 category = "sword"
 price = 400
 damage = 40
+dictionary_key = "Diamond_Sword"
 sprite_texture = ExtResource("2_qm2o7")
 metadata/_custom_type_script = "uid://be6iw76p3dy2k"
