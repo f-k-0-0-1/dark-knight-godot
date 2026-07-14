@@ -47,6 +47,7 @@ var network_anim: String = "idle";
 var network_flip_h: bool = false;
 var net_tick_timer: float = 0.0;
 var remote_fireballs: Dictionary = {}
+var _weapon_synced_for_remote: bool = false
 
 # Variables when Node init
 var fireball_scene: PackedScene;
@@ -97,6 +98,7 @@ var time_for_1_star: float;
 
 # Engine Callbacks
 func _ready() -> void:
+	# Remote Player Initialization
 	if not is_local:
 		if name_label:
 			name_label.text = player_name
@@ -118,54 +120,103 @@ func _ready() -> void:
 		if jump_sound: jump_sound.volume_db = -80
 		if player_hurt: player_hurt.volume_db = -80
 		if double_jump_sound: double_jump_sound.volume_db = -80
+		
+		# === SYSTEM FIX: Force remote player's sword hierarchy and sprites to be visible ===
+		if is_instance_valid(sword_holder):
+			sword_holder.visible = true
+		if is_instance_valid(sword):
+			sword.visible = true
+			var pivot = sword.get_node_or_null("Pivot")
+			if pivot:
+				pivot.visible = true
+				var sprite_node = pivot.get_node_or_null("Sprite")
+				if sprite_node:
+					sprite_node.visible = true
+					sprite_node.modulate = Color.WHITE
+					sprite_node.scale = Vector2.ONE
+		
+		# === FIX: Equip their designated weapon immediately on initialization ===
+		if Globals.equipped_item_name != "":
+			_on_weapon_equipped(Globals.equipped_item_name)
+
+		# === FIX: Remote players subscribe to weapon_sync_received immediately on join ===
+		if LIB_C != null:
+			LIB_C.player_joined.connect(_on_remote_initialized, CONNECT_ONE_SHOT)
 		return
 		
 	# Local Player Initialization
-	if name_label:
-		name_label.visible = false;
-		
-	fireball_scene = SceneManager.scenes.get("fireball_scene");
-	Globals.level_coins_updated.connect(_update_coin_ui);
-	Globals.weapon_equipped.connect(_on_weapon_equipped);
-	_update_coin_ui(Globals.level_coins);
-	Globals.reset_level_coins();
-	health_changed.emit(current_health, max_health);
-	
-	if zoom_button:
-		zoom_button.pressed.connect(_on_zoom_button_pressed);
-		zoom_button.text = "2.0x";
-		
-	if not Globals.equipped_item_name.is_empty():
-		saved_item = Globals.get_item_data_by_name(Globals.equipped_item_name);
-		if saved_item != null:
-			_on_weapon_equipped(saved_item);
-		else:
-			print("Player: saved equipped item not found: ", Globals.equipped_item_name);
+	if is_local:
+		if name_label:
+			name_label.visible = false;
 			
-	if LIB_C != null:
-		if not LIB_C.fireball_spawn_received.is_connected(_on_fireball_spawn_received):
-			LIB_C.fireball_spawn_received.connect(_on_fireball_spawn_received)
-		if not LIB_C.fireball_destroy_received.is_connected(_on_fireball_destroy_received):
-			LIB_C.fireball_destroy_received.connect(_on_fireball_destroy_received)
-		if not LIB_C.player_died_received.is_connected(_on_player_died_received):
-			LIB_C.player_died_received.connect(_on_player_died_received)
-		if not LIB_C.player_respawned_received.is_connected(_on_player_respawned_received):
-			LIB_C.player_respawned_received.connect(_on_player_respawned_received)
+		fireball_scene = SceneManager.scenes.get("fireball_scene");
+		Globals.level_coins_updated.connect(_update_coin_ui);
+		Globals.weapon_equipped.connect(_on_weapon_equipped);
+		_update_coin_ui(Globals.level_coins);
+		Globals.reset_level_coins();
+		health_changed.emit(current_health, max_health);
+		
+		if zoom_button:
+			zoom_button.pressed.connect(_on_zoom_button_pressed);
+			zoom_button.text = "2.0x";
 			
+		# === SYSTEM FIX: Dynamic, Type-Safe Initialization (Resolves String assignment to ItemData error) ===
+		if not Globals.equipped_item_name.is_empty():
+			if Globals.has_method("get_item_data_by_name"):
+				var found_item = Globals.get_item_data_by_name(Globals.equipped_item_name)
+				if found_item is ItemData:
+					saved_item = found_item
+					_on_weapon_equipped(saved_item)
+				elif found_item is String or found_item == null:
+					# Pass the raw string directly to our dynamic untyped method
+					_on_weapon_equipped(Globals.equipped_item_name)
+			else:
+				# Pass the fallback string directly to our dynamic untyped method
+				_on_weapon_equipped(Globals.equipped_item_name)
+				
+		if LIB_C != null:
+			if not LIB_C.fireball_spawn_received.is_connected(_on_fireball_spawn_received):
+				LIB_C.fireball_spawn_received.connect(_on_fireball_spawn_received)
+			if not LIB_C.fireball_destroy_received.is_connected(_on_fireball_destroy_received):
+				LIB_C.fireball_destroy_received.connect(_on_fireball_destroy_received)
+			if not LIB_C.player_died_received.is_connected(_on_player_died_received):
+				LIB_C.player_died_received.connect(_on_player_died_received)
+			if not LIB_C.player_respawned_received.is_connected(_on_player_respawned_received):
+				LIB_C.player_respawned_received.connect(_on_player_respawned_received)
+				
+		if LIB_C != null and not LIB_C.weapon_sync_received.is_connected(_on_weapon_sync_received):
+			LIB_C.weapon_sync_received.connect(_on_weapon_sync_received)
+			
+		# Remove hard-coded 1.5s timer. Replace with event-driven broadcast.
+		if is_local and Globals.is_online_mode and LIB_C != null:
+			if not LIB_C.player_joined.is_connected(_broadcast_initial_weapon_to_peer):
+				LIB_C.player_joined.connect(_broadcast_initial_weapon_to_peer)
+				
+				
+
+# === NEW: Event-driven remote initialization ===
+func _on_remote_initialized(player_name: String) -> void:
+	if is_local:
+		return
 	if LIB_C != null and not LIB_C.weapon_sync_received.is_connected(_on_weapon_sync_received):
 		LIB_C.weapon_sync_received.connect(_on_weapon_sync_received)
-		
-	# Delayed broadcast to ensure remote clients are ready to receive initial weapon state
-	if is_local and Globals.is_online_mode and LIB_C != null:
-		var timer = get_tree().create_timer(1.5)
-		timer.timeout.connect(_broadcast_initial_weapon)
 
-func _broadcast_initial_weapon() -> void:
+# === NEW: Event-driven broadcast for initial weapon state ===
+func _broadcast_initial_weapon_to_peer(player_name: String) -> void:
+	# Only the local host should broadcast. Ignore own joins.
 	if not is_local or not Globals.is_online_mode or LIB_C == null:
+		return
+	if player_name == LIB_C.playerName:
 		return
 	if Globals.equipped_item_name.is_empty():
 		return
 		
+	# Prevent duplicate broadcasts
+	if _weapon_synced_for_remote:
+		return
+		
+	_weapon_synced_for_remote = true
+	
 	var packet: Dictionary = Dictionary()
 	packet["type"] = "weapon_sync"
 	packet["sender"] = LIB_C.playerName
@@ -580,7 +631,7 @@ func _send_network_state() -> void:
 	packet["flip"] = sprite.flip_h if sprite else false
 	LIB_C.send_json_packet(packet)
 
-func _on_weapon_equipped(item_data: ItemData) -> void:
+func _on_weapon_equipped(item_data) -> void:
 	sword.equip_weapon(item_data)
 	if not sword.swing_started.is_connected(_on_sword_swing_started):
 		sword.swing_started.connect(_on_sword_swing_started)
@@ -588,11 +639,13 @@ func _on_weapon_equipped(item_data: ItemData) -> void:
 		sword.swing_finished.connect(_on_sword_swing_finished)
 		
 	if is_local and Globals.is_online_mode and LIB_C != null:
-		var packet: Dictionary = Dictionary()
-		packet["type"] = "weapon_sync"
-		packet["sender"] = LIB_C.playerName
-		packet["weapon_name"] = item_data.item_name.strip_edges()
-		LIB_C.send_json_packet(packet)
+		# Prevent duplicate broadcasts when a remote player joins
+		if not _weapon_synced_for_remote:
+			var packet: Dictionary = Dictionary()
+			packet["type"] = "weapon_sync"
+			packet["sender"] = LIB_C.playerName
+			packet["weapon_name"] = item_data.item_name.strip_edges()
+			LIB_C.send_json_packet(packet)
 
 # Signal Handlers
 func _update_coin_ui(new_total: int) -> void:
@@ -619,13 +672,16 @@ func _on_lightning_ability_end() -> void:
 			lightning_ball_instance.deactivate()
 
 func _on_weapon_sync_received(sender: String, weapon_name: String) -> void:
-	weapon_name = weapon_name.strip_edges()
-	if not is_local and sender != LIB_C.playerName:
-		var item_data = Globals.get_item_data_by_name(weapon_name)
-		if item_data != null:
-			sword.equip_weapon(item_data)
-		else:
-			push_warning("Weapon sync: unknown weapon name: ", weapon_name)
+	if sender == LIB_C.playerName:
+		return  # Ignore weapon sync packets sent by ourselves
+
+	print("[Network] Synced weapon '", weapon_name, "' received from peer: ", sender)
+	
+	if is_instance_valid(sword):
+		# Pass the weapon name directly. sword.equip_weapon handles strings and normalized spacing!
+		sword.equip_weapon(weapon_name)
+	else:
+		push_warning("[Player Network] Cannot sync weapon; sword instance is invalid.")
 
 func _on_fireball_spawn_received(sender: String, x: float, y: float, dir_x: float, dir_y: float, fb_speed: float, lifetime: float, fireball_id: String) -> void:
 	if sender == LIB_C.playerName:
