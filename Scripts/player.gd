@@ -608,11 +608,14 @@ func _on_dash_anim_finished() -> void:
 	else: sprite.play("idle");
 
 func _on_lightning_ability_end() -> void:
-	is_lightning_active = false;
+	is_lightning_active = false
+	
+	# Single safety check for everything
 	if is_instance_valid(lightning_ball_instance):
-		lightning_ball_instance.visible = false;
-	if lightning_ball_instance.has_method("deactivate"):
-		lightning_ball_instance.deactivate();
+		lightning_ball_instance.visible = false
+		
+		if lightning_ball_instance.has_method("deactivate"):
+			lightning_ball_instance.deactivate()
 
 func _on_weapon_sync_received(sender: String, weapon_name: String) -> void:
 	weapon_name = weapon_name.strip_edges()

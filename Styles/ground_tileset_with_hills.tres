@@ -1,0 +1,135 @@
+[gd_resource type="TileSet" format=3 uid="uid://lhccnivky3hp"]
+
+[ext_resource type="Texture2D" uid="uid://dlul14jwck0j4" path="res://Assets/Mossy Tileset/Mossy - TileSet.png" id="1_3ngi7"]
+[ext_resource type="Texture2D" uid="uid://ohai1kksglsv" path="res://Assets/Mossy Tileset/Mossy - MossyHills.png" id="2_ghhae"]
+[ext_resource type="Texture2D" uid="uid://dwhooj6mgexqm" path="res://Assets/Mossy Tileset/Mossy - FloatingPlatforms.png" id="3_73ok6"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_54upx"]
+texture = ExtResource("1_3ngi7")
+texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -122, 256, -122, 256, 256, -256, 256)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -122, 256, -122, 256, 256, -256, 256)
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -122, 256, -122, 256, 256, -256, 256)
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+0:2/0 = 0
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+1:2/0 = 0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+2:2/0 = 0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+3:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-150, -122, -130, 74, 120.208, 69.2965, 142.836, -125.865)
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5rvg2"]
+texture = ExtResource("2_ghhae")
+texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-88.57202, -117.612015, 102.12396, -116.64401, 101.156006, 102.12399, -87.604004, 101.156006)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4.356018, 159.236, 256, -53.72403, 256, 256, -6.291992, 256)
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -59.532013, 256, -53.72403, 256, 256, -256, 256)
+3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -51.788025, 12.099976, 256, -256, 256)
+0:1/0 = 0
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(8.600006, 256, 52.56198, 179.58678, 111.599976, 126.30002, 188.09915, 90.33059, 256, 80.41324, 256, 256)
+2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, 79.15204, -164.56488, 60.46736, -69.25757, 50.064896, 3.8248596, 48.015854, 84.42044, 48.698868, 163.65002, 61.67612, 256, 105.85446, 256, 256, -256, 256)
+3:1/0 = 0
+3:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, 105.38898, -184.68683, 134.07555, -127.31372, 166.86018, -102.16509, 188.329, -80.705765, 209.78833, -69.50958, 225.64958, -60.17944, 243.37686, -55.59729, 256, -256, 256)
+0:2/0 = 0
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(112.77197, 90.507996, -97.28403, 95.34799, -97.28403, -66.308014, 115.675964, -66.308014)
+1:2/0 = 0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(14.599976, -256, 13.599976, -191.69998, 42.599976, -150.69998, 84.599976, -114.69998, 136.59998, -80.69998, 174.59998, -68.69998, 218.59998, -65.69998, 256, -70.69998, 256, -256)
+2:2/0 = 0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, -42.99643, 14.436768, -5.335266, 256, -49.273285, 256, -256, -256, -256)
+3:2/0 = 0
+3:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-54.54544, -256, -57.851234, -232.47931, -66.94214, -206.03302, -93.702415, -151.24153, -256, -75.45453, -256, -256)
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jtv8s"]
+texture = ExtResource("3_73ok6")
+texture_region_size = Vector2i(512, 512)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-12.100037, 108.899994, -135.03601, -93.41202, 114.70801, -92.444016)
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-12.100037, 108.899994, -135.03601, -93.41202, 114.70801, -92.444016)
+1:2/0 = 0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-243.45203, 171.82, -239.58002, -126.32402, 256, -123.42001, 256, 174.724)
+2:2/0 = 0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, 171.82, -256, -126.324036, 256, -123.42001, 256, 174.724)
+3:2/0 = 0
+3:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, 177.62799, -256, -132.13202, 167.948, -122.45201, 142.77997, -114.70802, 138.90802, 171.82)
+0:3/0 = 0
+0:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-97.28403, 163.108, -204.73203, -139.87602, 256, -139.87602, 256, 174.724)
+1:3/0 = 0
+1:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, 192.14801, -256, -136.97202, 256, -132.13202, 256, 196.98798)
+2:3/0 = 0
+2:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, 192.14801, -256, -136.97202, 256, -132.13202, 256, 196.98798)
+3:3/0 = 0
+3:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-256, 192.14801, -256, -136.97202, 211.508, -131.16402, 69.211975, 147.62)
+
+[resource]
+tile_size = Vector2i(512, 512)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_54upx")
+sources/2 = SubResource("TileSetAtlasSource_5rvg2")
+sources/3 = SubResource("TileSetAtlasSource_jtv8s")
