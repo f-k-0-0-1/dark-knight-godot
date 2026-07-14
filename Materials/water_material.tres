@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://de50hjmm3o0g3"]
+
+[ext_resource type="Shader" uid="uid://c4ac6ee2tgly5" path="res://Shaders/water.gdshader" id="1_bxgjd"]
+
+[resource]
+shader = ExtResource("1_bxgjd")
+shader_parameter/waterColor = Color(0.117, 0.27, 0.58, 1)
+shader_parameter/colorCorection = 0.35
+shader_parameter/distortionForce = 0.10000000149012
+shader_parameter/WDBrightness = 3.0
+shader_parameter/WDFreq = 0.20000000298023
+shader_parameter/WDSize = 0.60000002384186
+shader_parameter/WDSpeed = 1.0
+shader_parameter/tiling = Vector2(1, 1)
+shader_parameter/offSetSpeed = Vector2(0.1, 0.1)
+shader_parameter/backGroundDirX = 0.01
+shader_parameter/backGroundDirY = 0.01

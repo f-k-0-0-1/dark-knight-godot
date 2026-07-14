@@ -163,7 +163,7 @@ height = 42.0
 radius = 16.0
 height = 46.0
 
-[node name="shardsoul" type="CharacterBody2D" unique_id=1610885443]
+[node name="shardsoul" type="CharacterBody2D" unique_id=1610885443 groups=["can_interact_with_water"]]
 script = ExtResource("1_f532b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=388837090]

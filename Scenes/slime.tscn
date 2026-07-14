@@ -234,7 +234,7 @@ height = 270.0
 radius = 95.0
 height = 290.0
 
-[node name="Enemy" type="CharacterBody2D" unique_id=882602578]
+[node name="Enemy" type="CharacterBody2D" unique_id=882602578 groups=["can_interact_with_water"]]
 script = ExtResource("1_apb0b")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1347365339]

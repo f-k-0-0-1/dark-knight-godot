@@ -224,7 +224,7 @@ radius = 12.405196
 [sub_resource type="CircleShape2D" id="CircleShape2D_3e5hs"]
 radius = 14.0357
 
-[node name="flying demon" type="CharacterBody2D" unique_id=766972636]
+[node name="flying demon" type="CharacterBody2D" unique_id=766972636 groups=["can_interact_with_water"]]
 scale = Vector2(3, 3)
 script = ExtResource("1_dnv03")
 

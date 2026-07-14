@@ -383,7 +383,7 @@ corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
-[node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["player"]]
+[node name="Player" type="CharacterBody2D" unique_id=268462001 groups=["can_interact_with_water", "player"]]
 z_index = 2
 script = ExtResource("1_6f3s4")
 lightning_ball_scene = ExtResource("73_ujsok")

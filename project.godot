@@ -39,6 +39,7 @@ window/vsync/vsync_mode=0
 Plant=""
 player=""
 enemies=""
+can_interact_with_water=""
 
 [input]
 
