@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://c3yaqxm16cqn5"]
+
+[ext_resource type="Script" uid="uid://d10t32snxaawn" path="res://Scripts/water.gd" id="1_slmpt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gxyip"]
+size = Vector2(40, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b8ytw"]
+size = Vector2(40, 40)
+
+[node name="Water" type="Node2D" unique_id=2024035537]
+script = ExtResource("1_slmpt")
+
+[node name="Top" type="ColorRect" parent="." unique_id=927415055]
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.36004916, 0.5719238, 1, 1)
+
+[node name="Bottom" type="ColorRect" parent="." unique_id=1830333431]
+offset_top = 40.0
+offset_right = 40.0
+offset_bottom = 80.0
+color = Color(0.13725491, 0.40784314, 1, 1)
+
+[node name="Splash" type="Area2D" parent="." unique_id=264722097]
+metadata/_edit_group_ = true
+
+[node name="Detect" type="CollisionShape2D" parent="Splash" unique_id=1247133527]
+position = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_gxyip")
+
+[node name="Bounce" type="Area2D" parent="." unique_id=801087773]
+metadata/_edit_group_ = true
+
+[node name="Detect" type="CollisionShape2D" parent="Bounce" unique_id=1230827016]
+position = Vector2(20, 60)
+shape = SubResource("RectangleShape2D_b8ytw")
+
+[connection signal="body_entered" from="Splash" to="." method="_on_Body_Enter_Splash"]
+[connection signal="body_entered" from="Bounce" to="." method="_on_Body_Enter_Bounce"]
+[connection signal="body_exited" from="Bounce" to="." method="_on_Body_Exit_Bounce"]

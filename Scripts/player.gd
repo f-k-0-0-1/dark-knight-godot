@@ -95,9 +95,12 @@ var input_direction_A: float;
 var time_for_3_stars: float;
 var time_for_2_stars: float;
 var time_for_1_star: float;
+var is_in_water: bool;
 
 # Engine Callbacks
 func _ready() -> void:
+	is_in_water = false
+	
 	# Remote Player Initialization
 	if not is_local:
 		if name_label:
@@ -379,7 +382,7 @@ func handle_movement_input() -> void:
 		if !cheat_command and Input.is_action_pressed("move_right"): input_direction += 1;
 		velocity.x = input_direction * move_speed;
 		
-		if !cheat_command and Input.is_action_just_pressed("jump") and jump_count < MAX_JUMPS:
+		if !cheat_command and !is_in_water and Input.is_action_just_pressed("jump") and jump_count < MAX_JUMPS:
 			velocity.y = jump_velocity;
 			jump_count += 1;
 			jump_anim_played = false;
