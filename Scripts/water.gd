@@ -30,7 +30,6 @@ func _ready() -> void:
 	Bounce_Delay = 1.0;
 	is_splash = false;
 	is_under_water = false;
-	un_water_timer = Timer.new();
 	
 	# Connect Signal 
 	is_under_water_sig.connect(is_Under_Water_Timer);
@@ -110,4 +109,6 @@ func is_Under_Water_Timer():
 		is_under_water = true;
 	
 	# Start The Timer
+	un_water_timer = Timer.new();
+	add_child(un_water_timer);
 	un_water_timer.start(5);
