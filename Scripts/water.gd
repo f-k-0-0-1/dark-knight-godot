@@ -107,8 +107,8 @@ func  _on_Body_Exit_Bounce(_body: Node2D):
 func is_Under_Water_Timer():
 	if (un_water_timer != null and un_water_timer.timeout):
 		is_under_water = true;
-	
-	# Start The Timer
-	un_water_timer = Timer.new();
-	add_child(un_water_timer);
-	un_water_timer.start(5);
+	else:
+		# Start The Timer
+		un_water_timer = Timer.new();
+		add_child(un_water_timer);
+		un_water_timer.start(5);
