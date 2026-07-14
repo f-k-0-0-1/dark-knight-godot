@@ -54,6 +54,7 @@ func _reset_combo():
 
 func equip_weapon(item_data: ItemData):
 	current_damage = item_data.damage
+		
 	var clean_name = item_data.item_name.strip_edges()
 	var name_parts = clean_name.split(" ")
 	if name_parts.size() >= 2:
@@ -69,6 +70,9 @@ func equip_weapon(item_data: ItemData):
 		print("Equipped: ", item_data.item_name, " | Damage: ", current_damage)
 	else:
 		push_warning("Failed to equip: " + item_data.item_name)
+
+func equip_weapon_sync(item_data: ItemData):
+	pass
 
 func swing(is_facing_right: bool):
 	if is_swinging:

@@ -67,7 +67,7 @@ func _ready() -> void:
 		print("[Network] Loaded saved player name: ", playerName)
 	else:
 		# Generate random name only if no saved name exists
-		playerName = "Player" + str(randi_range(1000, 9999))
+		playerName = "Player@" + str(randi_range(1000, 9999))
 		print("[Network] Generated new random player name: ", playerName)
 		
 	get_tree().node_added.connect(_on_scene_node_added)
@@ -148,7 +148,7 @@ func _start_host() -> void:
 		print("[Network] Host already active. Listening on Port: ", my_port)
 		return
 		
-	# CRITICAL FIX: Clear all old peers, remote players, and sockets before binding a new host
+	# Clear all old peers, remote players, and sockets before binding a new host
 	disconnect_all()
 	
 	var err: int = ws_server.listen(PORT_PRIMARY)

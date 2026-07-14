@@ -151,9 +151,8 @@ func _ready() -> void:
 			LIB_C.player_died_received.connect(_on_player_died_received)
 		if not LIB_C.player_respawned_received.is_connected(_on_player_respawned_received):
 			LIB_C.player_respawned_received.connect(_on_player_respawned_received)
-			
-	if LIB_C != null and not LIB_C.weapon_sync_received.is_connected(_on_weapon_sync_received):
-		LIB_C.weapon_sync_received.connect(_on_weapon_sync_received)
+		if not LIB_C.weapon_sync_received.is_connected(_on_weapon_sync_received):
+			LIB_C.weapon_sync_received.connect(_on_weapon_sync_received)
 		
 	# Delayed broadcast to ensure remote clients are ready to receive initial weapon state
 	if is_local and Globals.is_online_mode and LIB_C != null:

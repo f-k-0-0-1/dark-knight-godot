@@ -104,8 +104,6 @@ func _on_host_selected():
 	current_role = "host"
 	role_popup.visible = false
 	panel.visible = true
-	LIB_C.set_role(true)
-	
 	LIB_C.disconnect_all()
 	await get_tree().create_timer(0.5).timeout
 	LIB_C.set_role(true)
@@ -128,7 +126,7 @@ func _on_host_selected():
 		LIB_C.cloudflare_tunnel_ready.connect(_on_tunnel_ready, CONNECT_ONE_SHOT)
 		LIB_C.startCloudflareTunnel()
 	else:
-		link_input.text = "ws://localhost:" + str(LIB_C.my_port)
+		link_input.text = "localhost:" + str(LIB_C.my_port)
 		link_input.placeholder_text = ""
 
 func _on_client_selected():
@@ -142,11 +140,11 @@ func _on_client_selected():
 	link_input.placeholder_text = "Paste link here..."
 	level_dropdown.disabled = true
 	
-	# === FIX: Client's button now behaves as a Ready button ===
+	# Client's button behaves as a Ready button ===
 	start_button.text = "Ready"
 	start_button.disabled = true # Enabled only after a successful connection setup
 	selected_level = "level_1"
-	level_dropdown.text = "level_1"
+	level_dropdown.text = ""
 	
 	player_card_1.visible = true
 	player_name_1.text = "Waiting for Host..."
@@ -164,15 +162,15 @@ func _on_tunnel_ready(url: String):
 # =====================
 func _on_join_pressed():
 	if current_role == "host":
-		# Host logic – unchanged
-		print("Host forcing fresh tunnel generation...")
-		LIB_C.stopCloudflareTunnel()
-		await get_tree().create_timer(0.5).timeout
-		if LIB_C.has_signal("cloudflare_tunnel_ready"):
-			LIB_C.cloudflare_tunnel_ready.connect(_on_tunnel_ready, CONNECT_ONE_SHOT)
-			LIB_C.startCloudflareTunnel()
-		link_input.text = "Refreshing..."
-		link_input.editable = false
+		## Host logic 
+		#print("Host forcing fresh tunnel generation...")
+		#LIB_C.stopCloudflareTunnel()
+		#await get_tree().create_timer(0.5).timeout
+		#if LIB_C.has_signal("cloudflare_tunnel_ready"):
+			#LIB_C.cloudflare_tunnel_ready.connect(_on_tunnel_ready, CONNECT_ONE_SHOT)
+			#LIB_C.startCloudflareTunnel()
+		#link_input.text = "Refreshing..."
+		#link_input.editable = false
 		return
 		
 	var link = link_input.text.strip_edges()
