@@ -61,35 +61,63 @@ func _reset_combo():
 	combo_count = 0
 
 func equip_weapon(weapon_source) -> void:
-	# Check if we were passed an ItemData resource (local player equipping)
+	# 1. Handle if we were passed an ItemData resource (Local Player)
 	if weapon_source is Resource and "dictionary_key" in weapon_source:
-		var key = weapon_source.dictionary_key
-		_apply_weapon_texture_by_key(key)
-	# Check if we were passed a raw string directly (remote player sync)
-	elif weapon_source is String:
-		_apply_weapon_texture_by_key(weapon_source)
+		current_damage = weapon_source.damage
+		_apply_weapon_texture_by_key(weapon_source.dictionary_key)
+		print("Equipped: ", weapon_source.item_name, " | Damage: ", current_damage)
+		
+	# 2. Handle if we were passed a String weapon name/key (Remote Player Sync or Save Fallback)
+	elif weapon_source is String and weapon_source != "":
+		# Normalize any spaces to underscores (e.g., "Netherite Sword" -> "Netherite_Sword")
+		var normalized_key = weapon_source.replace(" ", "_")
+		
+		# Set damage based on the weapon material tier automatically
+		current_damage = _get_damage_by_weapon_key(normalized_key)
+		
+		_apply_weapon_texture_by_key(normalized_key)
+		print("Equipped Remote/Fallback: ", normalized_key, " | Assigned Damage: ", current_damage)
 	else:
 		push_warning("[Sword] Invalid weapon source type received: %s" % str(typeof(weapon_source)))
 
+# Helper function to automatically map damage to weapon strings
+func _get_damage_by_weapon_key(key: String) -> int:
+	var lower_key = key.to_lower()
+	if "netherite" in lower_key:
+		return 6
+	elif "diamond" in lower_key:
+		return 5
+	elif "gold" in lower_key:
+		return 4
+	elif "iron" in lower_key:
+		return 3
+	elif "stone" in lower_key:
+		return 2
+	else:
+		return 1 # Default base damage for Wood or unhandled tools
+
+# Helper function to handle the texture assignment safely
 func _apply_weapon_texture_by_key(key: String) -> void:
-	# Convert any spaces (from "Netherite Sword") to underscores ("Netherite_Sword")
 	var normalized_key = key.replace(" ", "_")
-	
-	# Split the key (e.g., "Netherite_Sword") to fit WeaponManager's function signature
 	var parts = normalized_key.split("_")
 	if parts.size() >= 2:
-		var material = parts[0]   # "Netherite"
-		var category = parts[1]   # "Sword"
+		var material = parts[0]   # e.g., "Netherite"
+		var category = parts[1]   # e.g., "Sword"
 		
-		# Fetch texture from the WeaponManager singleton
+		# Look up texture from your WeaponManager registry
 		var tex = WeaponManager.get_weapon_texture(material, category)
 		if tex:
 			sprite.texture = tex
-			print("[Sword] Weapon sprite successfully updated to: ", normalized_key)
 		else:
-			push_warning("[Sword] Texture not found in WeaponManager for key: " + normalized_key)
+			# Fallback if your WeaponManager uses direct key lookups instead
+			if WeaponManager.has_method("get_weapon_texture_by_key"):
+				sprite.texture = WeaponManager.get_weapon_texture_by_key(normalized_key)
+			else:
+				push_warning("[Sword] Texture not found in WeaponManager for key: " + normalized_key)
 	else:
-		push_warning("[Sword] Invalid key format for splitting: " + normalized_key)
+		# Fallback direct lookup if string doesn't contain underscores
+		if WeaponManager.has_method("get_weapon_texture_by_key"):
+			sprite.texture = WeaponManager.get_weapon_texture_by_key(normalized_key)
 
 func equip_weapon_sync(item_data: ItemData):
 	pass

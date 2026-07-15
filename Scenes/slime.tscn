@@ -253,7 +253,6 @@ offset_left = -93.0
 offset_top = -190.0
 offset_right = 92.0
 offset_bottom = -162.0
-show_percentage = false
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=428255981]
 

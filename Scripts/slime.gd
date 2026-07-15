@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var max_health := 150
+@export var max_health := 100
 @export var move_speed := 130
 @export var sprint_multiplier := 3.0
 @export var move_distance := 1000
